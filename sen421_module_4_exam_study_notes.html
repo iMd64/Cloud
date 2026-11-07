@@ -1,0 +1,1990 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SEN421 Module 4 Study Notes — Cloud Networking</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Navigation & Outline Engine -->
+  <script src="nav.js" defer></script>
+  <!-- Google Fonts: Inter, JetBrains Mono, Space Grotesk -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+
+  <!-- Theme Preference Script (Instant Anti-FOUC Execution) -->
+  <script>
+    (function() {
+      try {
+        const theme = localStorage.getItem('ca_theme');
+        if (theme === 'dark' || (!theme && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+          document.documentElement.classList.add('dark');
+        } else {
+          document.documentElement.classList.remove('dark');
+        }
+      } catch (_) {}
+    })();
+  </script>
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            display: ['Space Grotesk', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Warm Study Notebook Grid Background */
+    :root {
+      --bg-grid: rgba(148, 163, 184, 0.14);
+    }
+    .dark {
+      --bg-grid: rgba(51, 65, 85, 0.22);
+    }
+    body {
+      background-image: 
+        linear-gradient(to right, var(--bg-grid) 1px, transparent 1px),
+        linear-gradient(to bottom, var(--bg-grid) 1px, transparent 1px);
+      background-size: 28px 28px;
+    }
+
+    /* Realistic Marker Highlighter Styles */
+    .hl-yellow {
+      background: linear-gradient(104deg, rgba(253, 224, 71, 0) 0.9%, rgba(253, 224, 71, 0.85) 2.4%, rgba(253, 224, 71, 0.55) 5.8%, rgba(253, 224, 71, 0.75) 93%, rgba(253, 224, 71, 0.6) 96%, rgba(253, 224, 71, 0) 98%);
+      padding: 0.08rem 0.35rem;
+      border-radius: 0.25rem;
+      color: #0f172a;
+      font-weight: 600;
+      box-decoration-break: clone;
+      -webkit-box-decoration-break: clone;
+    }
+    .dark .hl-yellow {
+      background: rgba(234, 179, 8, 0.28);
+      border-bottom: 2px solid rgba(250, 204, 21, 0.8);
+      color: #fef08a;
+    }
+
+    .hl-green {
+      background: linear-gradient(104deg, rgba(110, 231, 183, 0) 0.9%, rgba(110, 231, 183, 0.78) 2.4%, rgba(110, 231, 183, 0.52) 93%, rgba(110, 231, 183, 0) 98%);
+      padding: 0.08rem 0.35rem;
+      border-radius: 0.25rem;
+      color: #064e3b;
+      font-weight: 600;
+      box-decoration-break: clone;
+      -webkit-box-decoration-break: clone;
+    }
+    .dark .hl-green {
+      background: rgba(16, 185, 129, 0.24);
+      border-bottom: 2px solid rgba(52, 211, 153, 0.75);
+      color: #a7f3d0;
+    }
+
+    .hl-pink, .hl-red {
+      background: linear-gradient(104deg, rgba(253, 164, 175, 0) 0.9%, rgba(253, 164, 175, 0.78) 2.4%, rgba(253, 164, 175, 0.55) 93%, rgba(253, 164, 175, 0) 98%);
+      padding: 0.08rem 0.35rem;
+      border-radius: 0.25rem;
+      color: #881337;
+      font-weight: 600;
+      box-decoration-break: clone;
+      -webkit-box-decoration-break: clone;
+    }
+    .dark .hl-pink, .dark .hl-red {
+      background: rgba(244, 63, 94, 0.25);
+      border-bottom: 2px solid rgba(251, 113, 133, 0.8);
+      color: #fecdd3;
+    }
+
+    .hl-blue {
+      background: linear-gradient(104deg, rgba(147, 197, 253, 0) 0.9%, rgba(147, 197, 253, 0.78) 2.4%, rgba(147, 197, 253, 0.55) 93%, rgba(147, 197, 253, 0) 98%);
+      padding: 0.08rem 0.35rem;
+      border-radius: 0.25rem;
+      color: #1e3a8a;
+      font-weight: 600;
+      box-decoration-break: clone;
+      -webkit-box-decoration-break: clone;
+    }
+    .dark .hl-blue {
+      background: rgba(59, 130, 246, 0.25);
+      border-bottom: 2px solid rgba(96, 165, 250, 0.8);
+      color: #bfdbfe;
+    }
+
+    .hl-purple {
+      background: linear-gradient(104deg, rgba(216, 180, 254, 0) 0.9%, rgba(216, 180, 254, 0.78) 2.4%, rgba(216, 180, 254, 0.55) 93%, rgba(216, 180, 254, 0) 98%);
+      padding: 0.08rem 0.35rem;
+      border-radius: 0.25rem;
+      color: #581c87;
+      font-weight: 600;
+      box-decoration-break: clone;
+      -webkit-box-decoration-break: clone;
+    }
+    .dark .hl-purple {
+      background: rgba(168, 85, 247, 0.25);
+      border-bottom: 2px solid rgba(192, 132, 252, 0.8);
+      color: #e9d5ff;
+    }
+
+    .hl-code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.86em;
+      background-color: #f1f5f9;
+      color: #0f172a;
+      border: 1px solid #cbd5e1;
+      padding: 0.1rem 0.4rem;
+      border-radius: 0.3rem;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+    .dark .hl-code {
+      background-color: rgba(30, 41, 59, 0.9);
+      color: #e2e8f0;
+      border-color: #475569;
+    }
+
+    /* Slide Reference Badge */
+    .slide-badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      padding: 0.25rem 0.65rem;
+      border-radius: 9999px;
+      background-color: #1e293b;
+      color: #f8fafc;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    }
+    .dark .slide-badge {
+      background-color: #38bdf8;
+      color: #0f172a;
+    }
+
+    /* Study Note Card */
+    .study-card {
+      background-color: rgba(255, 255, 255, 0.97);
+      border: 1px solid #cbd5e1;
+      border-radius: 0.85rem;
+      box-shadow: 0 4px 12px -2px rgba(15, 23, 42, 0.06);
+    }
+    .dark .study-card {
+      background-color: rgba(15, 23, 42, 0.92);
+      border-color: #334155;
+      box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.4);
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #94a3b8;
+      border-radius: 4px;
+    }
+    .dark ::-webkit-scrollbar-thumb {
+      background: #475569;
+    }
+  </style>
+</head>
+<body class="bg-[#fcfbf7] text-slate-800 dark:bg-slate-950 dark:text-slate-100 antialiased selection:bg-amber-300 selection:text-slate-900">
+
+  <!-- TOP STICKY BAR: COURSE HEADER & HIGHLIGHT KEY -->
+  <header class="sticky top-0 z-50 backdrop-blur-md bg-white/95 dark:bg-slate-900/95 border-b border-slate-200 dark:border-slate-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2.5 flex flex-wrap items-center justify-between gap-3">
+      <div class="flex items-center gap-3">
+        <span class="px-2.5 py-1 rounded-md bg-slate-700 text-white font-mono text-xs font-bold tracking-wider">SEN421</span>
+        <div>
+          <h1 class="font-display font-bold text-sm sm:text-base text-slate-900 dark:text-white leading-tight">
+            Module 4: Cloud Networking
+          </h1>
+          <p class="text-xs text-slate-500 dark:text-slate-400 hidden sm:block">
+            Complete Exam Study Notes • Slides 1/34 – 34/34 • Zero Hidden Content
+          </p>
+        </div>
+      </div>
+
+      <!-- Theme Toggle -->
+      <div class="flex items-center gap-2 text-xs">
+        <button id="themeToggle" onclick="window.toggleCaTheme ? window.toggleCaTheme() : (document.documentElement.classList.toggle('dark'), localStorage.setItem('ca_theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light'))" class="ml-1 px-3 py-1.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 font-medium hover:bg-slate-200 dark:hover:bg-slate-700 transition" title="Switch Paper / Dark Study Mode">
+          🌙 Dark
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN PAGE LAYOUT: SIDEBAR TOC + CONTINUOUS STUDY NOTE STREAM -->
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col lg:flex-row gap-8 items-start">
+
+    <!-- STICKY LEFT INDEX (DESKTOP) -->
+    <aside class="hidden lg:block w-64 shrink-0 sticky top-28 study-card p-4 text-xs">
+      <div class="font-display font-bold text-sm text-slate-900 dark:text-white mb-3 pb-2 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
+        <span>📑 Module 4 Outline</span>
+        <span class="font-mono text-[11px] text-sky-600 dark:text-sky-400">34 Slides</span>
+      </div>
+      <ul class="space-y-1.5 font-medium text-slate-600 dark:text-slate-300">
+        <li>
+          <a href="#overview" class="flex justify-between items-center py-1 px-2 rounded hover:bg-sky-50 dark:hover:bg-slate-800 hover:text-sky-600 dark:hover:text-sky-400 transition">
+            <span>0. Title & Objectives</span>
+            <span class="font-mono text-[10px] text-slate-400">1–2</span>
+          </a>
+        </li>
+        <li>
+          <a href="#part-1" class="flex justify-between items-center py-1 px-2 rounded hover:bg-sky-50 dark:hover:bg-slate-800 hover:text-sky-600 dark:hover:text-sky-400 transition">
+            <span>1. What a Network Has to Do</span>
+            <span class="font-mono text-[10px] text-slate-400">3–5</span>
+          </a>
+        </li>
+        <li>
+          <a href="#part-2" class="flex justify-between items-center py-1 px-2 rounded hover:bg-sky-50 dark:hover:bg-slate-800 hover:text-sky-600 dark:hover:text-sky-400 transition">
+            <span>2. Layers, Ports, TCP & UDP</span>
+            <span class="font-mono text-[10px] text-slate-400">6–8</span>
+          </a>
+        </li>
+        <li>
+          <a href="#part-3" class="flex justify-between items-center py-1 px-2 rounded hover:bg-sky-50 dark:hover:bg-slate-800 hover:text-sky-600 dark:hover:text-sky-400 transition">
+            <span>3. IP Addresses & CIDR</span>
+            <span class="font-mono text-[10px] text-slate-400">9–15</span>
+          </a>
+        </li>
+        <li>
+          <a href="#part-4" class="flex justify-between items-center py-1 px-2 rounded hover:bg-sky-50 dark:hover:bg-slate-800 hover:text-sky-600 dark:hover:text-sky-400 transition">
+            <span>4. Virtual Networks in the Cloud</span>
+            <span class="font-mono text-[10px] text-slate-400">16–22</span>
+          </a>
+        </li>
+        <li>
+          <a href="#part-5" class="flex justify-between items-center py-1 px-2 rounded hover:bg-sky-50 dark:hover:bg-slate-800 hover:text-sky-600 dark:hover:text-sky-400 transition">
+            <span>5. Filtering Traffic</span>
+            <span class="font-mono text-[10px] text-slate-400">23–25</span>
+          </a>
+        </li>
+        <li>
+          <a href="#part-6" class="flex justify-between items-center py-1 px-2 rounded hover:bg-sky-50 dark:hover:bg-slate-800 hover:text-sky-600 dark:hover:text-sky-400 transition">
+            <span>6. DHCP, DNS & Load Balancing</span>
+            <span class="font-mono text-[10px] text-slate-400">26–28</span>
+          </a>
+        </li>
+        <li>
+          <a href="#part-7" class="flex justify-between items-center py-1 px-2 rounded hover:bg-sky-50 dark:hover:bg-slate-800 hover:text-sky-600 dark:hover:text-sky-400 transition">
+            <span>7. Under the Hood & Distance</span>
+            <span class="font-mono text-[10px] text-slate-400">29–30</span>
+          </a>
+        </li>
+        <li>
+          <a href="#part-8" class="flex justify-between items-center py-1 px-2 rounded hover:bg-sky-50 dark:hover:bg-slate-800 hover:text-sky-600 dark:hover:text-sky-400 transition">
+            <span>8. Glossary & Summary</span>
+            <span class="font-mono text-[10px] text-slate-400">31–34</span>
+          </a>
+        </li>
+      </ul>
+
+      <div class="mt-4 pt-3 border-t border-slate-200 dark:border-slate-800 text-[11px] text-slate-500 dark:text-slate-400 space-y-1.5">
+        <div class="font-semibold text-slate-700 dark:text-slate-300">Fast Exam Cheat Box:</div>
+        <div>• <strong>CIDR Count:</strong> <span class="hl-purple">2^(32 - n)</span></div>
+        <div>• <strong>Reserved IPs:</strong> AWS/Azure <span class="hl-pink">-5</span>, GCP <span class="hl-pink">-4</span></div>
+        <div>• <strong>AWS /24 Usable:</strong> <span class="hl-green">251</span> (256 - 5)</div>
+        <div>• <strong>Public IPv4 Cost:</strong> <span class="hl-purple">$0.005/hr</span> (~$3.65/mo)</div>
+        <div>• <strong>Fiber RTT:</strong> <span class="hl-purple">2 × dist ÷ 200,000 km/s</span></div>
+      </div>
+    </aside>
+
+    <!-- MAIN CONTENT STREAM -->
+    <main class="flex-1 min-w-0 space-y-10">
+
+      <!-- ====================================================================
+           COURSE BANNER & SLIDES 1/34 - 2/34
+           ==================================================================== -->
+      <section id="overview" class="study-card p-6 sm:p-8 border-t-4 border-t-sky-600">
+        <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
+          <div class="flex items-center gap-2">
+            <span class="slide-badge">Slide 1/34</span>
+            <span class="slide-badge">Slide 2/34</span>
+          </div>
+          <span class="text-xs font-mono uppercase tracking-wider px-2.5 py-1 rounded bg-sky-50 dark:bg-sky-950/60 text-sky-700 dark:text-sky-300 font-semibold">
+            Istanbul Aydın University • Dept. of Computer Engineering
+          </span>
+        </div>
+
+        <h2 class="font-display text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white mb-2">
+          SEN421 Cloud Architecture and Services: Cloud Networking
+        </h2>
+        <p class="text-sm text-slate-600 dark:text-slate-300 mb-6">
+          <strong>Instructor:</strong> Dr. Hazm Talab • <strong>Semester:</strong> Fall Semester • <strong>Reading:</strong> West, J. <em>CompTIA Cloud+ Guide to Cloud Computing</em>, 2nd ed., Cengage, 2023, <span class="hl-blue">Module 4</span>.
+        </p>
+
+        <!-- Learning Objectives Box (Slide 2/34) -->
+        <div class="mb-5 p-4 rounded-xl bg-amber-50/80 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800">
+          <h3 class="text-xs font-mono uppercase tracking-wider text-amber-800 dark:text-amber-300 font-bold mb-2">
+            🎯 By the End of Today You Can (Slide 2/34)
+          </h3>
+          <ul class="space-y-1.5 text-xs sm:text-sm list-disc list-inside font-medium">
+            <li><span class="hl-yellow">Read CIDR notation</span> and <span class="hl-green">count the usable addresses in a subnet</span>;</li>
+            <li><span class="hl-yellow">Explain what makes a subnet public or private</span> — and <span class="hl-pink">why that alone does not decide who can reach a machine</span>;</li>
+            <li><span class="hl-yellow">Tell stateful from stateless filters</span> and <span class="hl-green">write basic rules for a three-tier design</span>.</li>
+          </ul>
+        </div>
+
+        <!-- 8-Part Plan Grid -->
+        <div class="bg-slate-100/80 dark:bg-slate-800/60 rounded-lg p-4 border border-slate-200 dark:border-slate-700">
+          <h3 class="text-xs font-mono uppercase tracking-wider text-slate-500 dark:text-slate-400 font-bold mb-2.5">
+            Today's Plan (8 Core Parts — Slide 2/34)
+          </h3>
+          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-2 text-xs sm:text-sm font-medium">
+            <div class="p-2.5 rounded bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">1. Starting simple: what a network has to do</div>
+            <div class="p-2.5 rounded bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">2. Network basics you need for the cloud</div>
+            <div class="p-2.5 rounded bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">3. IP addresses and CIDR</div>
+            <div class="p-2.5 rounded bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">4. Virtual networks in the cloud</div>
+            <div class="p-2.5 rounded bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">5. Filtering traffic</div>
+            <div class="p-2.5 rounded bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">6. Network services: addresses, names, load balancing</div>
+            <div class="p-2.5 rounded bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">7. Under the hood, and why distance matters</div>
+            <div class="p-2.5 rounded bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">8. Wrap-up and assignment</div>
+          </div>
+        </div>
+      </section>
+
+
+      <!-- ====================================================================
+           PART 1: STARTING SIMPLE — WHAT A NETWORK HAS TO DO (Slides 3/34 – 5/34)
+           ==================================================================== -->
+      <section id="part-1" class="space-y-6">
+        <div class="flex items-center gap-3 border-b-2 border-slate-700 dark:border-slate-700 pb-2">
+          <span class="px-3 py-1 rounded-md bg-slate-700 text-white font-display font-bold text-sm">PART 1</span>
+          <h2 class="font-display text-xl sm:text-2xl font-bold text-slate-900 dark:text-white">
+            Starting Simple: What a Network Has to Do
+          </h2>
+          <span class="ml-auto text-xs font-mono text-slate-500">Slides 3/34 – 5/34</span>
+        </div>
+
+        <!-- Slide 3/34 -->
+        <article class="study-card p-6">
+          <div class="flex items-center justify-between mb-3">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              Where We Are & Today's Core Networking Question
+            </h3>
+            <span class="slide-badge">Slide 3/34</span>
+          </div>
+          <p class="text-xs font-mono uppercase text-slate-500 dark:text-slate-400 mb-2">From the Last Session (Migration):</p>
+          <ul class="space-y-1.5 text-sm sm:text-base list-disc list-inside mb-4">
+            <li>Migration moves workloads to the cloud: <span class="hl-yellow">assess, plan, migrate, test, operate</span>.</li>
+            <li><span class="hl-yellow">Cutover</span> usually switches a <span class="hl-blue">DNS entry, load-balancer targets, or routes</span>.</li>
+            <li>Large data moves over the network, and <span class="hl-pink">the network is often the slowest part</span>.</li>
+          </ul>
+          <div class="p-4 rounded-lg bg-sky-50/70 dark:bg-sky-950/30 border border-sky-200 dark:border-sky-800 text-sm">
+            <strong>Today's Question:</strong> You have moved a web server and its database to the cloud. <span class="hl-yellow">Who can reach them, how do they reach each other, and how do you keep everyone else out?</span> Every answer is a networking decision.
+          </div>
+        </article>
+
+        <!-- Slide 4/34 -->
+        <article class="study-card p-6">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              A Comparison You Already Understand: The University Campus
+            </h3>
+            <span class="slide-badge">Slide 4/34</span>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 mb-4 text-xs sm:text-sm">
+            <div class="p-3.5 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700">
+              <div class="font-display font-bold text-sky-700 dark:text-sky-300 mb-1">1. Room Number</div>
+              Every room has a number, so mail and people can find it ➔ <span class="hl-yellow">Addresses</span>
+            </div>
+            <div class="p-3.5 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700">
+              <div class="font-display font-bold text-sky-700 dark:text-sky-300 mb-1">2. Buildings</div>
+              Group rooms; some open to the public while others are for staff only ➔ <span class="hl-yellow">Subnets</span>
+            </div>
+            <div class="p-3.5 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700">
+              <div class="font-display font-bold text-sky-700 dark:text-sky-300 mb-1">3. Crossing Signs</div>
+              Signs at each crossing tell you which path leads where ➔ <span class="hl-yellow">Routes</span>
+            </div>
+            <div class="p-3.5 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700">
+              <div class="font-display font-bold text-sky-700 dark:text-sky-300 mb-1">4. Gate Security</div>
+              Security at the gate decides who may enter ➔ <span class="hl-yellow">Firewalls</span>
+            </div>
+            <div class="p-3.5 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700">
+              <div class="font-display font-bold text-sky-700 dark:text-sky-300 mb-1">5. Directory</div>
+              Turns "Computer Engineering office" into a building and room number ➔ <span class="hl-yellow">DNS</span>
+            </div>
+          </div>
+
+          <div class="p-3 rounded-lg bg-amber-50 dark:bg-amber-950/30 border border-amber-300 dark:border-amber-800 text-sm text-center font-semibold">
+            A cloud network has the same parts: <span class="hl-yellow">addresses, subnets, routes, firewalls, and DNS</span>.
+          </div>
+        </article>
+
+        <!-- Slide 5/34 -->
+        <article class="study-card p-6">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              The Four Jobs of Any Network
+            </h3>
+            <span class="slide-badge">Slide 5/34</span>
+          </div>
+
+          <div class="overflow-x-auto rounded-xl border border-slate-300 dark:border-slate-700 mb-4">
+            <table class="w-full text-left text-xs sm:text-sm">
+              <thead class="bg-slate-100 dark:bg-slate-800 font-display text-slate-800 dark:text-slate-200">
+                <tr>
+                  <th class="py-3 px-4 border-b border-slate-300 dark:border-slate-700">Job</th>
+                  <th class="py-3 px-4 border-b border-slate-300 dark:border-slate-700">The question it answers</th>
+                  <th class="py-3 px-4 border-b border-slate-300 dark:border-slate-700">In today's session</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-200 dark:divide-slate-800">
+                <tr>
+                  <td class="py-2.5 px-4 font-bold"><span class="hl-yellow">Address</span></td>
+                  <td class="py-2.5 px-4">Where is each machine?</td>
+                  <td class="py-2.5 px-4"><span class="hl-blue">IP addresses, CIDR, subnets</span></td>
+                </tr>
+                <tr>
+                  <td class="py-2.5 px-4 font-bold"><span class="hl-yellow">Route</span></td>
+                  <td class="py-2.5 px-4">Which way should a message go to reach it?</td>
+                  <td class="py-2.5 px-4"><span class="hl-blue">Route tables, gateways</span></td>
+                </tr>
+                <tr>
+                  <td class="py-2.5 px-4 font-bold"><span class="hl-yellow">Filter</span></td>
+                  <td class="py-2.5 px-4">Is this message allowed at all?</td>
+                  <td class="py-2.5 px-4"><span class="hl-blue">Firewall rules</span></td>
+                </tr>
+                <tr>
+                  <td class="py-2.5 px-4 font-bold"><span class="hl-yellow">Name</span></td>
+                  <td class="py-2.5 px-4">What address belongs to this name?</td>
+                  <td class="py-2.5 px-4"><span class="hl-blue">DNS</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p class="text-sm">
+            In your own building, these jobs are done by physical devices: <em>routers, switches, firewalls</em>. <span class="hl-green">In the cloud, you mostly express each job as a setting you configure, and the provider's software carries it out.</span> (<strong>Virtual appliances</strong> — a firewall running on a VM, for example — also exist.)
+          </p>
+        </article>
+      </section>
+
+
+      <!-- ====================================================================
+           PART 2: NETWORK BASICS YOU NEED FOR THE CLOUD (Slides 6/34 – 8/34)
+           ==================================================================== -->
+      <section id="part-2" class="space-y-6">
+        <div class="flex items-center gap-3 border-b-2 border-slate-700 dark:border-slate-700 pb-2">
+          <span class="px-3 py-1 rounded-md bg-slate-700 text-white font-display font-bold text-sm">PART 2</span>
+          <h2 class="font-display text-xl sm:text-2xl font-bold text-slate-900 dark:text-white">
+            Network Basics You Need for the Cloud
+          </h2>
+          <span class="ml-auto text-xs font-mono text-slate-500">Slides 6/34 – 8/34</span>
+        </div>
+
+        <!-- Slide 6/34 -->
+        <article class="study-card p-6">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              Layers: Who Does What (OSI Numbers in the Cloud)
+            </h3>
+            <span class="slide-badge">Slide 6/34</span>
+          </div>
+          <p class="text-sm mb-4">
+            A message passes through layers; each layer does one job. Cloud documents and exams refer to them by number.
+          </p>
+
+          <!-- Visual Stack & Table of OSI Layers -->
+          <div class="overflow-x-auto rounded-xl border border-slate-300 dark:border-slate-700 mb-4">
+            <table class="w-full text-left text-xs sm:text-sm">
+              <thead class="bg-slate-100 dark:bg-slate-800 font-display">
+                <tr>
+                  <th class="py-3 px-4 w-1/5">Layer (OSI number)</th>
+                  <th class="py-3 px-4 w-1/3">Examples</th>
+                  <th class="py-3 px-4">Where you meet it in the cloud</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-200 dark:divide-slate-800">
+                <tr class="bg-purple-50/40 dark:bg-purple-950/20">
+                  <td class="py-3 px-4 font-bold font-mono"><span class="hl-purple">7 Application</span></td>
+                  <td class="py-3 px-4"><span class="hl-blue">HTTP, HTTPS (HTTP over TLS), DNS, SSH</span></td>
+                  <td class="py-3 px-4">A <span class="hl-yellow">"layer 7" load balancer</span> reads the <strong>host and path</strong> the user asked for (for HTTPS, <span class="hl-pink">after it decrypts TLS</span>).</td>
+                </tr>
+                <tr class="bg-blue-50/40 dark:bg-blue-950/20">
+                  <td class="py-3 px-4 font-bold font-mono"><span class="hl-blue">4 Transport</span></td>
+                  <td class="py-3 px-4"><span class="hl-blue">TCP, UDP, port numbers</span></td>
+                  <td class="py-3 px-4">A <span class="hl-yellow">firewall rule</span>: <em>"allow TCP port 443"</em>.</td>
+                </tr>
+                <tr class="bg-emerald-50/40 dark:bg-emerald-950/20">
+                  <td class="py-3 px-4 font-bold font-mono"><span class="hl-green">3 Network</span></td>
+                  <td class="py-3 px-4"><span class="hl-blue">IP addresses, routing</span></td>
+                  <td class="py-3 px-4"><span class="hl-yellow">Subnets and route tables.</span></td>
+                </tr>
+                <tr class="bg-amber-50/40 dark:bg-amber-950/20">
+                  <td class="py-3 px-4 font-bold font-mono"><span class="hl-yellow">2 Data link</span></td>
+                  <td class="py-3 px-4"><span class="hl-blue">MAC addresses, switches, VLANs</span></td>
+                  <td class="py-3 px-4">The <span class="hl-yellow">virtual switch inside each host</span>.</td>
+                </tr>
+                <tr class="bg-slate-50 dark:bg-slate-800/50">
+                  <td class="py-3 px-4 font-bold font-mono">1 Physical</td>
+                  <td class="py-3 px-4">Cables, fiber, signals</td>
+                  <td class="py-3 px-4"><span class="hl-green">Operated by the provider inside the cloud;</span> <span class="hl-pink">still yours in the office and on hybrid links</span>.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="p-3 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-xs sm:text-sm">
+            📌 <strong>Note on Layers 5 & 6:</strong> The OSI model also has layers <strong>5 and 6 (session, presentation)</strong>. The <span class="hl-yellow">TCP/IP model</span> used on the internet joins layers <strong>5–7 into one application layer</strong>.
+          </div>
+        </article>
+
+        <!-- Slide 7/34 -->
+        <article class="study-card p-6 border-l-4 border-l-sky-600">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              Addresses and Ports (Must-Memorize Default Ports Table)
+            </h3>
+            <span class="slide-badge">Slide 7/34</span>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4 text-sm">
+            <div class="p-3.5 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700">
+              🚪 <strong>An <span class="hl-yellow">IP address</span></strong> identifies a <strong>network interface</strong> — usually one per machine — <em>the room</em>.
+            </div>
+            <div class="p-3.5 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700">
+              🛎️ <strong>A <span class="hl-yellow">port</span> (with TCP or UDP)</strong> identifies a <strong>service endpoint</strong> on it — <em>the counter inside the room</em>.
+            </div>
+          </div>
+
+          <!-- Default Ports Table -->
+          <div class="overflow-x-auto rounded-xl border border-slate-300 dark:border-slate-700 mb-4">
+            <table class="w-full text-left text-xs sm:text-sm">
+              <thead class="bg-slate-100 dark:bg-slate-800 font-display">
+                <tr>
+                  <th class="py-2.5 px-4">Port</th>
+                  <th class="py-2.5 px-4">Protocol</th>
+                  <th class="py-2.5 px-4">Used by</th>
+                  <th class="py-2.5 px-4 border-l border-slate-300 dark:border-slate-700">Port</th>
+                  <th class="py-2.5 px-4">Protocol</th>
+                  <th class="py-2.5 px-4">Used by</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-200 dark:divide-slate-800">
+                <tr>
+                  <td class="py-2.5 px-4 font-mono font-bold"><span class="hl-purple">22</span></td>
+                  <td class="py-2.5 px-4 font-mono"><span class="hl-blue">TCP</span></td>
+                  <td class="py-2.5 px-4"><strong>SSH</strong> (Linux remote login)</td>
+                  <td class="py-2.5 px-4 font-mono font-bold border-l border-slate-300 dark:border-slate-700"><span class="hl-purple">3306</span></td>
+                  <td class="py-2.5 px-4 font-mono"><span class="hl-blue">TCP</span></td>
+                  <td class="py-2.5 px-4"><strong>MySQL</strong></td>
+                </tr>
+                <tr>
+                  <td class="py-2.5 px-4 font-mono font-bold"><span class="hl-purple">3389</span></td>
+                  <td class="py-2.5 px-4 font-mono"><span class="hl-blue">TCP, also UDP</span></td>
+                  <td class="py-2.5 px-4"><strong>RDP</strong> (Windows remote desktop)</td>
+                  <td class="py-2.5 px-4 font-mono font-bold border-l border-slate-300 dark:border-slate-700"><span class="hl-purple">5432</span></td>
+                  <td class="py-2.5 px-4 font-mono"><span class="hl-blue">TCP</span></td>
+                  <td class="py-2.5 px-4"><strong>PostgreSQL</strong></td>
+                </tr>
+                <tr>
+                  <td class="py-2.5 px-4 font-mono font-bold"><span class="hl-purple">80 / 443</span></td>
+                  <td class="py-2.5 px-4 font-mono"><span class="hl-blue">TCP; 443 also UDP</span></td>
+                  <td class="py-2.5 px-4"><strong>HTTP / HTTPS</strong> (UDP: <span class="hl-yellow">HTTP/3</span>)</td>
+                  <td class="py-2.5 px-4 font-mono font-bold border-l border-slate-300 dark:border-slate-700"><span class="hl-purple">1433</span></td>
+                  <td class="py-2.5 px-4 font-mono"><span class="hl-blue">TCP</span></td>
+                  <td class="py-2.5 px-4"><strong>SQL Server</strong></td>
+                </tr>
+                <tr>
+                  <td class="py-2.5 px-4 font-mono font-bold"><span class="hl-purple">53</span></td>
+                  <td class="py-2.5 px-4 font-mono"><span class="hl-blue">UDP and TCP</span></td>
+                  <td class="py-2.5 px-4"><strong>DNS</strong></td>
+                  <td class="py-2.5 px-4 border-l border-slate-300 dark:border-slate-700" colspan="3"></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-300">
+            <span class="hl-yellow">Learn these defaults:</span> most firewall rules you write name one of them. <span class="hl-pink">A service can be configured on another port, so check the actual configuration.</span>
+          </p>
+        </article>
+
+        <!-- Slide 8/34 -->
+        <article class="study-card p-6">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              TCP and UDP
+            </h3>
+            <span class="slide-badge">Slide 8/34</span>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <!-- TCP -->
+            <div class="p-4 rounded-xl bg-blue-50/50 dark:bg-slate-800 border-2 border-blue-400 dark:border-blue-600">
+              <div class="font-display font-bold text-base text-blue-950 dark:text-blue-300 mb-2">
+                <span class="hl-blue">TCP</span>
+              </div>
+              <p class="text-sm mb-3">
+                <span class="hl-yellow">Sets up a connection first, acknowledges what arrives, and resends lost pieces.</span> If the path fails for too long, the connection breaks with an error.
+              </p>
+              <ul class="space-y-1.5 text-xs sm:text-sm list-disc list-inside">
+                <li><span class="hl-green">Reliable, in-order delivery</span> while the connection lasts</li>
+                <li>Used by: <strong>the web, SSH, databases</strong></li>
+              </ul>
+            </div>
+
+            <!-- UDP -->
+            <div class="p-4 rounded-xl bg-amber-50/50 dark:bg-slate-800 border-2 border-amber-400 dark:border-amber-600">
+              <div class="font-display font-bold text-base text-amber-950 dark:text-amber-300 mb-2">
+                <span class="hl-blue">UDP</span>
+              </div>
+              <p class="text-sm mb-3">
+                <span class="hl-yellow">Sends each piece with no built-in delivery or ordering check.</span> Applications may add their own (<span class="hl-purple">QUIC</span>, used by <span class="hl-code">HTTP/3</span>, does).
+              </p>
+              <ul class="space-y-1.5 text-xs sm:text-sm list-disc list-inside">
+                <li><span class="hl-green">No connection setup, less overhead</span></li>
+                <li>Used by: <strong>DNS queries, video calls, games</strong></li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="p-3.5 rounded-lg bg-rose-50 dark:bg-rose-950/30 border border-rose-200 dark:border-rose-800 text-sm">
+            ⚠️ <strong>Why it matters in the cloud:</strong> Firewall rules name the <strong>protocol as well as the port</strong>: <span class="hl-pink">"TCP 443" is not the same rule as "UDP 443"</span>. Allow the wrong one and the application fails — <span class="hl-pink">often with nothing more than a timeout</span>.
+          </div>
+        </article>
+      </section>
+
+
+      <!-- ====================================================================
+           PART 3: IP ADDRESSES AND CIDR (Slides 9/34 – 15/34)
+           ==================================================================== -->
+      <section id="part-3" class="space-y-6">
+        <div class="flex items-center gap-3 border-b-2 border-slate-700 dark:border-slate-700 pb-2">
+          <span class="px-3 py-1 rounded-md bg-slate-700 text-white font-display font-bold text-sm">PART 3</span>
+          <h2 class="font-display text-xl sm:text-2xl font-bold text-slate-900 dark:text-white">
+            IP Addresses and CIDR
+          </h2>
+          <span class="ml-auto text-xs font-mono text-slate-500">Slides 9/34 – 15/34</span>
+        </div>
+
+        <!-- Slide 9/34 -->
+        <article class="study-card p-6">
+          <div class="flex items-center justify-between mb-3">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              Public and Private IPv4 Addresses (RFC 1918)
+            </h3>
+            <span class="slide-badge">Slide 9/34</span>
+          </div>
+          <p class="text-sm sm:text-base mb-4">
+            An IPv4 address is <span class="hl-purple">32 bits</span>, written as four numbers from <span class="hl-code">0</span> to <span class="hl-code">255</span>: <span class="hl-code">192.168.1.20</span>.
+          </p>
+
+          <ul class="space-y-2 text-sm sm:text-base list-disc list-inside mb-4">
+            <li><span class="hl-yellow">Public address</span> — globally unique and routed on the internet. <span class="hl-pink">Whether anyone can actually reach it depends on routes and firewalls.</span></li>
+            <li><span class="hl-yellow">Private address</span> — <span class="hl-green">not routed on the internet</span>. Many homes and companies reuse the same private ranges.</li>
+          </ul>
+
+          <div class="overflow-x-auto rounded-xl border border-slate-300 dark:border-slate-700 mb-4">
+            <table class="w-full text-left text-xs sm:text-sm font-mono">
+              <thead class="bg-slate-100 dark:bg-slate-800 font-display">
+                <tr>
+                  <th class="py-2.5 px-4">Private range (RFC 1918)</th>
+                  <th class="py-2.5 px-4">From – to</th>
+                  <th class="py-2.5 px-4">Addresses</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-200 dark:divide-slate-800">
+                <tr>
+                  <td class="py-2.5 px-4 font-bold"><span class="hl-blue">10.0.0.0/8</span></td>
+                  <td class="py-2.5 px-4">10.0.0.0 – 10.255.255.255</td>
+                  <td class="py-2.5 px-4"><span class="hl-purple">16,777,216</span></td>
+                </tr>
+                <tr>
+                  <td class="py-2.5 px-4 font-bold"><span class="hl-blue">172.16.0.0/12</span></td>
+                  <td class="py-2.5 px-4">172.16.0.0 – 172.31.255.255</td>
+                  <td class="py-2.5 px-4"><span class="hl-purple">1,048,576</span></td>
+                </tr>
+                <tr>
+                  <td class="py-2.5 px-4 font-bold"><span class="hl-blue">192.168.0.0/16</span></td>
+                  <td class="py-2.5 px-4">192.168.0.0 – 192.168.255.255</td>
+                  <td class="py-2.5 px-4"><span class="hl-purple">65,536</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-300">
+            In the common IPv4 cloud design, <span class="hl-green">machines get private addresses, and a public address is added only where the internet must reach the machine</span>. (IPv6 and managed services follow other patterns.)
+          </p>
+        </article>
+
+        <!-- Slide 10/34 -->
+        <article class="study-card p-6 border-l-4 border-l-purple-600">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              Reading CIDR Notation
+            </h3>
+            <span class="slide-badge">Slide 10/34</span>
+          </div>
+
+          <p class="text-sm sm:text-base mb-4">
+            <span class="hl-yellow">CIDR (classless inter-domain routing)</span> writes a block of addresses as <strong>starting address / number of fixed bits</strong>.<br/>
+            Example <span class="hl-code">10.0.0.0/16</span>: the first 16 bits (<span class="hl-code">10.0</span>) are <strong>fixed</strong>; the last 16 bits are <strong>free</strong>.
+          </p>
+
+          <!-- Visual 32-Bit CIDR Split Diagram -->
+          <div class="p-4 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 mb-4">
+            <div class="text-xs font-mono uppercase text-slate-500 mb-2 font-bold">Visual 32-Bit Split for 10.0.0.0/16 (8 bits per octet):</div>
+            <div class="grid grid-cols-4 gap-2 text-center font-mono text-xs sm:text-sm">
+              <div class="p-2.5 rounded bg-sky-200 dark:bg-sky-900/80 border-2 border-sky-600 font-bold text-slate-900 dark:text-white">
+                10 <span class="block text-[10px] font-normal">Octet 1 (8 bits fixed)</span>
+              </div>
+              <div class="p-2.5 rounded bg-sky-200 dark:bg-sky-900/80 border-2 border-sky-600 font-bold text-slate-900 dark:text-white">
+                0 <span class="block text-[10px] font-normal">Octet 2 (8 bits fixed)</span>
+              </div>
+              <div class="p-2.5 rounded bg-emerald-100 dark:bg-emerald-950/70 border-2 border-dashed border-emerald-500 font-bold text-emerald-900 dark:text-emerald-200">
+                0 – 255 <span class="block text-[10px] font-normal">Octet 3 (8 bits free)</span>
+              </div>
+              <div class="p-2.5 rounded bg-emerald-100 dark:bg-emerald-950/70 border-2 border-dashed border-emerald-500 font-bold text-emerald-900 dark:text-emerald-200">
+                0 – 255 <span class="block text-[10px] font-normal">Octet 4 (8 bits free)</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 items-center">
+            <!-- Formula Box -->
+            <div class="lg:col-span-5 p-4 rounded-xl bg-purple-50 dark:bg-purple-950/40 border-2 border-purple-500 text-center">
+              <div class="text-xs font-mono uppercase text-purple-800 dark:text-purple-300 font-bold mb-1">The One Rule to Remember</div>
+              <div class="font-mono text-lg sm:text-xl font-bold text-purple-950 dark:text-purple-200 my-2">
+                addresses in a /n block = 2^(32 - n)
+              </div>
+              <p class="text-xs text-slate-700 dark:text-slate-300">
+                for <span class="hl-code">0 ≤ n ≤ 32</span>. <span class="hl-pink">A bigger number after the slash means a smaller block.</span> The starting address has all free bits set to zero.
+              </p>
+            </div>
+
+            <!-- CIDR Reference Table -->
+            <div class="lg:col-span-7 overflow-x-auto rounded-xl border border-slate-300 dark:border-slate-700">
+              <table class="w-full text-left text-xs sm:text-sm font-mono">
+                <thead class="bg-slate-100 dark:bg-slate-800 font-display">
+                  <tr>
+                    <th class="py-2 px-4">Block</th>
+                    <th class="py-2 px-4">Addresses</th>
+                    <th class="py-2 px-4 font-sans">Typical use</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-200 dark:divide-slate-800">
+                  <tr>
+                    <td class="py-2 px-4 font-bold"><span class="hl-blue">/16</span></td>
+                    <td class="py-2 px-4"><span class="hl-purple">65,536</span></td>
+                    <td class="py-2 px-4 font-sans">A whole cloud network</td>
+                  </tr>
+                  <tr>
+                    <td class="py-2 px-4 font-bold"><span class="hl-blue">/20</span></td>
+                    <td class="py-2 px-4"><span class="hl-purple">4,096</span></td>
+                    <td class="py-2 px-4 font-sans">A large subnet</td>
+                  </tr>
+                  <tr>
+                    <td class="py-2 px-4 font-bold"><span class="hl-blue">/24</span></td>
+                    <td class="py-2 px-4"><span class="hl-purple">256</span></td>
+                    <td class="py-2 px-4 font-sans">A common subnet</td>
+                  </tr>
+                  <tr>
+                    <td class="py-2 px-4 font-bold"><span class="hl-blue">/28</span></td>
+                    <td class="py-2 px-4"><span class="hl-purple">16</span></td>
+                    <td class="py-2 px-4 font-sans">A very small subnet</td>
+                  </tr>
+                  <tr>
+                    <td class="py-2 px-4 font-bold"><span class="hl-blue">/32</span></td>
+                    <td class="py-2 px-4"><span class="hl-purple">1</span></td>
+                    <td class="py-2 px-4 font-sans">One single address</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </article>
+
+        <!-- Slide 11/34 -->
+        <article class="study-card p-6">
+          <div class="flex items-center justify-between mb-3">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              Worked Example: Reading a /23 Block
+            </h3>
+            <span class="slide-badge">Slide 11/34</span>
+          </div>
+
+          <div class="p-3.5 rounded-lg bg-sky-50 dark:bg-sky-950/30 border border-sky-200 dark:border-sky-800 text-sm mb-4">
+            <strong>Question:</strong> Which addresses belong to <span class="hl-code">10.0.0.0/23</span>? Is <span class="hl-code">10.0.2.5</span> one of them?
+          </div>
+
+          <ol class="space-y-2 text-sm sm:text-base list-decimal list-inside mb-4">
+            <li><strong>Free bits:</strong> <span class="hl-purple">32 - 23 = 9</span>, so the block has <span class="hl-purple">2^9 = 512 addresses</span>.</li>
+            <li><strong>512 addresses</strong> = <span class="hl-yellow">two groups of 256</span>, so the third number takes two values: <span class="hl-code">0</span> and <span class="hl-code">1</span>.</li>
+            <li>The block runs from <span class="hl-green">10.0.0.0 to 10.0.1.255</span>.</li>
+            <li><span class="hl-code">10.0.2.5</span> has <span class="hl-code">2</span> in the third place, so <span class="hl-pink">it is NOT in the block</span>.</li>
+          </ol>
+
+          <div class="p-3 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-xs sm:text-sm">
+            💡 <strong>Rule for /23:</strong> A <span class="hl-code">/23</span> starts on an <strong>even third number</strong>: <span class="hl-code">10.0.2.0/23</span> covers <span class="hl-code">10.0.2.0 – 10.0.3.255</span>. Routes, subnets, and firewall rules are written this way; if you cannot read it, you cannot check it.
+          </div>
+        </article>
+
+        <!-- Slide 12/34 -->
+        <article class="study-card p-6 border-l-4 border-l-rose-500">
+          <div class="flex items-center justify-between mb-3">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              Subnets, and the Addresses You Cannot Use (Reserved Addresses)
+            </h3>
+            <span class="slide-badge">Slide 12/34</span>
+          </div>
+
+          <p class="text-sm sm:text-base mb-4">
+            A <span class="hl-yellow">subnet</span> is a smaller block cut out of the network's block. <span class="hl-code">10.0.0.0/16</span> can be cut into <span class="hl-purple">256 subnets of /24</span>: <span class="hl-code">10.0.0.0/24</span>, <span class="hl-code">10.0.1.0/24</span>, ..., <span class="hl-code">10.0.255.0/24</span>.
+          </p>
+
+          <div class="p-4 rounded-xl bg-rose-50/70 dark:bg-rose-950/20 border-2 border-rose-300 dark:border-rose-800 mb-4">
+            <h4 class="font-display font-bold text-rose-900 dark:text-rose-300 text-base mb-2">
+              🚫 Reserved Addresses in Every Subnet
+            </h4>
+            <p class="text-sm mb-3">
+              The provider keeps a few addresses in each subnet for its own use — for example <span class="hl-yellow">the network address, the router, provider DNS, and the last address</span>.
+            </p>
+            <ul class="space-y-1.5 text-sm list-disc list-inside">
+              <li>In a standard IPv4 subnet, <span class="hl-blue">AWS and Azure reserve 5</span>; <span class="hl-blue">Google Cloud reserves 4</span> in a primary range.</li>
+              <li>So a <span class="hl-code">/24</span> gives <span class="hl-green">251 usable addresses on AWS or Azure</span>, <span class="hl-pink">not 256</span>.</li>
+              <li>A <span class="hl-code">/28</span> gives only <span class="hl-purple">16 - 5 = 11</span>. <span class="hl-pink">Very small subnets run out quickly.</span></li>
+            </ul>
+          </div>
+        </article>
+
+        <!-- Slide 13/34 -->
+        <article class="study-card p-6 border-l-4 border-l-emerald-500">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              Worked Exercise: Subnetting 10.20.0.0/16 Across 2 Availability Zones
+            </h3>
+            <span class="slide-badge">Slide 13/34</span>
+          </div>
+
+          <div class="p-4 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 mb-4 text-sm">
+            <strong>Scenario:</strong> A company receives <span class="hl-code">10.20.0.0/16</span> for its cloud network. It needs three kinds of subnet — <strong>web, application, database</strong> — in each of <strong>two availability zones</strong>, each a <span class="hl-code">/24</span> (AWS IPv4 example: each subnet sits in one zone).
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
+            <div class="p-3.5 rounded-lg bg-emerald-50/70 dark:bg-slate-800 border border-emerald-300 dark:border-emerald-700">
+              <div class="font-bold">1. Write down the six subnets.</div>
+              <div class="mt-1.5 text-xs sm:text-sm font-mono space-y-1">
+                <div>• Web: <span class="hl-green">10.20.0.0/24</span> (Zone A) & <span class="hl-green">10.20.1.0/24</span> (Zone B)</div>
+                <div>• App: <span class="hl-green">10.20.2.0/24</span> (Zone A) & <span class="hl-green">10.20.3.0/24</span> (Zone B)</div>
+                <div>• DB:  <span class="hl-green">10.20.4.0/24</span> (Zone A) & <span class="hl-green">10.20.5.0/24</span> (Zone B)</div>
+                <div class="font-sans text-xs text-slate-500">(Other layouts are correct if the blocks do not overlap.)</div>
+              </div>
+            </div>
+
+            <div class="p-3.5 rounded-lg bg-emerald-50/70 dark:bg-slate-800 border border-emerald-300 dark:border-emerald-700">
+              <div class="font-bold">2. Which subnet contains the address <span class="hl-code">10.20.3.77</span>?</div>
+              <div class="mt-1.5">
+                <strong>Answer:</strong> The <span class="hl-green">zone-B application subnet, 10.20.3.0/24</span>.
+              </div>
+            </div>
+
+            <div class="p-3.5 rounded-lg bg-emerald-50/70 dark:bg-slate-800 border border-emerald-300 dark:border-emerald-700">
+              <div class="font-bold">3. How many usable addresses does each subnet have on AWS?</div>
+              <div class="mt-1.5">
+                <strong>Answer:</strong> <span class="hl-purple">256 - 5 = 251</span> usable addresses.
+              </div>
+            </div>
+
+            <div class="p-3.5 rounded-lg bg-emerald-50/70 dark:bg-slate-800 border border-emerald-300 dark:border-emerald-700">
+              <div class="font-bold">4. How many <span class="hl-code">/24</span> subnets are left for later?</div>
+              <div class="mt-1.5">
+                <strong>Answer:</strong> <span class="hl-purple">256 - 6 = 250</span> subnets left.
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- Slide 14/34 -->
+        <article class="study-card p-6">
+          <div class="flex items-center justify-between mb-3">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              Plan Your Ranges Before You Need Them
+            </h3>
+            <span class="slide-badge">Slide 14/34</span>
+          </div>
+          <p class="text-sm sm:text-base mb-4">
+            Joining two networks directly (routing or peering) normally requires that <span class="hl-yellow">their address blocks do not overlap</span>.
+          </p>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <div class="p-4 rounded-xl bg-rose-50/70 dark:bg-rose-950/20 border-2 border-rose-400 dark:border-rose-700">
+              <h4 class="font-display font-bold text-rose-900 dark:text-rose-300 mb-2">❌ Bad Plan (Overlapping)</h4>
+              <ul class="space-y-1.5 text-sm list-disc list-inside">
+                <li>Office network: <span class="hl-code">10.0.0.0/16</span></li>
+                <li>Cloud network: <span class="hl-code">10.0.0.0/16</span> (the default in a tutorial)</li>
+                <li><span class="hl-pink">Address 10.0.1.5 now exists in both places. Nobody can say which one a message is for.</span></li>
+              </ul>
+            </div>
+
+            <div class="p-4 rounded-xl bg-emerald-50/70 dark:bg-emerald-950/20 border-2 border-emerald-400 dark:border-emerald-700">
+              <h4 class="font-display font-bold text-emerald-900 dark:text-emerald-300 mb-2">✅ Good Plan (Non-Overlapping)</h4>
+              <ul class="space-y-1.5 text-sm list-disc list-inside">
+                <li>Office network: <span class="hl-code">10.0.0.0/16</span></li>
+                <li>Cloud network: <span class="hl-code">10.20.0.0/16</span></li>
+                <li>Test network: <span class="hl-code">10.30.0.0/16</span></li>
+                <li><span class="hl-green">No two blocks share an address, so any two can be joined directly.</span></li>
+              </ul>
+            </div>
+          </div>
+
+          <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-300">
+            Fixing an overlap later is slow and risky: adding new ranges and migrating machines, or translating addresses (next topic). Choosing ranges that avoid it costs nothing today.
+          </p>
+        </article>
+
+        <!-- Slide 15/34 -->
+        <article class="study-card p-6">
+          <div class="flex items-center justify-between mb-3">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              IPv4 is Running Out — and Now It Costs Money
+            </h3>
+            <span class="slide-badge">Slide 15/34</span>
+          </div>
+
+          <ul class="space-y-2 text-sm sm:text-base list-disc list-inside mb-4">
+            <li><strong>IPv4</strong> has <span class="hl-purple">2^32 ≈ 4.3 billion addresses</span>. Almost all have been handed out; addresses are now bought and sold like property.</li>
+            <li>Since <span class="hl-purple">February 1, 2024</span>, <span class="hl-blue">AWS charges $0.005 per hour</span> for each public IPv4 address, <span class="hl-pink">in use or idle</span> (a few exceptions; see the price page): about <span class="hl-purple">$3.65 a month, or $43.80 a year</span>, per address.</li>
+            <li><strong>IPv6</strong> uses <span class="hl-purple">128-bit addresses (2^128, about 3.4 × 10^38)</span>, written in hexadecimal: <span class="hl-code">2001:db8::1</span>.</li>
+          </ul>
+
+          <div class="p-3.5 rounded-lg bg-amber-50 dark:bg-amber-950/30 border border-amber-300 dark:border-amber-800 text-sm">
+            💡 <strong>What this means for design:</strong> <span class="hl-green">Give a public address only to what the internet must reach, usually just the load balancer.</span> Everything else stays private: less exposed, and fewer address charges — <span class="hl-yellow">though what replaces them (a NAT gateway, for example) is charged too, so compare the totals</span>.
+          </div>
+        </article>
+      </section>
+
+
+      <!-- ====================================================================
+           PART 4: VIRTUAL NETWORKS IN THE CLOUD (Slides 16/34 – 22/34)
+           ==================================================================== -->
+      <section id="part-4" class="space-y-6">
+        <div class="flex items-center gap-3 border-b-2 border-slate-700 dark:border-slate-700 pb-2">
+          <span class="px-3 py-1 rounded-md bg-slate-700 text-white font-display font-bold text-sm">PART 4</span>
+          <h2 class="font-display text-xl sm:text-2xl font-bold text-slate-900 dark:text-white">
+            Virtual Networks in the Cloud
+          </h2>
+          <span class="ml-auto text-xs font-mono text-slate-500">Slides 16/34 – 22/34</span>
+        </div>
+
+        <!-- Slide 16/34 -->
+        <article class="study-card p-6">
+          <div class="flex items-center justify-between mb-3">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              Your Own Private Network in the Cloud (VPC Scope by Provider)
+            </h3>
+            <span class="slide-badge">Slide 16/34</span>
+          </div>
+
+          <p class="text-sm sm:text-base mb-3">
+            A <span class="hl-yellow">virtual private cloud (VPC) or virtual network</span> is a private network inside the provider, logically separated from other customers' networks.
+          </p>
+          <ul class="space-y-1.5 text-sm list-disc list-inside mb-4">
+            <li>You choose its address ranges, for example <span class="hl-code">10.20.0.0/16</span>.</li>
+            <li>You cut them into subnets.</li>
+            <li>Traffic from the internet needs a path you create and rules that allow it (check each provider's defaults).</li>
+          </ul>
+
+          <!-- 3-Provider VPC & Subnet Scope Visual Diagram -->
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="p-4 rounded-xl bg-amber-50/50 dark:bg-slate-800 border-2 border-amber-400 dark:border-amber-600">
+              <div class="font-display font-bold text-base text-amber-900 dark:text-amber-300 mb-2">AWS</div>
+              <div class="p-2.5 rounded bg-white dark:bg-slate-900 border border-amber-300 dark:border-slate-700 text-xs sm:text-sm space-y-1.5">
+                <div>🌐 <strong>Network (VPC):</strong> Belongs to <span class="hl-yellow">one region</span></div>
+                <div>📦 <strong>Subnet:</strong> Sits in <span class="hl-green">one availability zone</span></div>
+              </div>
+            </div>
+
+            <div class="p-4 rounded-xl bg-blue-50/50 dark:bg-slate-800 border-2 border-blue-400 dark:border-blue-600">
+              <div class="font-display font-bold text-base text-blue-900 dark:text-blue-300 mb-2">Azure</div>
+              <div class="p-2.5 rounded bg-white dark:bg-slate-900 border border-blue-300 dark:border-slate-700 text-xs sm:text-sm space-y-1.5">
+                <div>🌐 <strong>Network (VNet):</strong> Belongs to <span class="hl-yellow">one region</span></div>
+                <div>📦 <strong>Subnet:</strong> <span class="hl-green">Covers all its zones</span></div>
+              </div>
+            </div>
+
+            <div class="p-4 rounded-xl bg-emerald-50/50 dark:bg-slate-800 border-2 border-emerald-400 dark:border-emerald-600">
+              <div class="font-display font-bold text-base text-emerald-900 dark:text-emerald-300 mb-2">Google Cloud</div>
+              <div class="p-2.5 rounded bg-white dark:bg-slate-900 border border-emerald-300 dark:border-slate-700 text-xs sm:text-sm space-y-1.5">
+                <div>🌍 <strong>Network (VPC):</strong> <span class="hl-yellow">Global</span></div>
+                <div>📦 <strong>Subnet:</strong> Belongs to <span class="hl-green">one region</span> and has its own address range</div>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- Slide 17/34 -->
+        <article class="study-card p-6">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              Similar Ideas Under Different Names (AWS vs. Azure vs. Google Cloud)
+            </h3>
+            <span class="slide-badge">Slide 17/34</span>
+          </div>
+
+          <div class="overflow-x-auto rounded-xl border border-slate-300 dark:border-slate-700 mb-4">
+            <table class="w-full text-left text-xs sm:text-sm">
+              <thead class="bg-slate-100 dark:bg-slate-800 font-display">
+                <tr>
+                  <th class="py-3 px-4">What it is</th>
+                  <th class="py-3 px-4">AWS</th>
+                  <th class="py-3 px-4">Azure</th>
+                  <th class="py-3 px-4">Google Cloud</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-200 dark:divide-slate-800">
+                <tr>
+                  <td class="py-2.5 px-4 font-bold">Your own network</td>
+                  <td class="py-2.5 px-4"><span class="hl-blue">VPC</span></td>
+                  <td class="py-2.5 px-4"><span class="hl-blue">Virtual Network (VNet)</span></td>
+                  <td class="py-2.5 px-4"><span class="hl-blue">VPC network</span></td>
+                </tr>
+                <tr>
+                  <td class="py-2.5 px-4 font-bold">Main traffic filter</td>
+                  <td class="py-2.5 px-4"><span class="hl-blue">Security group</span>: attached to network interfaces; <span class="hl-green">allow rules only; stateful</span></td>
+                  <td class="py-2.5 px-4"><span class="hl-blue">Network security group</span>: attached to a subnet or interface; <span class="hl-yellow">allow and deny; stateful</span></td>
+                  <td class="py-2.5 px-4"><span class="hl-blue">VPC firewall rules</span>: defined for the network, applied to the instances they target; <span class="hl-yellow">allow and deny; stateful</span></td>
+                </tr>
+                <tr>
+                  <td class="py-2.5 px-4 font-bold">Extra subnet filter</td>
+                  <td class="py-2.5 px-4"><span class="hl-blue">Network ACL</span>: allow and deny; <span class="hl-pink">stateless</span></td>
+                  <td class="py-2.5 px-4 text-slate-400">—</td>
+                  <td class="py-2.5 px-4 text-slate-400">—</td>
+                </tr>
+                <tr>
+                  <td class="py-2.5 px-4 font-bold">Outbound-only internet access</td>
+                  <td class="py-2.5 px-4"><span class="hl-blue">NAT gateway</span>, placed in a public subnet</td>
+                  <td class="py-2.5 px-4"><span class="hl-blue">NAT Gateway</span>, attached to subnets</td>
+                  <td class="py-2.5 px-4"><span class="hl-blue">Cloud NAT</span>, configured on a Cloud Router</td>
+                </tr>
+                <tr>
+                  <td class="py-2.5 px-4 font-bold">Spreading traffic</td>
+                  <td class="py-2.5 px-4"><span class="hl-blue">Elastic Load Balancing</span></td>
+                  <td class="py-2.5 px-4"><span class="hl-blue">Load Balancer, Application Gateway</span></td>
+                  <td class="py-2.5 px-4"><span class="hl-blue">Cloud Load Balancing</span></td>
+                </tr>
+                <tr>
+                  <td class="py-2.5 px-4 font-bold">DNS</td>
+                  <td class="py-2.5 px-4"><span class="hl-blue">Route 53</span></td>
+                  <td class="py-2.5 px-4"><span class="hl-blue">Azure DNS</span></td>
+                  <td class="py-2.5 px-4"><span class="hl-blue">Cloud DNS</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="p-3 rounded-lg bg-rose-50 dark:bg-rose-950/30 border border-rose-200 dark:border-rose-800 text-xs sm:text-sm">
+            ⚠️ <strong>Exam Warning:</strong> The names map roughly; <span class="hl-pink">scope and behavior do not</span>. Before copying a rule from one provider to another, check where it attaches and whether it is stateful.
+          </div>
+        </article>
+
+        <!-- Slide 18/34 -->
+        <article class="study-card p-6">
+          <div class="flex items-center justify-between mb-3">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              Route Tables: Which Way to Go (AWS Example)
+            </h3>
+            <span class="slide-badge">Slide 18/34</span>
+          </div>
+          <p class="text-sm sm:text-base mb-4">
+            In AWS, every subnet is associated with a <span class="hl-yellow">route table</span>: a list of <em>destination ➔ where to send it</em>.
+          </p>
+
+          <div class="overflow-x-auto rounded-xl border border-slate-300 dark:border-slate-700 mb-4 max-w-xl">
+            <table class="w-full text-left text-xs sm:text-sm font-mono">
+              <thead class="bg-slate-100 dark:bg-slate-800 font-display">
+                <tr>
+                  <th class="py-2.5 px-4">Destination</th>
+                  <th class="py-2.5 px-4">Target</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-200 dark:divide-slate-800">
+                <tr class="bg-emerald-50/40 dark:bg-emerald-950/20">
+                  <td class="py-2.5 px-4 font-bold">10.20.0.0/16</td>
+                  <td class="py-2.5 px-4 font-sans"><span class="hl-green">local</span> (stay inside the network)</td>
+                </tr>
+                <tr>
+                  <td class="py-2.5 px-4 font-bold">0.0.0.0/0</td>
+                  <td class="py-2.5 px-4 font-sans"><span class="hl-blue">internet gateway</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <ul class="space-y-2 text-sm sm:text-base list-disc list-inside">
+            <li><span class="hl-code">0.0.0.0/0</span> means <strong>"every address"</strong> — the <span class="hl-yellow">default route</span>.</li>
+            <li>If more than one line matches, <span class="hl-yellow">the most specific one wins (the largest number after the slash)</span>.</li>
+            <li>A message to <span class="hl-code">10.20.4.9</span> matches both lines; <span class="hl-green">/16 is more specific than /0, so it stays local</span>.</li>
+            <li><span class="hl-pink">The reply is routed too: every path needs a route back.</span></li>
+          </ul>
+        </article>
+
+        <!-- Slide 19/34 -->
+        <article class="study-card p-6">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              Public and Private Subnets (AWS, IPv4)
+            </h3>
+            <span class="slide-badge">Slide 19/34</span>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <div class="p-4 rounded-xl bg-sky-50/60 dark:bg-slate-800 border-2 border-sky-400 dark:border-sky-600">
+              <h4 class="font-display font-bold text-sky-950 dark:text-sky-300 text-base mb-2">
+                🌐 <span class="hl-yellow">Public subnet</span>
+              </h4>
+              <p class="text-sm mb-2">
+                Its route table sends <span class="hl-code">0.0.0.0/0</span> to the <span class="hl-blue">internet gateway</span> — the network's door to the internet.
+              </p>
+              <ul class="text-xs sm:text-sm list-disc list-inside">
+                <li>For what users must reach: <strong>load balancers, web front ends</strong>.</li>
+              </ul>
+            </div>
+
+            <div class="p-4 rounded-xl bg-emerald-50/60 dark:bg-slate-800 border-2 border-emerald-400 dark:border-emerald-600">
+              <h4 class="font-display font-bold text-emerald-950 dark:text-emerald-300 text-base mb-2">
+                🔒 <span class="hl-yellow">Private subnet</span>
+              </h4>
+              <p class="text-sm mb-2">
+                <span class="hl-green">No route to the internet gateway</span>, so the internet cannot open a connection directly to a machine inside it.
+              </p>
+              <ul class="space-y-1 text-xs sm:text-sm list-disc list-inside">
+                <li>For everything else: <strong>application servers, databases</strong>.</li>
+                <li>A <span class="hl-green">public load balancer can still forward user requests to private machines</span> — that is the usual design.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="p-4 rounded-xl bg-amber-50 dark:bg-amber-950/30 border-2 border-amber-400 dark:border-amber-700 text-sm">
+            <div class="font-display font-bold text-amber-950 dark:text-amber-300 mb-1">
+              🔑 Three Network Conditions for Reaching a Machine in a Public Subnet
+            </div>
+            <p>
+              <span class="hl-yellow">1. A public address</span> + <span class="hl-yellow">2. A route to the internet gateway</span> + <span class="hl-yellow">3. Firewall rules that allow the traffic</span>.<br/>
+              <span class="hl-pink">These are necessary, not sufficient:</span> the program must be listening, and the host firewall and the application must accept the request.
+            </p>
+          </div>
+        </article>
+
+        <!-- Slide 20/34 -->
+        <article class="study-card p-6">
+          <div class="flex items-center justify-between mb-3">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              Going Out Without Letting Anyone In: NAT Gateway
+            </h3>
+            <span class="slide-badge">Slide 20/34</span>
+          </div>
+          <p class="text-sm sm:text-base mb-4">
+            Machines in a private subnet still need the internet sometimes — for software updates, for example.
+          </p>
+
+          <!-- Visual NAT Gateway Flow Diagram -->
+          <div class="p-4 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 mb-4">
+            <div class="grid grid-cols-1 md:grid-cols-5 gap-3 items-center text-center text-xs sm:text-sm">
+              <div class="p-3 rounded-lg bg-emerald-100 dark:bg-emerald-950/70 border-2 border-emerald-600">
+                <div class="font-bold">Private Subnet Machine</div>
+                <div class="font-mono text-[11px] mt-0.5">Route: 0.0.0.0/0 ➔ NAT</div>
+              </div>
+              <div class="font-mono text-xs font-bold text-emerald-700 dark:text-emerald-400">
+                Outbound request ───►<br/>◄─── Matching reply
+              </div>
+              <div class="p-3 rounded-lg bg-sky-100 dark:bg-sky-950/70 border-2 border-sky-600">
+                <div class="font-bold">NAT Gateway</div>
+                <div class="text-[11px] mt-0.5">(Placed in Public Subnet on AWS)</div>
+              </div>
+              <div class="font-mono text-xs font-bold text-rose-700 dark:text-rose-400">
+                Uses NAT Public IP ───►<br/>✖ Blocks inbound start
+              </div>
+              <div class="p-3 rounded-lg bg-white dark:bg-slate-800 border-2 border-slate-400">
+                <div class="font-bold">The Internet</div>
+                <div class="text-[11px] text-slate-500">Update servers, etc.</div>
+              </div>
+            </div>
+          </div>
+
+          <ul class="space-y-2 text-sm sm:text-base list-disc list-inside mb-4">
+            <li><span class="hl-blue">NAT gateway (network address translation)</span>: in AWS it is <span class="hl-yellow">placed in a public subnet</span>, and private machines send their outgoing traffic through it (<span class="hl-code">0.0.0.0/0 ➔ NAT gateway</span>).</li>
+            <li>The outside world sees <span class="hl-green">only the NAT gateway's public address</span>.</li>
+            <li><span class="hl-green">Replies to connections the private machine started are translated back and delivered.</span></li>
+            <li><span class="hl-pink">A connection started from the internet finds no matching translation, so it cannot reach the private machine.</span></li>
+          </ul>
+
+          <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-300">
+            <strong>Provider differences & cost:</strong> Azure attaches its NAT Gateway to subnets; Google's Cloud NAT is configured on a Cloud Router. <span class="hl-purple">Managed NAT is usually charged by the hour and per gigabyte.</span> Alternatives: <em>private endpoints to provider services</em> (next topic).
+          </p>
+        </article>
+
+        <!-- Slide 21/34 -->
+        <article class="study-card p-6 border-2 border-sky-600">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              Putting It Together: A Three-Tier Network (AWS Layout — Slide 21/34)
+            </h3>
+            <span class="slide-badge">Slide 21/34</span>
+          </div>
+
+          <!-- Full Visual Recreation of Slide 21/34 Architecture Diagram -->
+          <div class="p-4 sm:p-6 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 mb-5">
+            <!-- Internet + IGW Header -->
+            <div class="flex flex-col items-center mb-4">
+              <div class="px-5 py-2 rounded-lg bg-white dark:bg-slate-800 border-2 border-slate-400 font-display font-bold text-sm">
+                🌐 Internet (users)
+              </div>
+              <div class="font-mono text-xs text-slate-500 my-1">│ HTTPS (TCP 443)</div>
+              <div class="px-5 py-2 rounded-lg bg-sky-600 text-white font-display font-bold text-sm shadow">
+                🚪 Internet gateway
+              </div>
+            </div>
+
+            <!-- Cloud Network 10.20.0.0/16 Box -->
+            <div class="p-4 rounded-xl border-2 border-slate-400 dark:border-slate-600 bg-white/70 dark:bg-slate-950/60">
+              <div class="text-xs font-mono font-bold text-slate-600 dark:text-slate-300 mb-3 flex justify-between">
+                <span>Cloud network 10.20.0.0/16</span>
+                <span>Multi-AZ Three-Tier Architecture</span>
+              </div>
+
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Availability Zone A -->
+                <div class="p-4 rounded-xl border-2 border-dashed border-sky-500 bg-sky-50/30 dark:bg-slate-900 space-y-3">
+                  <div class="font-display font-bold text-sm text-sky-900 dark:text-sky-300 text-center border-b border-sky-200 dark:border-slate-700 pb-1.5">
+                    Availability zone A
+                  </div>
+
+                  <!-- Tier 1: Public -->
+                  <div class="p-3 rounded-lg bg-sky-100 dark:bg-sky-950/70 border border-sky-400 text-center">
+                    <div class="font-mono font-bold text-xs text-sky-900 dark:text-sky-200">Public 10.20.0.0/24</div>
+                    <div class="text-xs mt-1">load-balancer node, NAT</div>
+                  </div>
+
+                  <div class="text-center font-mono text-xs text-slate-500">↓ TCP 8080</div>
+
+                  <!-- Tier 2: Application -->
+                  <div class="p-3 rounded-lg bg-emerald-100 dark:bg-emerald-950/70 border border-emerald-400 text-center">
+                    <div class="font-mono font-bold text-xs text-emerald-900 dark:text-emerald-200">Application 10.20.2.0/24</div>
+                    <div class="text-xs mt-1">app servers</div>
+                  </div>
+
+                  <div class="text-center font-mono text-xs text-slate-500">↓ TCP 5432</div>
+
+                  <!-- Tier 3: Database -->
+                  <div class="p-3 rounded-lg bg-amber-100 dark:bg-amber-950/70 border border-amber-500 text-center">
+                    <div class="font-mono font-bold text-xs text-amber-900 dark:text-amber-200">Database 10.20.4.0/24</div>
+                    <div class="text-xs font-bold mt-1">primary database</div>
+                  </div>
+                </div>
+
+                <!-- Availability Zone B -->
+                <div class="p-4 rounded-xl border-2 border-dashed border-indigo-500 bg-indigo-50/30 dark:bg-slate-900 space-y-3">
+                  <div class="font-display font-bold text-sm text-indigo-900 dark:text-indigo-300 text-center border-b border-indigo-200 dark:border-slate-700 pb-1.5">
+                    Availability zone B
+                  </div>
+
+                  <!-- Tier 1: Public -->
+                  <div class="p-3 rounded-lg bg-sky-100 dark:bg-sky-950/70 border border-sky-400 text-center">
+                    <div class="font-mono font-bold text-xs text-sky-900 dark:text-sky-200">Public 10.20.1.0/24</div>
+                    <div class="text-xs mt-1">load-balancer node, NAT</div>
+                  </div>
+
+                  <div class="text-center font-mono text-xs text-slate-500">↓ TCP 8080</div>
+
+                  <!-- Tier 2: Application -->
+                  <div class="p-3 rounded-lg bg-emerald-100 dark:bg-emerald-950/70 border border-emerald-400 text-center">
+                    <div class="font-mono font-bold text-xs text-emerald-900 dark:text-emerald-200">Application 10.20.3.0/24</div>
+                    <div class="text-xs mt-1">app servers</div>
+                  </div>
+
+                  <div class="text-center font-mono text-xs text-slate-500">↓ TCP 5432</div>
+
+                  <!-- Tier 3: Database -->
+                  <div class="p-3 rounded-lg bg-amber-100 dark:bg-amber-950/70 border border-amber-500 text-center">
+                    <div class="font-mono font-bold text-xs text-amber-900 dark:text-amber-200">Database 10.20.5.0/24</div>
+                    <div class="text-xs font-bold mt-1">standby database</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Cross-AZ DB Replication Bar -->
+              <div class="mt-3 p-2 rounded bg-amber-50 dark:bg-slate-800 border border-dashed border-amber-500 text-center font-mono text-xs text-amber-900 dark:text-amber-300">
+                Primary DB (10.20.4.0/24, Zone A) ◄─── - - - dashed: replication - - - ───► Standby DB (10.20.5.0/24, Zone B)
+              </div>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
+            <div class="p-3 rounded-lg bg-slate-100 dark:bg-slate-800">
+              • <strong>Requests:</strong> internet ➔ load balancer ➔ app servers (<span class="hl-code">TCP 8080</span>) ➔ database (<span class="hl-code">TCP 5432</span>), replies back the same way.<br/>
+              • <strong>Updates:</strong> app servers go out through the <span class="hl-blue">NAT gateway in their zone</span>.
+            </div>
+            <div class="p-3 rounded-lg bg-slate-100 dark:bg-slate-800">
+              • <strong>Database:</strong> primary in A, standby in B (replication); reached <span class="hl-green">only from the application subnets</span>.<br/>
+              • <span class="hl-pink">Two zones survive the loss of one zone only if the other has enough capacity and the database fails over.</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- Slide 22/34 -->
+        <article class="study-card p-6 border-l-4 border-l-emerald-500">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              Worked Exercise: Public or Private Subnet, and Public Address?
+            </h3>
+            <span class="slide-badge">Slide 22/34</span>
+          </div>
+
+          <div class="space-y-3 text-sm mb-4">
+            <div class="p-3.5 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700">
+              <div class="font-bold">1. The internet-facing load balancer for the university's course registration website.</div>
+              <div class="mt-1 text-emerald-800 dark:text-emerald-300">
+                <strong>Suggested Answer:</strong> <span class="hl-green">Public subnet, with a public address</span> (users must reach it).
+              </div>
+            </div>
+
+            <div class="p-3.5 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700">
+              <div class="font-bold">2. The PostgreSQL database behind it.</div>
+              <div class="mt-1 text-emerald-800 dark:text-emerald-300">
+                <strong>Suggested Answer:</strong> <span class="hl-green">Private subnet, no public address</span>.
+              </div>
+            </div>
+
+            <div class="p-3.5 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700">
+              <div class="font-bold">3. An application server that downloads security updates every night.</div>
+              <div class="mt-1 text-emerald-800 dark:text-emerald-300">
+                <strong>Suggested Answer:</strong> <span class="hl-green">Private subnet, no public address</span>, with a route to a <span class="hl-blue">NAT gateway</span> for the updates.
+              </div>
+            </div>
+
+            <div class="p-3.5 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700">
+              <div class="font-bold">4. A machine that reads files from cloud storage every hour and writes reports.</div>
+              <div class="mt-1 text-emerald-800 dark:text-emerald-300">
+                <strong>Suggested Answer:</strong> <span class="hl-green">Private subnet, no public address</span>, reaching storage through a <span class="hl-blue">private endpoint</span> (next topic) or through <span class="hl-blue">NAT</span>.
+              </div>
+            </div>
+          </div>
+
+          <div class="p-3.5 rounded-lg bg-amber-50 dark:bg-amber-950/30 border-2 border-amber-400 dark:border-amber-700 text-sm font-bold text-center">
+            🔑 Golden Rule: <span class="hl-yellow">Public only when the internet must start the conversation.</span>
+          </div>
+        </article>
+      </section>
+
+
+      <!-- ====================================================================
+           PART 5: FILTERING TRAFFIC (Slides 23/34 – 25/34)
+           ==================================================================== -->
+      <section id="part-5" class="space-y-6">
+        <div class="flex items-center gap-3 border-b-2 border-slate-700 dark:border-slate-700 pb-2">
+          <span class="px-3 py-1 rounded-md bg-slate-700 text-white font-display font-bold text-sm">PART 5</span>
+          <h2 class="font-display text-xl sm:text-2xl font-bold text-slate-900 dark:text-white">
+            Filtering Traffic
+          </h2>
+          <span class="ml-auto text-xs font-mono text-slate-500">Slides 23/34 – 25/34</span>
+        </div>
+
+        <!-- Slide 23/34 -->
+        <article class="study-card p-6">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              Two Levels of Filtering: Stateful vs. Stateless
+            </h3>
+            <span class="slide-badge">Slide 23/34</span>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <div class="p-4 rounded-xl bg-emerald-50/60 dark:bg-slate-800 border-2 border-emerald-400 dark:border-emerald-600">
+              <div class="font-display font-bold text-base text-emerald-950 dark:text-emerald-300 mb-1">
+                Machine-level firewall (<span class="hl-blue">AWS: security group</span>)
+              </div>
+              <p class="text-sm mb-2">
+                Attached to the <strong>network interfaces</strong> of machines and other resources. <span class="hl-yellow">Lists only what is allowed; everything else is denied.</span>
+              </p>
+              <div class="p-2.5 rounded bg-white dark:bg-slate-900 text-xs sm:text-sm">
+                • <span class="hl-green">Stateful:</span> if a request was allowed in, <strong>its reply is allowed out automatically</strong>.
+              </div>
+            </div>
+
+            <div class="p-4 rounded-xl bg-amber-50/60 dark:bg-slate-800 border-2 border-amber-400 dark:border-amber-600">
+              <div class="font-display font-bold text-base text-amber-950 dark:text-amber-300 mb-1">
+                Subnet-level firewall (<span class="hl-blue">AWS: network ACL</span>)
+              </div>
+              <p class="text-sm mb-2">
+                Attached to a <strong>subnet</strong>. <span class="hl-yellow">Rules can allow or deny, checked in number order.</span>
+              </p>
+              <div class="p-2.5 rounded bg-white dark:bg-slate-900 text-xs sm:text-sm">
+                • <span class="hl-pink">Stateless:</span> every message is checked on its own, so <strong>replies need their own rule</strong>.
+              </div>
+            </div>
+          </div>
+
+          <!-- Visual Ephemeral Port Diagram -->
+          <div class="p-4 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-xs sm:text-sm">
+            <div class="font-display font-bold text-slate-900 dark:text-white mb-2">
+              🔄 Stateless in Practice (Ephemeral Reply Ports):
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-3 items-center text-center mb-2">
+              <div class="p-2.5 rounded bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 font-mono">
+                Browser (Temporary Port <span class="hl-purple">53000</span>)
+              </div>
+              <div class="font-mono text-xs">
+                <div class="text-emerald-700 dark:text-emerald-400 font-bold">Request ➔ Dest Port 443</div>
+                <div class="text-rose-700 dark:text-rose-400 font-bold">Dest Port 53000 ◄ Reply</div>
+              </div>
+              <div class="p-2.5 rounded bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 font-mono">
+                Web Server (Port <span class="hl-purple">443</span>)
+              </div>
+            </div>
+            <p class="text-slate-700 dark:text-slate-300">
+              A browser connects from its temporary port — say <span class="hl-code">53000</span> — to your web server on port <span class="hl-code">443</span>. Every reply goes back to port <span class="hl-code">53000</span>. <span class="hl-pink">A stateless filter must allow that temporary range (AWS suggests 1024–65535) outward, or the connection never completes.</span>
+            </p>
+          </div>
+        </article>
+
+        <!-- Slide 24/34 -->
+        <article class="study-card p-6">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              Example Rules for the Three-Tier Network (AWS Security Groups)
+            </h3>
+            <span class="slide-badge">Slide 24/34</span>
+          </div>
+
+          <div class="overflow-x-auto rounded-xl border border-slate-300 dark:border-slate-700 mb-4">
+            <table class="w-full text-left text-xs sm:text-sm">
+              <thead class="bg-slate-100 dark:bg-slate-800 font-display">
+                <tr>
+                  <th class="py-3 px-4">Firewall of</th>
+                  <th class="py-3 px-4">Allow in</th>
+                  <th class="py-3 px-4">From</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-200 dark:divide-slate-800">
+                <tr>
+                  <td class="py-2.5 px-4 font-bold">Load balancer</td>
+                  <td class="py-2.5 px-4 font-mono"><span class="hl-blue">TCP 443</span></td>
+                  <td class="py-2.5 px-4"><span class="hl-code">0.0.0.0/0</span> (everyone)</td>
+                </tr>
+                <tr>
+                  <td class="py-2.5 px-4 font-bold">Application servers</td>
+                  <td class="py-2.5 px-4 font-mono"><span class="hl-blue">TCP 8080</span></td>
+                  <td class="py-2.5 px-4"><span class="hl-green">the load balancer's firewall group only</span></td>
+                </tr>
+                <tr>
+                  <td class="py-2.5 px-4 font-bold">Database</td>
+                  <td class="py-2.5 px-4 font-mono"><span class="hl-blue">TCP 5432</span></td>
+                  <td class="py-2.5 px-4"><span class="hl-green">the application servers' firewall group only</span></td>
+                </tr>
+                <tr>
+                  <td class="py-2.5 px-4 font-bold">Linux app servers, if SSH is needed</td>
+                  <td class="py-2.5 px-4 font-mono"><span class="hl-blue">TCP 22</span></td>
+                  <td class="py-2.5 px-4">the administrators' VPN range or a bastion host only — <span class="hl-green">better, a managed session service and no open port</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <ul class="space-y-1.5 text-sm list-disc list-inside">
+            <li><span class="hl-green">Rules can name another firewall group as the source instead of addresses.</span> When machines are added or replaced, the rule stays correct.</li>
+            <li>Open only what is needed, only to those who need it: the <span class="hl-yellow">principle of least privilege</span>.</li>
+          </ul>
+        </article>
+
+        <!-- Slide 25/34 -->
+        <article class="study-card p-6 border-l-4 border-l-rose-600">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              Common Firewall Mistakes
+            </h3>
+            <span class="slide-badge">Slide 25/34</span>
+          </div>
+
+          <div class="overflow-x-auto rounded-xl border border-slate-300 dark:border-slate-700 mb-3">
+            <table class="w-full text-left text-xs sm:text-sm">
+              <thead class="bg-slate-100 dark:bg-slate-800 font-display">
+                <tr>
+                  <th class="py-2.5 px-4 w-2/5">Mistake</th>
+                  <th class="py-2.5 px-4">What happens</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-200 dark:divide-slate-800">
+                <tr>
+                  <td class="py-2.5 px-4 font-bold"><span class="hl-pink">SSH (22) or RDP (3389) open to 0.0.0.0/0</span></td>
+                  <td class="py-2.5 px-4">Automated scanners find it quickly and start guessing passwords.</td>
+                </tr>
+                <tr>
+                  <td class="py-2.5 px-4 font-bold"><span class="hl-pink">Database port open to the internet</span></td>
+                  <td class="py-2.5 px-4">Anyone can try logins and known flaws directly, bypassing the application's own checks.</td>
+                </tr>
+                <tr>
+                  <td class="py-2.5 px-4 font-bold"><span class="hl-pink">Reply ports forgotten in a stateless filter</span></td>
+                  <td class="py-2.5 px-4">Connections never complete; it looks like a dead or very slow network.</td>
+                </tr>
+                <tr>
+                  <td class="py-2.5 px-4 font-bold"><span class="hl-pink">Rules added "for testing" and never removed</span></td>
+                  <td class="py-2.5 px-4">After a year, nobody knows why a door is open, so nobody dares close it.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </article>
+      </section>
+
+
+      <!-- ====================================================================
+           PART 6: NETWORK SERVICES — ADDRESSES, NAMES, LOAD BALANCING (Slides 26/34 – 28/34)
+           ==================================================================== -->
+      <section id="part-6" class="space-y-6">
+        <div class="flex items-center gap-3 border-b-2 border-slate-700 dark:border-slate-700 pb-2">
+          <span class="px-3 py-1 rounded-md bg-slate-700 text-white font-display font-bold text-sm">PART 6</span>
+          <h2 class="font-display text-xl sm:text-2xl font-bold text-slate-900 dark:text-white">
+            Network Services: Addresses, Names, Load Balancing
+          </h2>
+          <span class="ml-auto text-xs font-mono text-slate-500">Slides 26/34 – 28/34</span>
+        </div>
+
+        <!-- Slide 26/34 -->
+        <article class="study-card p-6">
+          <div class="flex items-center justify-between mb-3">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              How Machines Get Their Addresses (DHCP & Static Public IPs)
+            </h3>
+            <span class="slide-badge">Slide 26/34</span>
+          </div>
+
+          <ul class="space-y-2 text-sm sm:text-base list-disc list-inside mb-4">
+            <li><span class="hl-yellow">DHCP (dynamic host configuration protocol)</span> hands out addresses automatically. In the cloud, the provider runs it for you: each new machine gets a private address from its subnet.</li>
+            <li>A machine's <span class="hl-green">private address normally stays with it</span> until the machine or its network interface is deleted (details vary by provider).</li>
+            <li><span class="hl-pink">An automatically assigned public address usually changes when the machine is stopped and started again.</span></li>
+            <li>If the public address must never change, reserve a <span class="hl-yellow">static public address</span> (<span class="hl-blue">AWS: Elastic IP</span>) — and pay for it, as we saw.</li>
+          </ul>
+
+          <div class="p-3.5 rounded-lg bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-300 dark:border-emerald-800 text-sm">
+            ✅ <strong>Practical rule:</strong> For service endpoints in programs and configuration, <span class="hl-green">prefer a stable name to an address</span>. The migration topic's list of problems had hard-coded addresses as a cause.
+          </div>
+        </article>
+
+        <!-- Slide 27/34 -->
+        <article class="study-card p-6">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              DNS in the Cloud (Zones & Record Types)
+            </h3>
+            <span class="slide-badge">Slide 27/34</span>
+          </div>
+
+          <p class="text-sm sm:text-base mb-3">
+            DNS turns a name into an address, and the <span class="hl-yellow">TTL (time to live)</span> sets how long the answer is cached. In the cloud there are two kinds of DNS zone:
+          </p>
+          <ul class="space-y-1.5 text-sm list-disc list-inside mb-4">
+            <li><span class="hl-yellow">Public zone</span> — names the whole internet can look up, such as <span class="hl-code">www.example.com</span>.</li>
+            <li><span class="hl-yellow">Private zone</span> — <span class="hl-green">names resolvable only from networks you link to it</span>, such as <span class="hl-code">db.internal.example.com</span>. An office can use them too, if you set up DNS forwarding (next topic).</li>
+          </ul>
+
+          <div class="overflow-x-auto rounded-xl border border-slate-300 dark:border-slate-700 mb-4">
+            <table class="w-full text-left text-xs sm:text-sm">
+              <thead class="bg-slate-100 dark:bg-slate-800 font-display">
+                <tr>
+                  <th class="py-2.5 px-4">Record</th>
+                  <th class="py-2.5 px-4">Points a name to</th>
+                  <th class="py-2.5 px-4">Example</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-200 dark:divide-slate-800">
+                <tr>
+                  <td class="py-2.5 px-4 font-mono font-bold"><span class="hl-blue">A</span></td>
+                  <td class="py-2.5 px-4">an <span class="hl-yellow">IPv4 address</span></td>
+                  <td class="py-2.5 px-4 font-mono">db.internal.example.com ➔ 10.20.4.15</td>
+                </tr>
+                <tr>
+                  <td class="py-2.5 px-4 font-mono font-bold"><span class="hl-blue">AAAA</span></td>
+                  <td class="py-2.5 px-4">an <span class="hl-yellow">IPv6 address</span></td>
+                  <td class="py-2.5 px-4 font-mono">www ➔ 2001:db8::1</td>
+                </tr>
+                <tr>
+                  <td class="py-2.5 px-4 font-mono font-bold"><span class="hl-blue">CNAME</span></td>
+                  <td class="py-2.5 px-4"><span class="hl-yellow">another name</span></td>
+                  <td class="py-2.5 px-4 font-mono">shop ➔ lb-123.provider.net</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p class="text-xs sm:text-sm font-semibold text-rose-700 dark:text-rose-300">
+            ⚠️ <span class="hl-pink">Resolving a name grants nothing:</span> routes, firewall rules, and the service's own login still decide access.
+          </p>
+        </article>
+
+        <!-- Slide 28/34 -->
+        <article class="study-card p-6">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              Load Balancers (Layer 4 vs. Layer 7)
+            </h3>
+            <span class="slide-badge">Slide 28/34</span>
+          </div>
+
+          <p class="text-sm sm:text-base mb-4">
+            A <span class="hl-yellow">load balancer</span> is one service endpoint — a name, possibly with several addresses — in front of many machines. It spreads requests among them and <span class="hl-green">stops sending to any machine that fails its health check</span> (a small test request sent every few seconds).
+          </p>
+
+          <div class="overflow-x-auto rounded-xl border border-slate-300 dark:border-slate-700 mb-4">
+            <table class="w-full text-left text-xs sm:text-sm">
+              <thead class="bg-slate-100 dark:bg-slate-800 font-display">
+                <tr>
+                  <th class="py-3 px-4 w-1/5">Feature</th>
+                  <th class="py-3 px-4 w-2/5"><span class="hl-blue">Layer 4 (network) load balancer</span></th>
+                  <th class="py-3 px-4 w-2/5"><span class="hl-purple">Layer 7 (application) load balancer</span></th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-200 dark:divide-slate-800">
+                <tr>
+                  <td class="py-2.5 px-4 font-bold">Looks at</td>
+                  <td class="py-2.5 px-4"><span class="hl-yellow">Addresses and ports only</span></td>
+                  <td class="py-2.5 px-4"><span class="hl-yellow">The web request: host, path, headers</span> (for HTTPS, after decrypting TLS)</td>
+                </tr>
+                <tr>
+                  <td class="py-2.5 px-4 font-bold">Can decide</td>
+                  <td class="py-2.5 px-4"><em>"Send this connection to a healthy machine"</em></td>
+                  <td class="py-2.5 px-4"><em>"Send <span class="hl-code">/api</span> to these machines and <span class="hl-code">/images</span> to those"</em></td>
+                </tr>
+                <tr>
+                  <td class="py-2.5 px-4 font-bold">Good for</td>
+                  <td class="py-2.5 px-4">High speed; TCP and (on many products) UDP services</td>
+                  <td class="py-2.5 px-4">Websites and web APIs</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-300">
+            Across two zones, <span class="hl-pink">with healthy machines and enough spare capacity in each</span>, a load balancer lets a system keep serving when one zone fails. An <strong>internet-facing load balancer</strong> is often the only part with a public address; <strong>internal load balancers</strong> have none.
+          </p>
+        </article>
+      </section>
+
+
+      <!-- ====================================================================
+           PART 7: UNDER THE HOOD, AND WHY DISTANCE MATTERS (Slides 29/34 – 30/34)
+           ==================================================================== -->
+      <section id="part-7" class="space-y-6">
+        <div class="flex items-center gap-3 border-b-2 border-slate-700 dark:border-slate-700 pb-2">
+          <span class="px-3 py-1 rounded-md bg-slate-700 text-white font-display font-bold text-sm">PART 7</span>
+          <h2 class="font-display text-xl sm:text-2xl font-bold text-slate-900 dark:text-white">
+            Under the Hood, and Why Distance Matters
+          </h2>
+          <span class="ml-auto text-xs font-mono text-slate-500">Slides 29/34 – 30/34</span>
+        </div>
+
+        <!-- Slide 29/34 -->
+        <article class="study-card p-6">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              How One Provider Builds Millions of Separate Networks (VLAN vs. VXLAN & SDN)
+            </h3>
+            <span class="slide-badge">Slide 29/34</span>
+          </div>
+
+          <!-- Visual Comparison: VLAN vs VXLAN + SDN Planes -->
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+            <div class="p-4 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700">
+              <div class="font-display font-bold text-base mb-1">1. Traditional <span class="hl-blue">VLAN</span></div>
+              <p class="text-sm">
+                A VLAN ID is <span class="hl-purple">12 bits: 2^12 = 4096 values</span>, of which <span class="hl-purple">4094</span> can be used on one switched network. <span class="hl-pink">Far too few for a cloud provider hosting millions of customer networks.</span>
+              </p>
+            </div>
+
+            <div class="p-4 rounded-xl bg-sky-50/70 dark:bg-slate-800 border-2 border-sky-400 dark:border-sky-600">
+              <div class="font-display font-bold text-base mb-1">2. <span class="hl-yellow">Overlay Network (VXLAN)</span></div>
+              <p class="text-sm">
+                Each customer's traffic is wrapped inside ordinary traffic between hosts, tagged with the customer's network number. <span class="hl-blue">VXLAN</span> has a <span class="hl-purple">24-bit number: 2^24 ≈ 16.7 million networks</span>.
+              </p>
+            </div>
+
+            <div class="p-4 rounded-xl bg-emerald-50/70 dark:bg-slate-800 border-2 border-emerald-400 dark:border-emerald-600">
+              <div class="font-display font-bold text-base mb-1">3. <span class="hl-yellow">SDN (Control vs Data Plane)</span></div>
+              <p class="text-sm">
+                <strong>Software-defined networking:</strong> decisions (routes, firewall rules) are computed by central software — the <span class="hl-green">control plane</span>; the hosts carry them out — the <span class="hl-green">data plane</span>.
+              </p>
+            </div>
+          </div>
+
+          <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-300">
+            This is why clicking "create network" takes seconds: no cable or switch is touched, only software settings change.
+          </p>
+        </article>
+
+        <!-- Slide 30/34 -->
+        <article class="study-card p-6 border-l-4 border-l-purple-600">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              Distance Still Matters (Speed of Light in Optical Fiber)
+            </h3>
+            <span class="slide-badge">Slide 30/34</span>
+          </div>
+
+          <p class="text-sm sm:text-base mb-4">
+            Light in optical fiber travels about <span class="hl-purple">200,000 km per second</span>. An idealized straight fiber path gives a round-trip time that real networks cannot beat:
+          </p>
+
+          <!-- Formula Box -->
+          <div class="p-3.5 rounded-xl bg-purple-50 dark:bg-purple-950/40 border-2 border-purple-500 text-center font-mono text-sm sm:text-base font-bold text-purple-950 dark:text-purple-200 mb-4">
+            round trip = 2 × distance ÷ 200,000 km/s
+            <span class="block text-xs font-normal mt-1">Example (Istanbul to Frankfurt): 2 × 1870 ÷ 200,000 = 0.0187 s ≈ 19 ms</span>
+          </div>
+
+          <!-- Table + Visual Latency Bars -->
+          <div class="overflow-x-auto rounded-xl border border-slate-300 dark:border-slate-700 mb-4">
+            <table class="w-full text-left text-xs sm:text-sm">
+              <thead class="bg-slate-100 dark:bg-slate-800 font-display">
+                <tr>
+                  <th class="py-2.5 px-4">From Istanbul to</th>
+                  <th class="py-2.5 px-4">Straight-line distance</th>
+                  <th class="py-2.5 px-4">Idealized round trip</th>
+                  <th class="py-2.5 px-4 w-1/3">Visual Latency Scale</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-200 dark:divide-slate-800 font-mono">
+                <tr>
+                  <td class="py-2.5 px-4 font-sans font-bold">Ankara</td>
+                  <td class="py-2.5 px-4">about 350 km</td>
+                  <td class="py-2.5 px-4"><span class="hl-green">about 3.5 ms</span></td>
+                  <td class="py-2.5 px-4"><div class="h-3 rounded bg-emerald-500" style="width: 5%"></div></td>
+                </tr>
+                <tr>
+                  <td class="py-2.5 px-4 font-sans font-bold">Frankfurt</td>
+                  <td class="py-2.5 px-4">about 1,870 km</td>
+                  <td class="py-2.5 px-4"><span class="hl-blue">about 19 ms</span></td>
+                  <td class="py-2.5 px-4"><div class="h-3 rounded bg-sky-500" style="width: 22%"></div></td>
+                </tr>
+                <tr>
+                  <td class="py-2.5 px-4 font-sans font-bold">Northern Virginia</td>
+                  <td class="py-2.5 px-4">about 8,420 km</td>
+                  <td class="py-2.5 px-4"><span class="hl-pink">about 84 ms</span></td>
+                  <td class="py-2.5 px-4"><div class="h-3 rounded bg-amber-500" style="width: 93%"></div></td>
+                </tr>
+                <tr>
+                  <td class="py-2.5 px-4 font-sans font-bold">Tokyo</td>
+                  <td class="py-2.5 px-4">about 8,950 km</td>
+                  <td class="py-2.5 px-4"><span class="hl-pink">about 90 ms</span></td>
+                  <td class="py-2.5 px-4"><div class="h-3 rounded bg-rose-500" style="width: 100%"></div></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p class="text-sm mb-2">
+            <span class="hl-pink">Real times are higher, often by half or more:</span> cables do not follow straight lines, and every router on the way adds delay.
+          </p>
+          <p class="text-sm font-semibold">
+            ✅ <span class="hl-green">Choose a region near your users, and keep parts that talk to each other a lot — an application and its database — in the same region.</span>
+          </p>
+        </article>
+      </section>
+
+
+      <!-- ====================================================================
+           PART 8: WRAP-UP, GLOSSARY, SUMMARY & TASKS (Slides 31/34 – 34/34)
+           ==================================================================== -->
+      <section id="part-8" class="space-y-6">
+        <div class="flex items-center gap-3 border-b-2 border-slate-700 dark:border-slate-700 pb-2">
+          <span class="px-3 py-1 rounded-md bg-slate-700 text-white font-display font-bold text-sm">PART 8</span>
+          <h2 class="font-display text-xl sm:text-2xl font-bold text-slate-900 dark:text-white">
+            Wrap-Up, Revision Glossary, Summary & Assignment
+          </h2>
+          <span class="ml-auto text-xs font-mono text-slate-500">Slides 31/34 – 34/34</span>
+        </div>
+
+        <!-- Slide 31/34 -->
+        <article class="study-card p-6">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              Words from the Networking Topic (For Revision)
+            </h3>
+            <span class="slide-badge">Slide 31/34</span>
+          </div>
+
+          <div class="overflow-x-auto rounded-lg border border-slate-300 dark:border-slate-700">
+            <table class="w-full text-left text-xs sm:text-sm">
+              <thead class="bg-slate-100 dark:bg-slate-800 font-display">
+                <tr>
+                  <th class="py-2.5 px-4 w-1/3">Term</th>
+                  <th class="py-2.5 px-4">Meaning in one line</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-200 dark:divide-slate-800">
+                <tr>
+                  <td class="py-2 px-4 font-semibold"><span class="hl-yellow">Public / private address</span></td>
+                  <td class="py-2 px-4">Routed on the internet / not routed on the internet; reachability still needs routes and rules.</td>
+                </tr>
+                <tr>
+                  <td class="py-2 px-4 font-semibold"><span class="hl-purple">CIDR, /n</span></td>
+                  <td class="py-2 px-4">A block of 2^(32-n) addresses; bigger n, smaller block.</td>
+                </tr>
+                <tr>
+                  <td class="py-2 px-4 font-semibold"><span class="hl-yellow">VPC / virtual network</span></td>
+                  <td class="py-2 px-4">Your own private network inside the provider.</td>
+                </tr>
+                <tr>
+                  <td class="py-2 px-4 font-semibold"><span class="hl-yellow">Subnet</span></td>
+                  <td class="py-2 px-4">A smaller block of the network's addresses.</td>
+                </tr>
+                <tr>
+                  <td class="py-2 px-4 font-semibold"><span class="hl-blue">Route table / default route</span></td>
+                  <td class="py-2 px-4">Where each destination is sent / 0.0.0.0/0, everything else.</td>
+                </tr>
+                <tr>
+                  <td class="py-2 px-4 font-semibold"><span class="hl-blue">Internet gateway</span></td>
+                  <td class="py-2 px-4">The network's door to the internet.</td>
+                </tr>
+                <tr>
+                  <td class="py-2 px-4 font-semibold"><span class="hl-yellow">Public / private subnet</span></td>
+                  <td class="py-2 px-4">(AWS, IPv4) Has / has no route to the internet gateway.</td>
+                </tr>
+                <tr>
+                  <td class="py-2 px-4 font-semibold"><span class="hl-blue">NAT gateway</span></td>
+                  <td class="py-2 px-4">Lets private machines start outbound connections; replies come back, new inbound starts do not.</td>
+                </tr>
+                <tr>
+                  <td class="py-2 px-4 font-semibold"><span class="hl-green">Stateful / stateless filter</span></td>
+                  <td class="py-2 px-4">Replies allowed automatically / every message checked on its own.</td>
+                </tr>
+                <tr>
+                  <td class="py-2 px-4 font-semibold"><span class="hl-yellow">Least privilege</span></td>
+                  <td class="py-2 px-4">Open only what is needed, only to those who need it.</td>
+                </tr>
+                <tr>
+                  <td class="py-2 px-4 font-semibold"><span class="hl-blue">DHCP</span></td>
+                  <td class="py-2 px-4">Hands out addresses automatically.</td>
+                </tr>
+                <tr>
+                  <td class="py-2 px-4 font-semibold"><span class="hl-yellow">Public / private DNS zone</span></td>
+                  <td class="py-2 px-4">Names anyone can look up / only from networks linked to the zone.</td>
+                </tr>
+                <tr>
+                  <td class="py-2 px-4 font-semibold"><span class="hl-blue">Layer 4 / layer 7 load balancer</span></td>
+                  <td class="py-2 px-4">Decides by address and port / by the web request.</td>
+                </tr>
+                <tr>
+                  <td class="py-2 px-4 font-semibold"><span class="hl-purple">VLAN / VXLAN</span></td>
+                  <td class="py-2 px-4">4094 usable IDs per switched network / about 16.7 million.</td>
+                </tr>
+                <tr>
+                  <td class="py-2 px-4 font-semibold"><span class="hl-yellow">SDN</span></td>
+                  <td class="py-2 px-4">Network decisions made by central software, carried out by hosts.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </article>
+
+        <!-- Slide 32/34 -->
+        <article class="study-card p-6 border-2 border-sky-600">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              8-Point Lecture Summary
+            </h3>
+            <span class="slide-badge">Slide 32/34</span>
+          </div>
+
+          <ol class="space-y-2.5 text-sm sm:text-base list-decimal list-inside">
+            <li>A network has four jobs: <span class="hl-yellow">address, route, filter, name</span>. In the cloud each one is a setting.</li>
+            <li>A <span class="hl-code">/n</span> IPv4 block holds <span class="hl-purple">2^(32-n) addresses</span>; in a standard subnet <span class="hl-pink">AWS and Azure reserve 5, Google Cloud 4</span>.</li>
+            <li><span class="hl-green">Choose address ranges that do not overlap</span>, so networks can be joined directly later.</li>
+            <li>(AWS) <span class="hl-yellow">Public subnets route to the internet gateway;</span> everything else stays private and reaches out through <span class="hl-blue">NAT or service endpoints</span>.</li>
+            <li><strong>First network check:</strong> <span class="hl-yellow">public address + route + firewall rule</span> — then the program itself.</li>
+            <li><span class="hl-green">Stateful filters remember replies;</span> <span class="hl-pink">stateless filters do not</span>.</li>
+            <li><span class="hl-green">Prefer names to addresses for services;</span> a load balancer across two zones helps <span class="hl-pink">only with enough capacity in each</span>.</li>
+            <li><span class="hl-pink">Distance adds delay no provider can remove.</span></li>
+          </ol>
+        </article>
+
+        <!-- Slide 33/34 -->
+        <article class="study-card p-6">
+          <div class="flex items-center justify-between mb-3">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              What to Do Next (Reading & Practical Paper Design Task)
+            </h3>
+            <span class="slide-badge">Slide 33/34</span>
+          </div>
+
+          <div class="mb-4 text-sm">
+            <strong>Reading:</strong> Module 4 in full, including the self-check questions. Look through Module 5, <em>Cloud Connectivity and Troubleshooting</em>.
+          </div>
+
+          <div class="space-y-2.5 text-sm">
+            <div class="p-3.5 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700">
+              <strong>Task 1:</strong> Design the network for a small online shop: load balancer, application servers, and a managed database, in two availability zones.
+            </div>
+            <div class="p-3.5 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700">
+              <strong>Task 2:</strong> Choose the address block and every subnet; label each subnet's zone and whether it is public or private.
+            </div>
+            <div class="p-3.5 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700">
+              <strong>Task 3:</strong> Write the route table of one public and one private subnet, and the firewall rules for each tier: protocol, port, and permitted source.
+            </div>
+            <div class="p-3.5 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700">
+              <strong>Task 4:</strong> Say how the app servers get updates, and in two sentences what happens if one zone fails.
+            </div>
+          </div>
+        </article>
+
+        <!-- Slide 34/34 -->
+        <article class="study-card p-6">
+          <div class="flex items-center justify-between mb-3">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              References
+            </h3>
+            <span class="slide-badge">Slide 34/34</span>
+          </div>
+          <ul class="space-y-1.5 text-xs sm:text-sm text-slate-600 dark:text-slate-300 list-disc list-inside">
+            <li>West, J. (2023). <em>CompTIA Cloud+ Guide to Cloud Computing</em>, 2nd ed. Cengage. ISBN 9780357883457, Module 4. (Written for exam version CV0-003.)</li>
+            <li>Rekhter, Y. et al. (1996). <em>Address Allocation for Private Internets</em>. RFC 1918.</li>
+            <li>Fuller, V., Li, T. (2006). <em>Classless Inter-domain Routing (CIDR)</em>. RFC 4632.</li>
+            <li>Mahalingam, M. et al. (2014). <em>Virtual eXtensible Local Area Network (VXLAN)</em>. RFC 7348.</li>
+            <li>AWS. <em>Amazon VPC User Guide: "Subnet CIDR blocks" (reserved addresses); Amazon VPC pricing (public IPv4)</em>. docs.aws.amazon.com/vpc, aws.amazon.com/vpc/pricing</li>
+            <li>Microsoft. <em>Network security groups overview</em>; Google Cloud. <em>VPC firewall rules</em>. learn.microsoft.com, cloud.google.com/firewall/docs</li>
+            <li>CompTIA. <em>Cloud+ (CV0-004) Exam Objectives</em> (newer exam version).</li>
+          </ul>
+        </article>
+
+        <!-- HIGHLIGHT KEY & EXAM TAXONOMY -->
+        <article class="study-card p-6 border-t-2 border-slate-300 dark:border-slate-700">
+          <div class="flex items-center justify-between mb-3">
+            <h3 class="font-display font-bold text-base text-slate-900 dark:text-white flex items-center gap-2">
+              <span>🎨</span>
+              <span>Highlight Key & Study Legend</span>
+            </h3>
+            <span class="font-mono text-[11px] text-slate-400">Exam Marker System</span>
+          </div>
+          <p class="text-xs text-slate-500 dark:text-slate-400 mb-3">
+            Color-coded highlighters used across this study guide:
+          </p>
+          <div class="flex flex-wrap items-center gap-2 text-xs">
+            <span class="hl-yellow">Core Rule / Def</span>
+            <span class="hl-green">Usable / Allowed</span>
+            <span class="hl-pink">Trap / Reserved / Mistake</span>
+            <span class="hl-blue">Cloud / Port / Protocol</span>
+            <span class="hl-purple">Formula / Math</span>
+          </div>
+        </article>
+
+      </section>
+
+    </main>
+  </div>
+
+</body>
+</html>

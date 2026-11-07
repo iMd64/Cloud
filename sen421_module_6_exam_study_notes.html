@@ -1,0 +1,2088 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SEN421 Module 6 Study Notes — Securing Cloud Resources</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Navigation & Outline Engine -->
+  <script src="nav.js" defer></script>
+  <!-- Google Fonts: Inter, JetBrains Mono, Space Grotesk -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+
+  <!-- Theme Preference Script (Instant Anti-FOUC Execution) -->
+  <script>
+    (function() {
+      try {
+        const theme = localStorage.getItem('ca_theme');
+        if (theme === 'dark' || (!theme && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+          document.documentElement.classList.add('dark');
+        } else {
+          document.documentElement.classList.remove('dark');
+        }
+      } catch (_) {}
+    })();
+  </script>
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            display: ['Space Grotesk', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Warm Study Notebook Grid Background */
+    :root {
+      --bg-grid: rgba(148, 163, 184, 0.14);
+    }
+    .dark {
+      --bg-grid: rgba(51, 65, 85, 0.22);
+    }
+    body {
+      background-image: 
+        linear-gradient(to right, var(--bg-grid) 1px, transparent 1px),
+        linear-gradient(to bottom, var(--bg-grid) 1px, transparent 1px);
+      background-size: 28px 28px;
+    }
+
+    /* Realistic Marker Highlighter Styles */
+    .hl-yellow {
+      background: linear-gradient(104deg, rgba(253, 224, 71, 0) 0.9%, rgba(253, 224, 71, 0.85) 2.4%, rgba(253, 224, 71, 0.55) 5.8%, rgba(253, 224, 71, 0.75) 93%, rgba(253, 224, 71, 0.6) 96%, rgba(253, 224, 71, 0) 98%);
+      padding: 0.08rem 0.35rem;
+      border-radius: 0.25rem;
+      color: #0f172a;
+      font-weight: 600;
+      box-decoration-break: clone;
+      -webkit-box-decoration-break: clone;
+    }
+    .dark .hl-yellow {
+      background: rgba(234, 179, 8, 0.28);
+      border-bottom: 2px solid rgba(250, 204, 21, 0.8);
+      color: #fef08a;
+    }
+
+    .hl-green {
+      background: linear-gradient(104deg, rgba(110, 231, 183, 0) 0.9%, rgba(110, 231, 183, 0.78) 2.4%, rgba(110, 231, 183, 0.52) 93%, rgba(110, 231, 183, 0) 98%);
+      padding: 0.08rem 0.35rem;
+      border-radius: 0.25rem;
+      color: #064e3b;
+      font-weight: 600;
+      box-decoration-break: clone;
+      -webkit-box-decoration-break: clone;
+    }
+    .dark .hl-green {
+      background: rgba(16, 185, 129, 0.24);
+      border-bottom: 2px solid rgba(52, 211, 153, 0.75);
+      color: #a7f3d0;
+    }
+
+    .hl-pink {
+      background: linear-gradient(104deg, rgba(253, 164, 175, 0) 0.9%, rgba(253, 164, 175, 0.78) 2.4%, rgba(253, 164, 175, 0.55) 93%, rgba(253, 164, 175, 0) 98%);
+      padding: 0.08rem 0.35rem;
+      border-radius: 0.25rem;
+      color: #881337;
+      font-weight: 600;
+      box-decoration-break: clone;
+      -webkit-box-decoration-break: clone;
+    }
+    .dark .hl-pink {
+      background: rgba(244, 63, 94, 0.25);
+      border-bottom: 2px solid rgba(251, 113, 133, 0.8);
+      color: #fecdd3;
+    }
+
+    .hl-blue {
+      background: linear-gradient(104deg, rgba(147, 197, 253, 0) 0.9%, rgba(147, 197, 253, 0.78) 2.4%, rgba(147, 197, 253, 0.55) 93%, rgba(147, 197, 253, 0) 98%);
+      padding: 0.08rem 0.35rem;
+      border-radius: 0.25rem;
+      color: #1e3a8a;
+      font-weight: 600;
+      box-decoration-break: clone;
+      -webkit-box-decoration-break: clone;
+    }
+    .dark .hl-blue {
+      background: rgba(59, 130, 246, 0.25);
+      border-bottom: 2px solid rgba(96, 165, 250, 0.8);
+      color: #bfdbfe;
+    }
+
+    .hl-purple {
+      background: linear-gradient(104deg, rgba(216, 180, 254, 0) 0.9%, rgba(216, 180, 254, 0.78) 2.4%, rgba(216, 180, 254, 0.55) 93%, rgba(216, 180, 254, 0) 98%);
+      padding: 0.08rem 0.35rem;
+      border-radius: 0.25rem;
+      color: #581c87;
+      font-weight: 600;
+      box-decoration-break: clone;
+      -webkit-box-decoration-break: clone;
+    }
+    .dark .hl-purple {
+      background: rgba(168, 85, 247, 0.25);
+      border-bottom: 2px solid rgba(192, 132, 252, 0.8);
+      color: #e9d5ff;
+    }
+
+    .hl-code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.86em;
+      background-color: #f1f5f9;
+      color: #0f172a;
+      border: 1px solid #cbd5e1;
+      padding: 0.1rem 0.4rem;
+      border-radius: 0.3rem;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+    .dark .hl-code {
+      background-color: rgba(30, 41, 59, 0.9);
+      color: #e2e8f0;
+      border-color: #475569;
+    }
+
+    /* Slide Reference Badge */
+    .slide-badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      padding: 0.25rem 0.65rem;
+      border-radius: 9999px;
+      background-color: #1e293b;
+      color: #f8fafc;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    }
+    .dark .slide-badge {
+      background-color: #38bdf8;
+      color: #0f172a;
+    }
+
+    /* Study Note Card */
+    .study-card {
+      background-color: rgba(255, 255, 255, 0.97);
+      border: 1px solid #cbd5e1;
+      border-radius: 0.85rem;
+      box-shadow: 0 4px 12px -2px rgba(15, 23, 42, 0.06);
+    }
+    .dark .study-card {
+      background-color: rgba(15, 23, 42, 0.92);
+      border-color: #334155;
+      box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.4);
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #94a3b8;
+      border-radius: 4px;
+    }
+    .dark ::-webkit-scrollbar-thumb {
+      background: #475569;
+    }
+  </style>
+</head>
+<body class="bg-[#fcfbf7] text-slate-800 dark:bg-slate-950 dark:text-slate-100 antialiased selection:bg-amber-300 selection:text-slate-900">
+
+  <!-- TOP STICKY BAR: COURSE HEADER & HIGHLIGHT KEY -->
+  <header class="sticky top-0 z-50 backdrop-blur-md bg-white/95 dark:bg-slate-900/95 border-b border-slate-200 dark:border-slate-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2.5 flex flex-wrap items-center justify-between gap-3">
+      <div class="flex items-center gap-3">
+        <span class="px-2.5 py-1 rounded-md bg-slate-700 text-white font-mono text-xs font-bold tracking-wider">SEN421</span>
+        <div>
+          <h1 class="font-display font-bold text-sm sm:text-base text-slate-900 dark:text-white leading-tight">
+            Module 6: Securing Cloud Resources
+          </h1>
+          <p class="text-xs text-slate-500 dark:text-slate-400 hidden sm:block">
+            Complete Exam Study Notes • Slides 1/38 – 38/38 • Zero Hidden Content
+          </p>
+        </div>
+      </div>
+
+      <!-- Theme Toggle -->
+      <div class="flex items-center gap-2 text-xs">
+        <button id="themeToggle" onclick="window.toggleCaTheme ? window.toggleCaTheme() : (document.documentElement.classList.toggle('dark'), localStorage.setItem('ca_theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light'))" class="ml-1 px-3 py-1.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 font-medium hover:bg-slate-200 dark:hover:bg-slate-700 transition" title="Switch Paper / Dark Study Mode">
+          🌙 Dark
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN PAGE LAYOUT: SIDEBAR TOC + CONTINUOUS STUDY NOTE STREAM -->
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col lg:flex-row gap-8 items-start">
+
+    <!-- STICKY LEFT INDEX (DESKTOP) -->
+    <aside class="hidden lg:block w-64 shrink-0 sticky top-20 study-card p-4 text-xs">
+      <div class="font-display font-bold text-sm text-slate-900 dark:text-white mb-3 pb-2 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
+        <span>📑 Module 6 Outline</span>
+        <span class="font-mono text-[11px] text-rose-600 dark:text-rose-400">38 Slides</span>
+      </div>
+      <ul class="space-y-1.5 font-medium text-slate-600 dark:text-slate-300">
+        <li>
+          <a href="#overview" class="flex justify-between items-center py-1 px-2 rounded hover:bg-rose-50 dark:hover:bg-slate-800 hover:text-rose-600 dark:hover:text-rose-400 transition">
+            <span>0. Title & Objectives</span>
+            <span class="font-mono text-[10px] text-slate-400">1–2</span>
+          </a>
+        </li>
+        <li>
+          <a href="#part-1" class="flex justify-between items-center py-1 px-2 rounded hover:bg-rose-50 dark:hover:bg-slate-800 hover:text-rose-600 dark:hover:text-rose-400 transition">
+            <span>1. What Goes Wrong</span>
+            <span class="font-mono text-[10px] text-slate-400">3–5</span>
+          </a>
+        </li>
+        <li>
+          <a href="#part-2" class="flex justify-between items-center py-1 px-2 rounded hover:bg-rose-50 dark:hover:bg-slate-800 hover:text-rose-600 dark:hover:text-rose-400 transition">
+            <span>2. Security Principles</span>
+            <span class="font-mono text-[10px] text-slate-400">6–9</span>
+          </a>
+        </li>
+        <li>
+          <a href="#part-3" class="flex justify-between items-center py-1 px-2 rounded hover:bg-rose-50 dark:hover:bg-slate-800 hover:text-rose-600 dark:hover:text-rose-400 transition">
+            <span>3. Risk & ALE Math</span>
+            <span class="font-mono text-[10px] text-slate-400">10–12</span>
+          </a>
+        </li>
+        <li>
+          <a href="#part-4" class="flex justify-between items-center py-1 px-2 rounded hover:bg-rose-50 dark:hover:bg-slate-800 hover:text-rose-600 dark:hover:text-rose-400 transition">
+            <span>4. Encryption & Keys</span>
+            <span class="font-mono text-[10px] text-slate-400">13–19</span>
+          </a>
+        </li>
+        <li>
+          <a href="#part-5" class="flex justify-between items-center py-1 px-2 rounded hover:bg-rose-50 dark:hover:bg-slate-800 hover:text-rose-600 dark:hover:text-rose-400 transition">
+            <span>5. Data & Law (KVKK/GDPR)</span>
+            <span class="font-mono text-[10px] text-slate-400">20–24</span>
+          </a>
+        </li>
+        <li>
+          <a href="#part-6" class="flex justify-between items-center py-1 px-2 rounded hover:bg-rose-50 dark:hover:bg-slate-800 hover:text-rose-600 dark:hover:text-rose-400 transition">
+            <span>6. Hardening & Edge</span>
+            <span class="font-mono text-[10px] text-slate-400">25–28</span>
+          </a>
+        </li>
+        <li>
+          <a href="#part-7" class="flex justify-between items-center py-1 px-2 rounded hover:bg-rose-50 dark:hover:bg-slate-800 hover:text-rose-600 dark:hover:text-rose-400 transition">
+            <span>7. Detection & Response</span>
+            <span class="font-mono text-[10px] text-slate-400">29–33</span>
+          </a>
+        </li>
+        <li>
+          <a href="#part-8" class="flex justify-between items-center py-1 px-2 rounded hover:bg-rose-50 dark:hover:bg-slate-800 hover:text-rose-600 dark:hover:text-rose-400 transition">
+            <span>8. Glossary & Summary</span>
+            <span class="font-mono text-[10px] text-slate-400">34–38</span>
+          </a>
+        </li>
+      </ul>
+
+      <div class="mt-4 pt-3 border-t border-slate-200 dark:border-slate-800 text-[11px] text-slate-500 dark:text-slate-400 space-y-1.5">
+        <div class="font-semibold text-slate-700 dark:text-slate-300">Exam Formula & Deadline Box:</div>
+        <div>• <span class="hl-code">Risk = Likelihood × Impact</span></div>
+        <div>• <span class="hl-code">SLE = Value × EF</span></div>
+        <div>• <span class="hl-code">ALE = SLE × ARO</span></div>
+        <div>• Breach Notice: <span class="hl-green">≤ 72 hours</span></div>
+        <div>• KVKK Contract: <span class="hl-green">5 business days</span></div>
+      </div>
+    </aside>
+
+    <!-- MAIN CONTENT STREAM -->
+    <main class="flex-1 min-w-0 space-y-10">
+
+      <!-- ====================================================================
+           COURSE BANNER & SLIDES 1/38 - 2/38
+           ==================================================================== -->
+      <section id="overview" class="study-card p-6 sm:p-8 border-t-4 border-t-rose-600">
+        <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
+          <div class="flex items-center gap-2">
+            <span class="slide-badge">Slide 1/38</span>
+            <span class="slide-badge">Slide 2/38</span>
+          </div>
+          <span class="text-xs font-mono uppercase tracking-wider px-2.5 py-1 rounded bg-rose-50 dark:bg-rose-950/60 text-rose-700 dark:text-rose-300 font-semibold">
+            Istanbul Aydın University • Dept. of Computer Engineering
+          </span>
+        </div>
+
+        <h2 class="font-display text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white mb-2">
+          SEN421 Cloud Architecture and Services: Securing Cloud Resources
+        </h2>
+        <p class="text-sm text-slate-600 dark:text-slate-300 mb-6">
+          <strong>Instructor:</strong> Dr. Hazm Talab • <strong>Semester:</strong> Fall Semester • <strong>Reading:</strong> West, J. <em>CompTIA Cloud+ Guide to Cloud Computing</em>, 2nd ed., Cengage, 2023, <span class="hl-blue">Module 6</span>.
+        </p>
+
+        <!-- Learning Objectives Box (Slide 2/38) -->
+        <div class="mb-5 p-4 rounded-xl bg-amber-50/80 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800">
+          <h3 class="text-xs font-mono uppercase tracking-wider text-amber-800 dark:text-amber-300 font-bold mb-2">
+            🎯 By the End of Today You Can (Slide 2/38)
+          </h3>
+          <ul class="space-y-1.5 text-xs sm:text-sm list-disc list-inside font-medium">
+            <li><span class="hl-yellow">Split security duties between provider and customer</span>, and <span class="hl-green">rank controls by risk (ALE)</span>;</li>
+            <li><span class="hl-yellow">Choose who holds the encryption keys</span> and explain <span class="hl-yellow">envelope encryption</span>;</li>
+            <li><span class="hl-yellow">Outline an incident response</span>, including when <span class="hl-purple">legal notification must be assessed</span>.</li>
+          </ul>
+        </div>
+
+        <!-- 8-Part Plan Grid -->
+        <div class="bg-slate-100/80 dark:bg-slate-800/60 rounded-lg p-4 border border-slate-200 dark:border-slate-700">
+          <h3 class="text-xs font-mono uppercase tracking-wider text-slate-500 dark:text-slate-400 font-bold mb-2.5">
+            Today's Plan (8 Core Parts — Slide 2/38)
+          </h3>
+          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-2 text-xs sm:text-sm font-medium">
+            <div class="p-2.5 rounded bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">1. Starting simple: what goes wrong</div>
+            <div class="p-2.5 rounded bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">2. Security principles</div>
+            <div class="p-2.5 rounded bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">3. Risk: deciding what is worth protecting</div>
+            <div class="p-2.5 rounded bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">4. Encryption and keys</div>
+            <div class="p-2.5 rounded bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">5. Protecting data, and what the law requires</div>
+            <div class="p-2.5 rounded bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">6. Hardening machines & the network edge</div>
+            <div class="p-2.5 rounded bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">7. Detecting and responding to attacks</div>
+            <div class="p-2.5 rounded bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">8. Wrap-up and assignment</div>
+          </div>
+        </div>
+      </section>
+
+
+      <!-- ====================================================================
+           PART 1: STARTING SIMPLE — WHAT GOES WRONG IN THE CLOUD (Slides 3/38 – 5/38)
+           ==================================================================== -->
+      <section id="part-1" class="space-y-6">
+        <div class="flex items-center gap-3 border-b-2 border-slate-700 dark:border-slate-700 pb-2">
+          <span class="px-3 py-1 rounded-md bg-slate-700 text-white font-display font-bold text-sm">PART 1</span>
+          <h2 class="font-display text-xl sm:text-2xl font-bold text-slate-900 dark:text-white">
+            Starting Simple: What Goes Wrong in the Cloud
+          </h2>
+          <span class="ml-auto text-xs font-mono text-slate-500">Slides 3/38 – 5/38</span>
+        </div>
+
+        <!-- Slide 3/38 -->
+        <article class="study-card p-6">
+          <div class="flex items-center justify-between mb-3">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              Where We Are & Today's Core Security Question
+            </h3>
+            <span class="slide-badge">Slide 3/38</span>
+          </div>
+          <p class="text-xs font-mono uppercase text-slate-500 dark:text-slate-400 mb-2">From the Previous Topics:</p>
+          <ul class="space-y-1.5 text-sm sm:text-base list-disc list-inside mb-4">
+            <li>Workloads were migrated, placed in <span class="hl-yellow">private subnets</span>, and given <span class="hl-yellow">firewall rules</span>.</li>
+            <li>The cloud network was connected to the office by <span class="hl-blue">VPN</span> or a <span class="hl-blue">dedicated link</span>.</li>
+            <li>We learned to find what blocks a connection.</li>
+          </ul>
+          <div class="p-4 rounded-lg bg-rose-50/70 dark:bg-rose-950/30 border border-rose-200 dark:border-rose-800 text-sm">
+            <strong>Today's Question:</strong> Everything works. Customer records, payments, and staff data now live in cloud services we do not own, with selected entry points open to the internet. <span class="hl-yellow">How do we keep the wrong people out, and how do we know when they got in?</span>
+          </div>
+        </article>
+
+        <!-- Slide 4/38 -->
+        <article class="study-card p-6">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              A Comparison You Already Understand: Protecting a House
+            </h3>
+            <span class="slide-badge">Slide 4/38</span>
+          </div>
+
+          <!-- 6-Layer Visual Comparison Grid -->
+          <div class="overflow-x-auto rounded-xl border border-slate-300 dark:border-slate-700 mb-4">
+            <table class="w-full text-left text-xs sm:text-sm">
+              <thead class="bg-slate-100 dark:bg-slate-800 font-display text-slate-800 dark:text-slate-200">
+                <tr>
+                  <th class="py-3 px-4 border-b border-slate-300 dark:border-slate-700 w-1/2">🏠 The House</th>
+                  <th class="py-3 px-4 border-b border-slate-300 dark:border-slate-700 w-1/2">☁️ The Cloud System</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-200 dark:divide-slate-800">
+                <tr>
+                  <td class="py-2.5 px-4">Locks on the doors and windows</td>
+                  <td class="py-2.5 px-4"><span class="hl-yellow">Firewalls and private subnets</span></td>
+                </tr>
+                <tr>
+                  <td class="py-2.5 px-4">Keys given only to the family</td>
+                  <td class="py-2.5 px-4"><span class="hl-yellow">Accounts and permissions</span> (next topic)</td>
+                </tr>
+                <tr>
+                  <td class="py-2.5 px-4">A safe for valuables</td>
+                  <td class="py-2.5 px-4"><span class="hl-yellow">Encryption</span></td>
+                </tr>
+                <tr>
+                  <td class="py-2.5 px-4">An alarm and a camera</td>
+                  <td class="py-2.5 px-4"><span class="hl-yellow">Logs and alerts</span></td>
+                </tr>
+                <tr>
+                  <td class="py-2.5 px-4">A plan: who to call if the alarm rings</td>
+                  <td class="py-2.5 px-4"><span class="hl-yellow">An incident response plan</span></td>
+                </tr>
+                <tr class="bg-amber-50/60 dark:bg-amber-950/20">
+                  <td class="py-2.5 px-4">Insurance: pays for part of what goes wrong</td>
+                  <td class="py-2.5 px-4"><span class="hl-pink">Insurance and contracts: money, not responsibility</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="p-3 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-sm font-medium">
+            🛡️ <strong>Core Principle:</strong> <span class="hl-green">No single lock is enough. Security is several layers, each covering the others' gaps.</span>
+          </div>
+        </article>
+
+        <!-- Slide 5/38 -->
+        <article class="study-card p-6">
+          <div class="flex items-center justify-between mb-3">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              What Actually Goes Wrong
+            </h3>
+            <span class="slide-badge">Slide 5/38</span>
+          </div>
+          <p class="text-sm sm:text-base mb-4">
+            <span class="hl-pink">Common cloud incidents start with the customer's configuration, credentials, or unpatched software:</span>
+          </p>
+
+          <div class="overflow-x-auto rounded-lg border border-slate-300 dark:border-slate-700">
+            <table class="w-full text-left text-xs sm:text-sm">
+              <thead class="bg-rose-50 dark:bg-rose-950/40 font-display text-rose-900 dark:text-rose-200">
+                <tr>
+                  <th class="py-3 px-4 border-b border-rose-200 dark:border-rose-800">Mistake</th>
+                  <th class="py-3 px-4 border-b border-rose-200 dark:border-rose-800">Result</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-200 dark:divide-slate-800">
+                <tr>
+                  <td class="py-2.5 px-4 font-semibold"><span class="hl-pink">A storage bucket set to "public"</span></td>
+                  <td class="py-2.5 px-4">Anyone who finds the address downloads the files</td>
+                </tr>
+                <tr>
+                  <td class="py-2.5 px-4 font-semibold">A database or SSH port open to <span class="hl-code">0.0.0.0/0</span></td>
+                  <td class="py-2.5 px-4">Automated scanners find it quickly and start trying</td>
+                </tr>
+                <tr>
+                  <td class="py-2.5 px-4 font-semibold"><span class="hl-pink">An access key written into code pushed to a public repository</span></td>
+                  <td class="py-2.5 px-4">An attacker runs resources in your account; <span class="hl-pink">you receive the bill</span></td>
+                </tr>
+                <tr>
+                  <td class="py-2.5 px-4 font-semibold">Software not updated for months</td>
+                  <td class="py-2.5 px-4">A known, published weakness is used</td>
+                </tr>
+                <tr>
+                  <td class="py-2.5 px-4 font-semibold">A machine or program given <span class="hl-pink">far more permission than it needs</span></td>
+                  <td class="py-2.5 px-4">One small hole opens everything</td>
+                </tr>
+                <tr>
+                  <td class="py-2.5 px-4 font-semibold"><span class="hl-pink">No logs</span></td>
+                  <td class="py-2.5 px-4">Detecting and investigating the attack become much harder</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </article>
+      </section>
+
+
+      <!-- ====================================================================
+           PART 2: SECURITY PRINCIPLES (Slides 6/38 – 9/38)
+           ==================================================================== -->
+      <section id="part-2" class="space-y-6">
+        <div class="flex items-center gap-3 border-b-2 border-slate-700 dark:border-slate-700 pb-2">
+          <span class="px-3 py-1 rounded-md bg-slate-700 text-white font-display font-bold text-sm">PART 2</span>
+          <h2 class="font-display text-xl sm:text-2xl font-bold text-slate-900 dark:text-white">
+            Security Principles
+          </h2>
+          <span class="ml-auto text-xs font-mono text-slate-500">Slides 6/38 – 9/38</span>
+        </div>
+
+        <!-- Slide 6/38 -->
+        <article class="study-card p-6">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              What We Protect: The CIA Triad
+            </h3>
+            <span class="slide-badge">Slide 6/38</span>
+          </div>
+
+          <!-- 3-Card CIA Triad Visual Diagram -->
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+            <!-- Confidentiality -->
+            <div class="p-4 rounded-xl bg-blue-50/70 dark:bg-slate-800 border-2 border-blue-400 dark:border-blue-500 flex flex-col justify-between">
+              <div>
+                <div class="flex items-center justify-between mb-2">
+                  <span class="font-display font-bold text-lg text-blue-900 dark:text-blue-300">Confidentiality</span>
+                  <span class="w-7 h-7 rounded-full bg-blue-600 text-white font-mono font-bold text-sm flex items-center justify-center">C</span>
+                </div>
+                <p class="text-sm mb-3"><span class="hl-yellow">Only the right people can read it.</span></p>
+                <div class="p-2.5 rounded bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800 text-xs mb-3">
+                  <strong class="text-rose-700 dark:text-rose-300">Failure:</strong> Customer records downloaded by an outsider.
+                </div>
+              </div>
+              <div class="pt-2 border-t border-blue-200 dark:border-slate-700 text-xs">
+                <strong>Controls (C):</strong> <span class="hl-green">Encryption</span> and <span class="hl-green">access control</span>
+              </div>
+            </div>
+
+            <!-- Integrity -->
+            <div class="p-4 rounded-xl bg-emerald-50/70 dark:bg-slate-800 border-2 border-emerald-400 dark:border-emerald-500 flex flex-col justify-between">
+              <div>
+                <div class="flex items-center justify-between mb-2">
+                  <span class="font-display font-bold text-lg text-emerald-900 dark:text-emerald-300">Integrity</span>
+                  <span class="w-7 h-7 rounded-full bg-emerald-600 text-white font-mono font-bold text-sm flex items-center justify-center">I</span>
+                </div>
+                <p class="text-sm mb-3"><span class="hl-yellow">It stays correct and complete:</span> no unauthorized or undetected change, corruption, or destruction.</p>
+                <div class="p-2.5 rounded bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800 text-xs mb-3">
+                  <strong class="text-rose-700 dark:text-rose-300">Failure:</strong> An attacker changes the bank account number on invoices.
+                </div>
+              </div>
+              <div class="pt-2 border-t border-emerald-200 dark:border-slate-700 text-xs">
+                <strong>Controls (I):</strong> <span class="hl-green">Hashes</span>, <span class="hl-green">signatures</span>, <span class="hl-green">versioning</span>
+              </div>
+            </div>
+
+            <!-- Availability -->
+            <div class="p-4 rounded-xl bg-amber-50/70 dark:bg-slate-800 border-2 border-amber-400 dark:border-amber-500 flex flex-col justify-between">
+              <div>
+                <div class="flex items-center justify-between mb-2">
+                  <span class="font-display font-bold text-lg text-amber-900 dark:text-amber-300">Availability</span>
+                  <span class="w-7 h-7 rounded-full bg-amber-600 text-white font-mono font-bold text-sm flex items-center justify-center">A</span>
+                </div>
+                <p class="text-sm mb-3"><span class="hl-yellow">Authorized users get timely, reliable access.</span></p>
+                <div class="p-2.5 rounded bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800 text-xs mb-3">
+                  <strong class="text-rose-700 dark:text-rose-300">Failure:</strong> The registration system is flooded with fake traffic during registration week, or encrypted by ransomware.
+                </div>
+              </div>
+              <div class="pt-2 border-t border-amber-200 dark:border-slate-700 text-xs">
+                <strong>Controls (A):</strong> <span class="hl-green">Redundancy</span>, <span class="hl-green">backups</span>, <span class="hl-green">DDoS protection</span>
+              </div>
+            </div>
+          </div>
+
+          <p class="text-sm font-medium text-slate-700 dark:text-slate-300">
+            💡 <strong>Exam Rule:</strong> For each new control, ask which letter (<span class="hl-code">C</span>, <span class="hl-code">I</span>, or <span class="hl-code">A</span>) it protects.
+          </p>
+        </article>
+
+        <!-- Slide 7/38 -->
+        <article class="study-card p-6">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              Shared Responsibility, for Security
+            </h3>
+            <span class="slide-badge">Slide 7/38</span>
+          </div>
+
+          <div class="overflow-x-auto rounded-xl border border-slate-300 dark:border-slate-700 mb-4">
+            <table class="w-full text-left text-xs sm:text-sm">
+              <thead class="bg-slate-100 dark:bg-slate-800 font-display">
+                <tr>
+                  <th class="py-3 px-4 border-b border-slate-300 dark:border-slate-700">Security of...</th>
+                  <th class="py-3 px-4 border-b border-slate-300 dark:border-slate-700 text-center">IaaS</th>
+                  <th class="py-3 px-4 border-b border-slate-300 dark:border-slate-700 text-center">PaaS</th>
+                  <th class="py-3 px-4 border-b border-slate-300 dark:border-slate-700 text-center">SaaS</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-200 dark:divide-slate-800">
+                <tr>
+                  <td class="py-2.5 px-4 font-semibold">Buildings, hardware, hypervisor</td>
+                  <td class="py-2.5 px-4 text-center"><span class="hl-blue">Provider</span></td>
+                  <td class="py-2.5 px-4 text-center"><span class="hl-blue">Provider</span></td>
+                  <td class="py-2.5 px-4 text-center"><span class="hl-blue">Provider</span></td>
+                </tr>
+                <tr>
+                  <td class="py-2.5 px-4 font-semibold">Operating system and its patches</td>
+                  <td class="py-2.5 px-4 text-center"><span class="hl-yellow">You</span></td>
+                  <td class="py-2.5 px-4 text-center"><span class="hl-blue">Provider</span></td>
+                  <td class="py-2.5 px-4 text-center"><span class="hl-blue">Provider</span></td>
+                </tr>
+                <tr>
+                  <td class="py-2.5 px-4 font-semibold">Network settings and firewall rules</td>
+                  <td class="py-2.5 px-4 text-center"><span class="hl-yellow">You</span></td>
+                  <td class="py-2.5 px-4 text-center"><span class="hl-purple">Shared</span></td>
+                  <td class="py-2.5 px-4 text-center"><span class="hl-blue">Mostly provider</span></td>
+                </tr>
+                <tr>
+                  <td class="py-2.5 px-4 font-semibold">Application code</td>
+                  <td class="py-2.5 px-4 text-center"><span class="hl-yellow">You</span></td>
+                  <td class="py-2.5 px-4 text-center"><span class="hl-yellow">You</span></td>
+                  <td class="py-2.5 px-4 text-center"><span class="hl-blue">Provider</span></td>
+                </tr>
+                <tr class="bg-amber-50/70 dark:bg-amber-950/30 font-bold">
+                  <td class="py-2.5 px-4">Your data, who can access it, your settings</td>
+                  <td class="py-2.5 px-4 text-center"><span class="hl-pink">You</span></td>
+                  <td class="py-2.5 px-4 text-center"><span class="hl-pink">You</span></td>
+                  <td class="py-2.5 px-4 text-center"><span class="hl-pink">You</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="p-3.5 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-sm">
+            <strong>Core Takeaway:</strong> An illustrative division — each service documents its own. <span class="hl-yellow">The provider secures the cloud; you secure what you put in it.</span> <span class="hl-pink">The last row stays yours in every model: classifying data, sharing it, granting access.</span>
+          </div>
+        </article>
+
+        <!-- Slide 8/38 -->
+        <article class="study-card p-6">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              Defense in Depth
+            </h3>
+            <span class="slide-badge">Slide 8/38</span>
+          </div>
+
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+            <!-- Recreated Nested Concentric Layers Diagram from Slide 8/38 -->
+            <div class="lg:col-span-7">
+              <div class="p-3 sm:p-4 rounded-xl bg-slate-100 dark:bg-slate-900 border-2 border-slate-400 dark:border-slate-600">
+                <div class="text-xs font-bold text-slate-700 dark:text-slate-300 mb-2">Physical (provider)</div>
+                <div class="p-3 sm:p-3.5 rounded-lg bg-slate-200/80 dark:bg-slate-800/90 border border-slate-400 dark:border-slate-600">
+                  <div class="text-xs font-bold text-slate-800 dark:text-slate-200 mb-2">Edge: web app firewall (WAF), DDoS protection</div>
+                  <div class="p-3 sm:p-3.5 rounded-lg bg-blue-100/70 dark:bg-slate-800 border border-blue-400 dark:border-blue-600">
+                    <div class="text-xs font-bold text-blue-950 dark:text-blue-200 mb-2">Network: subnets and firewall rules</div>
+                    <div class="p-3 sm:p-3.5 rounded-lg bg-indigo-100/70 dark:bg-slate-700/80 border border-indigo-400 dark:border-indigo-500">
+                      <div class="text-xs font-bold text-indigo-950 dark:text-indigo-200 mb-2">Machine: hardening and patches</div>
+                      <div class="p-3 sm:p-4 rounded-lg bg-slate-300/70 dark:bg-slate-900 border border-slate-500">
+                        <div class="text-xs font-bold text-slate-900 dark:text-slate-100 mb-3">Application and access</div>
+                        <div class="py-2.5 px-4 rounded-md bg-rose-600 text-white font-display font-bold text-sm text-center shadow">
+                          Data: encryption
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Explanation Bullets -->
+            <div class="lg:col-span-5 space-y-3 text-sm sm:text-base">
+              <p class="font-semibold text-slate-900 dark:text-white">
+                Place several layers between an attacker and the data.
+              </p>
+              <ul class="space-y-2 list-disc list-inside">
+                <li>Each layer stops some attacks.</li>
+                <li><span class="hl-green">When one layer fails — and one will — the next can still stop or slow the attacker.</span></li>
+                <li><span class="hl-pink">Layers are not fully independent: one stolen admin credential can open several at once.</span></li>
+              </ul>
+              <div class="p-3 rounded-lg bg-amber-50 dark:bg-amber-950/30 border border-amber-300 dark:border-amber-800 text-sm">
+                👁️ <strong>Across all layers:</strong> <span class="hl-yellow">logging and monitoring</span>, so a failure is noticed.
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- Slide 9/38 -->
+        <article class="study-card p-6">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              Least Privilege, Zero Trust, and Attack Surface
+            </h3>
+            <span class="slide-badge">Slide 9/38</span>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+            <div class="p-4 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700">
+              <div class="font-display font-bold text-base mb-1.5"><span class="hl-yellow">Least privilege</span></div>
+              <p class="text-sm">
+                Every person, machine, and program gets <span class="hl-green">only the access it needs, only for as long as it needs it</span>. You met this with firewall rules; in the next topic it applies to accounts.
+              </p>
+            </div>
+
+            <div class="p-4 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700">
+              <div class="font-display font-bold text-base mb-1.5"><span class="hl-yellow">Zero trust</span></div>
+              <p class="text-sm">
+                <span class="hl-pink">No request is trusted because of where it comes from or who owns the network.</span> Each request is checked on <span class="hl-green">identity, device, and context</span> — usually through tokens and sessions, not repeated password prompts.
+              </p>
+            </div>
+
+            <div class="p-4 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700">
+              <div class="font-display font-bold text-base mb-1.5"><span class="hl-yellow">Attack surface</span></div>
+              <p class="text-sm">
+                Everything an attacker could try: open ports, public addresses, accounts, software. <span class="hl-green">Smaller means fewer openings.</span>
+              </p>
+            </div>
+          </div>
+
+          <!-- Castle vs Cloud Zero Trust Visual Comparison -->
+          <div class="p-4 rounded-xl bg-indigo-50/70 dark:bg-slate-800/90 border border-indigo-200 dark:border-slate-700 text-sm">
+            <div class="font-display font-bold text-indigo-900 dark:text-indigo-300 mb-1">
+              🏰 Why Zero Trust Fits the Cloud (Castle Model vs. Cloud Model)
+            </div>
+            <p>
+              <strong>The old model was a castle:</strong> strong walls, everyone inside trusted. <strong>In the cloud there is no single wall</strong> — staff work from home, systems talk across networks and providers. <span class="hl-yellow">Trust has to be checked at every door, not only at the gate.</span>
+            </p>
+          </div>
+        </article>
+      </section>
+
+
+      <!-- ====================================================================
+           PART 3: RISK — DECIDING WHAT IS WORTH PROTECTING (Slides 10/38 – 12/38)
+           ==================================================================== -->
+      <section id="part-3" class="space-y-6">
+        <div class="flex items-center gap-3 border-b-2 border-slate-700 dark:border-slate-700 pb-2">
+          <span class="px-3 py-1 rounded-md bg-slate-700 text-white font-display font-bold text-sm">PART 3</span>
+          <h2 class="font-display text-xl sm:text-2xl font-bold text-slate-900 dark:text-white">
+            Risk: Deciding What is Worth Protecting
+          </h2>
+          <span class="ml-auto text-xs font-mono text-slate-500">Slides 10/38 – 12/38</span>
+        </div>
+
+        <!-- Slide 10/38 -->
+        <article class="study-card p-6">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              Threat, Vulnerability, Risk
+            </h3>
+            <span class="slide-badge">Slide 10/38</span>
+          </div>
+
+          <ul class="space-y-2.5 text-sm sm:text-base list-disc list-inside mb-4">
+            <li><span class="hl-yellow">Threat</span> — someone or something that could cause harm: a criminal group, a careless employee, a flood.</li>
+            <li><span class="hl-yellow">Vulnerability</span> — a weakness a threat could use: a missing patch, a weak password, a wrong rule. (<em>An open port is exposure; it matters if what listens there is weak.</em>)</li>
+            <li><span class="hl-yellow">Risk</span> — how likely harm is, and how bad it would be. A common model:</li>
+          </ul>
+
+          <div class="p-3.5 rounded-lg bg-slate-900 text-slate-100 font-mono text-center text-sm sm:text-base mb-4">
+            risk = likelihood × impact
+          </div>
+
+          <div class="p-3.5 rounded-lg bg-amber-50 dark:bg-amber-950/30 border border-amber-300 dark:border-amber-800 text-sm">
+            <strong>Security costs money:</strong> You cannot remove every risk. <span class="hl-green">Prioritize controls by expected loss, legal duties, safety, and how much risk the organization accepts</span> — <span class="hl-pink">not only by what the asset would cost to replace</span>.
+          </div>
+        </article>
+
+        <!-- Slide 11/38 -->
+        <article class="study-card p-6 border-l-4 border-l-emerald-500">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              Putting a Number on Risk: SLE, ARO, and ALE
+            </h3>
+            <span class="slide-badge">Slide 11/38</span>
+          </div>
+
+          <!-- 3 Quantitative Definitions & Formulas -->
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-5">
+            <div class="p-3.5 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700">
+              <div class="font-display font-bold text-sm text-indigo-700 dark:text-indigo-300">SLE (single loss expectancy)</div>
+              <p class="text-xs text-slate-600 dark:text-slate-300 mt-1">What one incident costs (exposure factor = the share of the value lost).</p>
+              <div class="mt-2 p-2 rounded bg-white dark:bg-slate-900 font-mono text-xs font-bold text-center border border-slate-200 dark:border-slate-700">
+                SLE = asset value × exposure factor
+              </div>
+            </div>
+
+            <div class="p-3.5 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700">
+              <div class="font-display font-bold text-sm text-indigo-700 dark:text-indigo-300">ARO (annual rate of occurrence)</div>
+              <p class="text-xs text-slate-600 dark:text-slate-300 mt-1">Expected incidents per year.</p>
+              <div class="mt-2 p-2 rounded bg-white dark:bg-slate-900 font-mono text-xs font-bold text-center border border-slate-200 dark:border-slate-700">
+                Once in 10 years ➔ ARO = 0.1
+              </div>
+            </div>
+
+            <div class="p-3.5 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700">
+              <div class="font-display font-bold text-sm text-indigo-700 dark:text-indigo-300">ALE (annual loss expectancy)</div>
+              <p class="text-xs text-slate-600 dark:text-slate-300 mt-1">Expected monetary loss per year.</p>
+              <div class="mt-2 p-2 rounded bg-white dark:bg-slate-900 font-mono text-xs font-bold text-center border border-slate-200 dark:border-slate-700">
+                ALE = SLE × ARO
+              </div>
+            </div>
+          </div>
+
+          <!-- Worked Example Box -->
+          <div class="p-4 rounded-xl bg-emerald-50/70 dark:bg-slate-800/90 border-2 border-emerald-400 dark:border-emerald-700 text-sm space-y-2">
+            <div class="font-display font-bold text-emerald-900 dark:text-emerald-300 text-base">
+              🧮 Worked Example: A Customer Database (Slide 11/38)
+            </div>
+            <ul class="space-y-1.5 font-mono text-xs sm:text-sm list-disc list-inside">
+              <li><strong>Before control:</strong> Value = <span class="hl-code">$4,000,000</span>, half lost in a breach (<span class="hl-code">EF = 0.5</span>) ➔ <span class="hl-yellow">SLE = $2,000,000</span>.</li>
+              <li>Expected once in 10 years (<span class="hl-code">ARO = 0.1</span>) ➔ <span class="hl-pink">ALE = 2,000,000 × 0.1 = $200,000 a year</span>.</li>
+              <li><strong>With control:</strong> A control costing <span class="hl-code">$50,000 a year</span> cuts the rate to once in 50 years (<span class="hl-code">ARO = 0.02</span>) ➔ <span class="hl-green">ALE = 2,000,000 × 0.02 = $40,000 a year</span>.</li>
+              <li><strong>Decision:</strong> Saving = <span class="hl-code">$160,000 a year</span> ($200,000 − $40,000), for <span class="hl-code">$50,000</span>. <span class="hl-green">Worth it — net gain $110,000 a year.</span></li>
+            </ul>
+            <p class="text-xs text-slate-500 dark:text-slate-400 pt-1">
+              Note: Illustrative estimates; same loss each time; yearly control cost; no discounting.
+            </p>
+          </div>
+        </article>
+
+        <!-- Slide 12/38 -->
+        <article class="study-card p-6">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              Four Ways to Respond to a Risk
+            </h3>
+            <span class="slide-badge">Slide 12/38</span>
+          </div>
+
+          <div class="overflow-x-auto rounded-lg border border-slate-300 dark:border-slate-700 mb-4">
+            <table class="w-full text-left text-xs sm:text-sm">
+              <thead class="bg-slate-100 dark:bg-slate-800 font-display">
+                <tr>
+                  <th class="py-2.5 px-4">Response</th>
+                  <th class="py-2.5 px-4">Meaning</th>
+                  <th class="py-2.5 px-4">Cloud example</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-200 dark:divide-slate-800">
+                <tr>
+                  <td class="py-2.5 px-4 font-bold"><span class="hl-green">Mitigate</span></td>
+                  <td class="py-2.5 px-4">Reduce likelihood or impact</td>
+                  <td class="py-2.5 px-4">Encrypt the database; close the port</td>
+                </tr>
+                <tr>
+                  <td class="py-2.5 px-4 font-bold"><span class="hl-blue">Transfer</span></td>
+                  <td class="py-2.5 px-4">Someone else carries part of the financial cost, with exclusions</td>
+                  <td class="py-2.5 px-4">Cyber insurance; a contract that makes a supplier pay for its failures</td>
+                </tr>
+                <tr>
+                  <td class="py-2.5 px-4 font-bold"><span class="hl-purple">Avoid</span></td>
+                  <td class="py-2.5 px-4">Stop the risky activity</td>
+                  <td class="py-2.5 px-4">Do not store card numbers at all; use a payment provider</td>
+                </tr>
+                <tr>
+                  <td class="py-2.5 px-4 font-bold"><span class="hl-yellow">Accept</span></td>
+                  <td class="py-2.5 px-4">Knowingly live with it, and write it down</td>
+                  <td class="py-2.5 px-4">A test system with no real data, kept with baseline controls only</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="p-3.5 rounded-lg bg-rose-50 dark:bg-rose-950/30 border border-rose-200 dark:border-rose-800 text-sm">
+            ⚠️ <strong>Exam Distinction:</strong> <span class="hl-yellow">"Accept" is a decision made and recorded by someone with the authority to make it</span> — <span class="hl-pink">not the same as ignoring the risk</span>.
+          </div>
+        </article>
+      </section>
+
+
+      <!-- ====================================================================
+           PART 4: ENCRYPTION AND KEYS (Slides 13/38 – 19/38)
+           ==================================================================== -->
+      <section id="part-4" class="space-y-6">
+        <div class="flex items-center gap-3 border-b-2 border-slate-700 dark:border-slate-700 pb-2">
+          <span class="px-3 py-1 rounded-md bg-slate-700 text-white font-display font-bold text-sm">PART 4</span>
+          <h2 class="font-display text-xl sm:text-2xl font-bold text-slate-900 dark:text-white">
+            Encryption and Keys
+          </h2>
+          <span class="ml-auto text-xs font-mono text-slate-500">Slides 13/38 – 19/38</span>
+        </div>
+
+        <!-- Slide 13/38 -->
+        <article class="study-card p-6">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              Three States of Data
+            </h3>
+            <span class="slide-badge">Slide 13/38</span>
+          </div>
+
+          <div class="overflow-x-auto rounded-lg border border-slate-300 dark:border-slate-700 mb-4">
+            <table class="w-full text-left text-xs sm:text-sm">
+              <thead class="bg-slate-100 dark:bg-slate-800 font-display">
+                <tr>
+                  <th class="py-2.5 px-4">State</th>
+                  <th class="py-2.5 px-4">Example</th>
+                  <th class="py-2.5 px-4">How it is protected</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-200 dark:divide-slate-800">
+                <tr>
+                  <td class="py-2.5 px-4 font-bold"><span class="hl-yellow">At rest</span></td>
+                  <td class="py-2.5 px-4">Stored on a disk, in a database, in a storage bucket</td>
+                  <td class="py-2.5 px-4">Disk, database, and storage encryption — often a default or one setting (check each service)</td>
+                </tr>
+                <tr>
+                  <td class="py-2.5 px-4 font-bold"><span class="hl-yellow">In transit</span></td>
+                  <td class="py-2.5 px-4">Moving between browser and server, or server and database</td>
+                  <td class="py-2.5 px-4"><span class="hl-blue">TLS (HTTPS)</span>, <span class="hl-blue">VPN tunnels</span></td>
+                </tr>
+                <tr>
+                  <td class="py-2.5 px-4 font-bold"><span class="hl-yellow">In use</span></td>
+                  <td class="py-2.5 px-4">In memory while a program works on it</td>
+                  <td class="py-2.5 px-4">Hardest; <span class="hl-green">"confidential computing"</span> runs code in hardware-protected, verifiable (attested) environments</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="p-3.5 rounded-lg bg-amber-50 dark:bg-amber-950/30 border border-amber-300 dark:border-amber-800 text-sm">
+            ⚠️ <strong>What Encryption at Rest Protects Against (and What It Doesn't):</strong> Many services now encrypt data at rest by default. <span class="hl-green">That protects against a stolen disk</span>, <span class="hl-pink">but NOT against someone using valid access: for them, the data is decrypted automatically. Authorization still decides.</span>
+          </div>
+        </article>
+
+        <!-- Slide 14/38 -->
+        <article class="study-card p-6">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              Two Kinds of Encryption, and Hashing
+            </h3>
+            <span class="slide-badge">Slide 14/38</span>
+          </div>
+
+          <div class="overflow-x-auto rounded-lg border border-slate-300 dark:border-slate-700 mb-4">
+            <table class="w-full text-left text-xs sm:text-sm">
+              <thead class="bg-slate-100 dark:bg-slate-800 font-display">
+                <tr>
+                  <th class="py-2.5 px-4">Feature</th>
+                  <th class="py-2.5 px-4">Symmetric</th>
+                  <th class="py-2.5 px-4">Public-key (asymmetric)</th>
+                  <th class="py-2.5 px-4">Hashing</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-200 dark:divide-slate-800">
+                <tr>
+                  <td class="py-2.5 px-4 font-semibold">Keys</td>
+                  <td class="py-2.5 px-4"><span class="hl-yellow">One shared secret key</span></td>
+                  <td class="py-2.5 px-4"><span class="hl-yellow">A key pair: public and private</span></td>
+                  <td class="py-2.5 px-4"><span class="hl-yellow">No key</span></td>
+                </tr>
+                <tr>
+                  <td class="py-2.5 px-4 font-semibold">What it does</td>
+                  <td class="py-2.5 px-4">Encrypts and decrypts</td>
+                  <td class="py-2.5 px-4">Three different jobs: encryption to a key holder, key agreement, digital signatures</td>
+                  <td class="py-2.5 px-4">A fixed-size, <span class="hl-green">one-way fingerprint</span></td>
+                </tr>
+                <tr>
+                  <td class="py-2.5 px-4 font-semibold">Speed</td>
+                  <td class="py-2.5 px-4"><span class="hl-green">Fast</span></td>
+                  <td class="py-2.5 px-4"><span class="hl-pink">Slow</span></td>
+                  <td class="py-2.5 px-4"><span class="hl-green">Fast</span></td>
+                </tr>
+                <tr>
+                  <td class="py-2.5 px-4 font-semibold">Used for</td>
+                  <td class="py-2.5 px-4">Bulk data: disks, files, databases, TLS traffic</td>
+                  <td class="py-2.5 px-4">Setting up keys, certificates, signing</td>
+                  <td class="py-2.5 px-4">Detecting changes — if the reference hash is trusted</td>
+                </tr>
+                <tr>
+                  <td class="py-2.5 px-4 font-semibold">Examples</td>
+                  <td class="py-2.5 px-4"><span class="hl-code">AES</span></td>
+                  <td class="py-2.5 px-4"><span class="hl-code">RSA</span>; elliptic-curve schemes (<span class="hl-code">ECDH</span>, <span class="hl-code">ECDSA</span>)</td>
+                  <td class="py-2.5 px-4"><span class="hl-code">SHA-256</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
+            <div class="p-3.5 rounded-lg bg-rose-50 dark:bg-rose-950/30 border border-rose-200 dark:border-rose-800">
+              <strong>Password Hashing Rule:</strong> <span class="hl-pink">Passwords are never stored with a plain fast hash such as SHA-256:</span> use a <span class="hl-green">slow, salted password-hashing scheme (Argon2id, bcrypt)</span> — next topic.
+            </div>
+            <div class="p-3.5 rounded-lg bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800">
+              <strong>How <span class="hl-blue">TLS 1.3</span> Combines Them:</strong> A <strong>key agreement</strong>, authenticated by the <strong>certificate's signature</strong>, sets up keys; <strong>symmetric encryption</strong> protects the data.
+            </div>
+          </div>
+        </article>
+
+        <!-- Slide 15/38 -->
+        <article class="study-card p-6">
+          <div class="flex items-center justify-between mb-3">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              How Strong is "Strong"?
+            </h3>
+            <span class="slide-badge">Slide 15/38</span>
+          </div>
+          <p class="text-sm sm:text-base mb-4">
+            Suppose a computer tries a trillion (<span class="hl-code">10^12</span>) keys every second against a sound cipher with a randomly chosen key. Time to try every key (on average, half of it):
+          </p>
+
+          <div class="overflow-x-auto rounded-lg border border-slate-300 dark:border-slate-700 mb-3">
+            <table class="w-full text-left text-xs sm:text-sm font-mono">
+              <thead class="bg-slate-100 dark:bg-slate-800 font-display">
+                <tr>
+                  <th class="py-2.5 px-4">Key length</th>
+                  <th class="py-2.5 px-4">Possible keys</th>
+                  <th class="py-2.5 px-4">Time to try them all</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-200 dark:divide-slate-800">
+                <tr>
+                  <td class="py-2 px-4">56 bits (old DES)</td>
+                  <td class="py-2 px-4">2^56 ≈ 7.2 × 10^16</td>
+                  <td class="py-2 px-4 font-sans"><span class="hl-pink">about 20 hours</span></td>
+                </tr>
+                <tr>
+                  <td class="py-2 px-4">128 bits (AES-128)</td>
+                  <td class="py-2 px-4">2^128 ≈ 3.4 × 10^38</td>
+                  <td class="py-2 px-4 font-sans"><span class="hl-green">about 1.1 × 10^19 years</span></td>
+                </tr>
+                <tr>
+                  <td class="py-2 px-4">256 bits (AES-256)</td>
+                  <td class="py-2 px-4">2^256 ≈ 1.2 × 10^77</td>
+                  <td class="py-2 px-4 font-sans"><span class="hl-green">about 3.7 × 10^57 years</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-300 mb-4">
+            The universe is about <span class="hl-code">1.4 × 10^10</span> years old. <span class="hl-yellow">Each extra bit doubles the work.</span> (These are symmetric key lengths; RSA and ECC keys are sized differently.)
+          </p>
+
+          <div class="p-4 rounded-lg bg-amber-50 dark:bg-amber-950/30 border-2 border-amber-400 dark:border-amber-700 text-sm">
+            <div class="font-display font-bold text-amber-900 dark:text-amber-300 mb-1">
+              🔓 So How is Encrypted Data Stolen?
+            </div>
+            <p>
+              <span class="hl-pink">Rarely by breaking modern encryption.</span> Attackers <span class="hl-yellow">steal the key, use an account that is allowed to decrypt, or exploit a flaw in how encryption is used</span>. <span class="hl-green">Protecting keys and access matters more than choosing between AES-128 and AES-256.</span>
+            </p>
+          </div>
+        </article>
+
+        <!-- Slide 16/38 -->
+        <article class="study-card p-6">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              Encryption in Transit: TLS and Certificates
+            </h3>
+            <span class="slide-badge">Slide 16/38</span>
+          </div>
+
+          <ul class="space-y-2 text-sm sm:text-base list-disc list-inside mb-4">
+            <li><span class="hl-blue">TLS (transport layer security)</span> encrypts traffic between two programs; <span class="hl-code">HTTPS</span> is HTTP inside TLS. <span class="hl-green">Use TLS 1.2 or 1.3, and turn older versions off.</span></li>
+            <li>A <span class="hl-yellow">certificate</span> lets the client check that the server holds the private key for <span class="hl-code">www.example.com</span>, vouched for by a <span class="hl-yellow">certificate authority (CA)</span> the client trusts. <span class="hl-pink">It says nothing about whether the site is honest.</span></li>
+            <li><span class="hl-pink">Certificates expire. After that, new connections fail validation — for every client at once.</span></li>
+          </ul>
+
+          <!-- Public TLS Certificate Lifespan Timeline (April 2025 Agreement) -->
+          <div class="p-4 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-300 dark:border-slate-700">
+            <div class="font-display font-bold text-sm text-slate-900 dark:text-white mb-2">
+              📅 Recent Change: Publicly Trusted TLS Certificate Maximum Lifespan (Agreed in April 2025)
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-3 text-center">
+              <div class="p-3 rounded-lg bg-white dark:bg-slate-800 border-2 border-indigo-400">
+                <div class="text-xs font-mono text-slate-500">From March 15, 2026</div>
+                <div class="font-display font-bold text-lg text-indigo-700 dark:text-indigo-300 mt-0.5"><span class="hl-green">At most 200 days</span></div>
+              </div>
+              <div class="p-3 rounded-lg bg-white dark:bg-slate-800 border-2 border-indigo-500">
+                <div class="text-xs font-mono text-slate-500">From March 15, 2027</div>
+                <div class="font-display font-bold text-lg text-indigo-700 dark:text-indigo-300 mt-0.5"><span class="hl-green">At most 100 days</span></div>
+              </div>
+              <div class="p-3 rounded-lg bg-white dark:bg-slate-800 border-2 border-rose-500">
+                <div class="text-xs font-mono text-slate-500">From March 15, 2029</div>
+                <div class="font-display font-bold text-lg text-rose-700 dark:text-rose-300 mt-0.5"><span class="hl-green">At most 47 days</span></div>
+                <div class="text-[11px] text-slate-500">(about 8 renewals a year)</div>
+              </div>
+            </div>
+            <p class="text-xs sm:text-sm text-slate-700 dark:text-slate-300">
+              Existing certificates keep their dates; internal (private) CAs set their own rules. <span class="hl-yellow">Renewal must be automated.</span>
+            </p>
+          </div>
+        </article>
+
+        <!-- Slide 17/38 -->
+        <article class="study-card p-6">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              Who Holds the Keys?
+            </h3>
+            <span class="slide-badge">Slide 17/38</span>
+          </div>
+
+          <div class="overflow-x-auto rounded-lg border border-slate-300 dark:border-slate-700 mb-4">
+            <table class="w-full text-left text-xs sm:text-sm">
+              <thead class="bg-slate-100 dark:bg-slate-800 font-display">
+                <tr>
+                  <th class="py-2.5 px-4">Option (AWS names)</th>
+                  <th class="py-2.5 px-4">How it works</th>
+                  <th class="py-2.5 px-4">Trade-off</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-200 dark:divide-slate-800">
+                <tr>
+                  <td class="py-2.5 px-4 font-bold">Provider-owned keys<br/><span class="text-xs font-mono text-slate-500">(AWS owned)</span></td>
+                  <td class="py-2.5 px-4">The provider creates and uses the key inside its own service; <span class="hl-pink">you never see it</span></td>
+                  <td class="py-2.5 px-4">No effort; <span class="hl-pink">no control and no key-use records for you</span></td>
+                </tr>
+                <tr>
+                  <td class="py-2.5 px-4 font-bold">Provider-managed keys<br/><span class="text-xs font-mono text-slate-500">(AWS managed)</span></td>
+                  <td class="py-2.5 px-4">A key in your account's <span class="hl-blue">key management service (KMS)</span>, created for one service and rotated by the provider</td>
+                  <td class="py-2.5 px-4"><span class="hl-green">Key use is logged and visible;</span> <span class="hl-pink">you cannot change its policy or disable it</span></td>
+                </tr>
+                <tr class="bg-emerald-50/40 dark:bg-emerald-950/20">
+                  <td class="py-2.5 px-4 font-bold"><span class="hl-yellow">Customer-managed keys</span></td>
+                  <td class="py-2.5 px-4">A KMS key you create and control: <span class="hl-green">who may use it, rotation, disabling, deletion</span></td>
+                  <td class="py-2.5 px-4">Use is logged; disabling blocks new decryptions (<span class="hl-pink">cached data keys may work briefly</span>)</td>
+                </tr>
+                <tr>
+                  <td class="py-2.5 px-4 font-bold">Dedicated hardware or external keys</td>
+                  <td class="py-2.5 px-4">The key is held in a dedicated <span class="hl-yellow">hardware security module (HSM)</span> or outside the provider</td>
+                  <td class="py-2.5 px-4">Most control, most cost and work; <span class="hl-pink">lose the key and the data is gone</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="flex flex-wrap items-center gap-2 text-xs sm:text-sm">
+            <span class="font-bold text-slate-600 dark:text-slate-300">Provider Service Names:</span>
+            <span class="hl-blue">AWS KMS and CloudHSM</span>
+            <span class="hl-blue">Azure Key Vault and Managed HSM</span>
+            <span class="hl-blue">Google Cloud KMS and Cloud HSM</span>
+          </div>
+        </article>
+
+        <!-- Slide 18/38 -->
+        <article class="study-card p-6 border-l-4 border-l-indigo-600">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              Envelope Encryption: How KMS Protects Large Data
+            </h3>
+            <span class="slide-badge">Slide 18/38</span>
+          </div>
+
+          <!-- Exact Recreation of Slide 18/38 Envelope Encryption Flowchart -->
+          <div class="p-4 sm:p-6 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 mb-4">
+            <div class="grid grid-cols-1 md:grid-cols-11 gap-3 items-center text-center">
+              <!-- Box 1: KMS Key -->
+              <div class="md:col-span-3 p-3.5 rounded-lg bg-emerald-100 dark:bg-emerald-950/80 border-2 border-emerald-600">
+                <div class="font-display font-bold text-sm text-emerald-950 dark:text-emerald-200">KMS key</div>
+                <div class="text-xs text-emerald-800 dark:text-emerald-300 mt-0.5">(key-encryption key;<br/><strong>never leaves KMS</strong>)</div>
+              </div>
+
+              <!-- Arrow 1 -->
+              <div class="md:col-span-1 flex flex-col items-center justify-center">
+                <span class="text-[11px] font-mono font-bold text-slate-600 dark:text-slate-300">encrypts</span>
+                <span class="text-lg font-bold text-slate-700 dark:text-slate-200">───►</span>
+              </div>
+
+              <!-- Box 2: Data Key -->
+              <div class="md:col-span-3 p-3.5 rounded-lg bg-blue-100 dark:bg-blue-950/80 border-2 border-blue-500">
+                <div class="font-display font-bold text-sm text-blue-950 dark:text-blue-200">Data key</div>
+                <div class="text-xs text-blue-800 dark:text-blue-300 mt-0.5">(per object, file, or disk — varies)</div>
+              </div>
+
+              <!-- Arrow 2 -->
+              <div class="md:col-span-1 flex flex-col items-center justify-center">
+                <span class="text-[11px] font-mono font-bold text-slate-600 dark:text-slate-300">encrypts</span>
+                <span class="text-lg font-bold text-slate-700 dark:text-slate-200">───►</span>
+              </div>
+
+              <!-- Box 3: Your Data -->
+              <div class="md:col-span-3 p-3.5 rounded-lg bg-white dark:bg-slate-800 border-2 border-slate-400 dark:border-slate-600">
+                <div class="font-display font-bold text-sm text-slate-900 dark:text-white">Your data</div>
+                <div class="text-xs text-slate-600 dark:text-slate-300 mt-0.5">(gigabytes)</div>
+              </div>
+            </div>
+
+            <!-- Downward storage + Red dashed unwrap return path -->
+            <div class="mt-4 pt-3 border-t border-dashed border-slate-300 dark:border-slate-700 flex flex-col md:flex-row items-center justify-between gap-4">
+              <div class="px-3 py-2 rounded bg-rose-50 dark:bg-rose-950/50 border-2 border-dashed border-rose-500 text-xs font-mono font-bold text-rose-700 dark:text-rose-300">
+                ▲ ─ ─ ─ to read: KMS unwraps the data key
+              </div>
+              <div class="flex-1 p-3 rounded-lg bg-white dark:bg-slate-800 border-2 border-rose-600 text-center text-xs sm:text-sm">
+                <strong>Stored together:</strong> <span class="hl-yellow">encrypted data + encrypted data key</span>
+              </div>
+            </div>
+          </div>
+
+          <ul class="space-y-2 text-sm sm:text-base list-disc list-inside">
+            <li>KMS returns a new data key twice: <span class="hl-green">plain (used in memory, then erased)</span> and <span class="hl-green">encrypted (stored with the data)</span>.</li>
+            <li><strong>To read:</strong> Send <span class="hl-yellow">only the small encrypted data key to KMS — never the gigabytes</span>. With permission, the plain data key comes back; <span class="hl-green">every KMS call is logged</span>.</li>
+            <li><span class="hl-pink">Disabling the KMS key stops new unwrapping; plain data keys already in memory keep working until discarded.</span></li>
+          </ul>
+        </article>
+
+        <!-- Slide 19/38 -->
+        <article class="study-card p-6">
+          <div class="flex items-center justify-between mb-3">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              Secrets Do Not Belong in Code
+            </h3>
+            <span class="slide-badge">Slide 19/38</span>
+          </div>
+          <p class="text-sm sm:text-base mb-4">
+            A <span class="hl-yellow">secret</span> is anything that grants access: database passwords, access keys, API tokens, private keys.
+          </p>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <div class="p-4 rounded-lg bg-rose-50/70 dark:bg-rose-950/20 border border-rose-200 dark:border-rose-800">
+              <h4 class="font-display font-bold text-rose-800 dark:text-rose-300 mb-2">❌ Wrong</h4>
+              <ul class="space-y-1.5 text-sm list-disc list-inside mb-2">
+                <li>Written in the source code</li>
+                <li>In a configuration file stored in Git</li>
+                <li>Shared in a chat message</li>
+              </ul>
+              <p class="text-xs font-semibold text-rose-900 dark:text-rose-300">
+                ⚠️ <span class="hl-pink">Once pushed to a repository, a secret stays in its history even after you delete the line.</span>
+              </p>
+            </div>
+
+            <div class="p-4 rounded-lg bg-emerald-50/70 dark:bg-emerald-950/20 border border-emerald-200 dark:border-emerald-800">
+              <h4 class="font-display font-bold text-emerald-800 dark:text-emerald-300 mb-2">✅ Right</h4>
+              <ul class="space-y-1.5 text-sm list-disc list-inside">
+                <li><strong>Best:</strong> <span class="hl-green">no secret at all — the program uses its own workload identity</span> (next topic)</li>
+                <li><strong>Otherwise:</strong> kept in a <span class="hl-yellow">secrets manager</span>, fetched at run time with the program's own permission</li>
+                <li>Rotated automatically where supported — if the program picks up the new value</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="flex flex-wrap items-center gap-2 text-xs sm:text-sm mb-3">
+            <span class="font-bold text-slate-600 dark:text-slate-300">Provider Names:</span>
+            <span class="hl-blue">AWS Secrets Manager</span>
+            <span class="hl-blue">Azure Key Vault</span>
+            <span class="hl-blue">Google Secret Manager</span>
+          </div>
+
+          <div class="p-3.5 rounded-lg bg-amber-50 dark:bg-amber-950/30 border border-amber-300 dark:border-amber-800 text-sm">
+            🚨 <strong>If a secret leaks (Exact Order):</strong> <span class="hl-green">Revoke it first;</span> then find where it was used, rotate related credentials, fix the cause, and clean it from history.
+          </div>
+        </article>
+      </section>
+
+
+      <!-- ====================================================================
+           PART 5: PROTECTING DATA, AND WHAT THE LAW REQUIRES (Slides 20/38 – 24/38)
+           ==================================================================== -->
+      <section id="part-5" class="space-y-6">
+        <div class="flex items-center gap-3 border-b-2 border-slate-700 dark:border-slate-700 pb-2">
+          <span class="px-3 py-1 rounded-md bg-slate-700 text-white font-display font-bold text-sm">PART 5</span>
+          <h2 class="font-display text-xl sm:text-2xl font-bold text-slate-900 dark:text-white">
+            Protecting Data, and What the Law Requires
+          </h2>
+          <span class="ml-auto text-xs font-mono text-slate-500">Slides 20/38 – 24/38</span>
+        </div>
+
+        <!-- Slide 20/38 -->
+        <article class="study-card p-6">
+          <div class="flex items-center justify-between mb-3">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              Know Your Data First: Data Classification
+            </h3>
+            <span class="slide-badge">Slide 20/38</span>
+          </div>
+          <p class="text-sm sm:text-base mb-4">
+            <span class="hl-yellow">Data classification</span>: label data by the harm if it were disclosed, changed, or lost — including legal duties — then protect each class accordingly.
+          </p>
+
+          <div class="overflow-x-auto rounded-lg border border-slate-300 dark:border-slate-700 mb-3">
+            <table class="w-full text-left text-xs sm:text-sm">
+              <thead class="bg-slate-100 dark:bg-slate-800 font-display">
+                <tr>
+                  <th class="py-2.5 px-4">Class</th>
+                  <th class="py-2.5 px-4">University example</th>
+                  <th class="py-2.5 px-4">Typical protection</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-200 dark:divide-slate-800">
+                <tr>
+                  <td class="py-2.5 px-4 font-bold"><span class="hl-green">Public</span></td>
+                  <td class="py-2.5 px-4">Course catalog, news</td>
+                  <td class="py-2.5 px-4">Integrity and availability; confidentiality not needed</td>
+                </tr>
+                <tr>
+                  <td class="py-2.5 px-4 font-bold"><span class="hl-blue">Internal</span></td>
+                  <td class="py-2.5 px-4">Meeting notes, internal procedures</td>
+                  <td class="py-2.5 px-4">Staff access only</td>
+                </tr>
+                <tr>
+                  <td class="py-2.5 px-4 font-bold"><span class="hl-yellow">Confidential</span></td>
+                  <td class="py-2.5 px-4">Student grades, staff salaries</td>
+                  <td class="py-2.5 px-4">Encryption, limited access, logging</td>
+                </tr>
+                <tr>
+                  <td class="py-2.5 px-4 font-bold"><span class="hl-pink">Restricted</span></td>
+                  <td class="py-2.5 px-4">Identity numbers, health records</td>
+                  <td class="py-2.5 px-4">All of the above, plus strict approval and monitoring</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p class="text-sm">
+            An example scheme; organizations define their own. You cannot protect everything at the highest level: <span class="hl-green">classification tells you where the effort goes — and it is the first thing any audit asks for.</span>
+          </p>
+        </article>
+
+        <!-- Slide 21/38 -->
+        <article class="study-card p-6">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              Using Less of the Real Data
+            </h3>
+            <span class="slide-badge">Slide 21/38</span>
+          </div>
+
+          <ul class="space-y-2.5 text-sm sm:text-base list-disc list-inside">
+            <li>
+              <span class="hl-green">Collect less</span> — <span class="hl-yellow">data you never store cannot leak. The strongest control of all.</span>
+            </li>
+            <li>
+              <span class="hl-yellow">Masking</span> — show only part: <span class="hl-code">**** **** **** 4417</span>. <span class="hl-pink">A masked copy can still identify people; test systems should get synthetic or properly de-identified data.</span>
+            </li>
+            <li>
+              <span class="hl-yellow">Tokenization</span> — replace a sensitive value with a random token; the real value is kept in one separate, heavily protected place. Payment providers work this way. <span class="hl-pink">Reversible tokens are still personal data.</span>
+            </li>
+            <li>
+              <span class="hl-yellow">Data loss prevention (DLP)</span> — tools that scan storage and outgoing traffic for patterns such as identity or card numbers, and warn or block. <span class="hl-pink">They catch some leaks, not all.</span>
+            </li>
+          </ul>
+        </article>
+
+        <!-- Slide 22/38 -->
+        <article class="study-card p-6">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              The Law: KVKK and GDPR
+            </h3>
+            <span class="slide-badge">Slide 22/38</span>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <!-- KVKK -->
+            <div class="p-4 rounded-xl bg-purple-50/60 dark:bg-slate-800 border-2 border-purple-400 dark:border-purple-600">
+              <div class="font-display font-bold text-purple-950 dark:text-purple-300 text-base mb-2">
+                🇹🇷 <span class="hl-purple">KVKK — Türkiye's Law No. 6698</span> on the Protection of Personal Data (2016)
+              </div>
+              <ul class="space-y-1.5 text-sm list-disc list-inside">
+                <li>Applies to personal data processed in Türkiye</li>
+                <li>Requires technical and administrative security measures</li>
+                <li>Breaches go to the Board as soon as possible: <span class="hl-green">within 72 hours of awareness</span> (Board decision); affected people are told too</li>
+              </ul>
+            </div>
+
+            <!-- GDPR -->
+            <div class="p-4 rounded-xl bg-blue-50/60 dark:bg-slate-800 border-2 border-blue-400 dark:border-blue-600">
+              <div class="font-display font-bold text-blue-950 dark:text-blue-300 text-base mb-2">
+                🇪🇺 <span class="hl-purple">GDPR — the EU's General Data Protection Regulation</span> (2018)
+              </div>
+              <ul class="space-y-1.5 text-sm list-disc list-inside">
+                <li>Applies to EU establishments, and to others (<span class="hl-yellow">Turkish firms too</span>) that offer goods or services to, or monitor, people in the EU</li>
+                <li>Breaches go to the authority <span class="hl-green">within 72 hours of awareness</span> where feasible, unless unlikely to risk people's rights; high-risk ones also to the people affected</li>
+                <li>Fines up to <span class="hl-pink">EUR 20 million or 4% of worldwide annual turnover, whichever is higher</span></li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="p-3.5 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-sm">
+            ⚖️ Both require security measures appropriate to the risk; encryption and access control are the typical ones. <span class="hl-yellow">An engineer who designs the storage is making a legal decision.</span>
+          </div>
+        </article>
+
+        <!-- Slide 23/38 -->
+        <article class="study-card p-6">
+          <div class="flex items-center justify-between mb-3">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              Where is the Data? Transfers Abroad & Data Sovereignty
+            </h3>
+            <span class="slide-badge">Slide 23/38</span>
+          </div>
+          <p class="text-sm sm:text-base mb-3">
+            Choosing a cloud region is also a legal choice. Personal data stored in a region outside Türkiye — Frankfurt, for example — is generally treated as a <span class="hl-purple">transfer abroad under KVKK</span>.
+          </p>
+          <p class="text-sm sm:text-base mb-3 font-medium">
+            Since the <span class="hl-purple">2024 amendment (Law No. 7499)</span>, a transfer abroad needs a normal processing condition plus <strong>one of</strong>:
+          </p>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4 text-sm">
+            <div class="p-3.5 rounded-lg bg-slate-100 dark:bg-slate-800 border-l-4 border-purple-500">
+              <strong>1. Adequacy decision:</strong> An adequacy decision for the destination country.
+            </div>
+            <div class="p-3.5 rounded-lg bg-slate-100 dark:bg-slate-800 border-l-4 border-purple-500">
+              <strong>2. Appropriate safeguards:</strong> Most often the Board's <span class="hl-yellow">standard contract</span>, notified to the Authority <span class="hl-green">within 5 business days of signing</span> — with data subjects able to use their rights there.
+            </div>
+            <div class="p-3.5 rounded-lg bg-slate-100 dark:bg-slate-800 border-l-4 border-purple-500">
+              <strong>3. Incidental cases:</strong> One of a few incidental (non-repeated) cases.
+            </div>
+          </div>
+
+          <div class="p-3.5 rounded-lg bg-amber-50 dark:bg-amber-950/30 border border-amber-300 dark:border-amber-800 text-sm">
+            <strong><span class="hl-yellow">Data sovereignty</span>:</strong> Data is subject to the laws of the places where it is stored and accessed. <span class="hl-pink">The region is not the whole answer: backups, support access, and subcontractors can move data too.</span> Decide before migrating.
+          </div>
+        </article>
+
+        <!-- Slide 24/38 -->
+        <article class="study-card p-6">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              Certifications and Audits
+            </h3>
+            <span class="slide-badge">Slide 24/38</span>
+          </div>
+
+          <p class="text-sm sm:text-base mb-3">Providers publish independent audit reports and certificates, for example:</p>
+          <ul class="space-y-2 text-sm sm:text-base list-disc list-inside mb-4">
+            <li><span class="hl-purple">ISO/IEC 27001</span> — an information security management system is in place and audited.</li>
+            <li><span class="hl-purple">SOC 2</span> — an auditor's report on security controls: <span class="hl-yellow">Type I at one point in time</span>; <span class="hl-green">Type II over a period (often 6–12 months)</span>.</li>
+            <li><span class="hl-purple">PCI DSS</span> — a standard for systems that handle payment card data; compliance is validated by assessment.</li>
+          </ul>
+          <p class="text-sm mb-4">
+            <strong>Read the scope:</strong> which services and regions, which period, and what the report expects the customer to do.
+          </p>
+
+          <div class="p-4 rounded-lg bg-rose-50 dark:bg-rose-950/30 border-2 border-rose-300 dark:border-rose-800 text-sm">
+            <div class="font-display font-bold text-rose-900 dark:text-rose-300 mb-1">
+              ⚠️ What a Provider's Certificate Does NOT Mean
+            </div>
+            <p>
+              <span class="hl-pink">It covers the provider's side of shared responsibility only. A certified provider can host an uncertified, insecure system — yours.</span> Your part of the audit is still your job.
+            </p>
+          </div>
+        </article>
+      </section>
+
+
+      <!-- ====================================================================
+           PART 6: HARDENING MACHINES AND THE NETWORK EDGE (Slides 25/38 – 28/38)
+           ==================================================================== -->
+      <section id="part-6" class="space-y-6">
+        <div class="flex items-center gap-3 border-b-2 border-slate-700 dark:border-slate-700 pb-2">
+          <span class="px-3 py-1 rounded-md bg-slate-700 text-white font-display font-bold text-sm">PART 6</span>
+          <h2 class="font-display text-xl sm:text-2xl font-bold text-slate-900 dark:text-white">
+            Hardening Machines and the Network Edge
+          </h2>
+          <span class="ml-auto text-xs font-mono text-slate-500">Slides 25/38 – 28/38</span>
+        </div>
+
+        <!-- Slide 25/38 -->
+        <article class="study-card p-6">
+          <div class="flex items-center justify-between mb-3">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              Host Hardening and Golden Images
+            </h3>
+            <span class="slide-badge">Slide 25/38</span>
+          </div>
+          <p class="text-sm sm:text-base mb-3">
+            <span class="hl-yellow">Hardening</span>: removing everything a machine does not need, and tightening what is left.
+          </p>
+
+          <ul class="space-y-2 text-sm sm:text-base list-disc list-inside mb-4">
+            <li>Remove unused software and services; close unused ports.</li>
+            <li>Change every default password; disable unneeded default accounts — following tested guidance, since some are needed.</li>
+            <li>Turn on the operating system's own firewall and logging.</li>
+            <li>Follow a published checklist such as the <span class="hl-purple">CIS Benchmarks</span>, free for common operating systems and cloud accounts.</li>
+          </ul>
+
+          <div class="p-4 rounded-xl bg-amber-50/70 dark:bg-slate-800 border border-amber-300 dark:border-amber-700 text-sm">
+            <div class="font-display font-bold text-amber-900 dark:text-amber-300 mb-1">
+              📀 <span class="hl-yellow">Golden images</span>
+            </div>
+            <p>
+              Harden once, save the result as a versioned image, and build every machine from it. <span class="hl-green">To update, rebuild the image with patches, scan it, and replace the machines.</span> They start identical; <span class="hl-pink">configuration and data can still drift, so keep monitoring them</span>.
+            </p>
+          </div>
+        </article>
+
+        <!-- Slide 26/38 -->
+        <article class="study-card p-6">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              Patching and Vulnerability Scanning (CVE & CVSS)
+            </h3>
+            <span class="slide-badge">Slide 26/38</span>
+          </div>
+
+          <ul class="space-y-2 text-sm sm:text-base list-disc list-inside mb-4">
+            <li>Published weaknesses get a <span class="hl-yellow">CVE (Common Vulnerabilities and Exposures)</span> ID and a <span class="hl-yellow">CVSS (Common Vulnerability Scoring System)</span> severity score, <span class="hl-code">0 to 10</span>. Not every weakness has one.</li>
+            <li>Attackers read the same lists, so publication starts a race. A <span class="hl-green">vulnerability scanner</span> compares your machines and images with the lists.</li>
+          </ul>
+
+          <div class="overflow-x-auto rounded-lg border border-slate-300 dark:border-slate-700 mb-4">
+            <table class="w-full text-left text-xs sm:text-sm">
+              <thead class="bg-slate-100 dark:bg-slate-800 font-display">
+                <tr>
+                  <th class="py-2.5 px-4">CVSS score</th>
+                  <th class="py-2.5 px-4">Severity</th>
+                  <th class="py-2.5 px-4">A typical patch target</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-200 dark:divide-slate-800">
+                <tr class="bg-rose-50/40 dark:bg-rose-950/20">
+                  <td class="py-2 px-4 font-mono font-bold">9.0–10.0</td>
+                  <td class="py-2 px-4 font-bold"><span class="hl-pink">Critical</span></td>
+                  <td class="py-2 px-4"><span class="hl-green">Days, faster if exposed to the internet</span></td>
+                </tr>
+                <tr>
+                  <td class="py-2 px-4 font-mono font-bold">7.0–8.9</td>
+                  <td class="py-2 px-4 font-bold"><span class="hl-yellow">High</span></td>
+                  <td class="py-2 px-4">Within weeks</td>
+                </tr>
+                <tr>
+                  <td class="py-2 px-4 font-mono font-bold">4.0–6.9</td>
+                  <td class="py-2 px-4 font-bold">Medium</td>
+                  <td class="py-2 px-4">Normal patch cycle</td>
+                </tr>
+                <tr>
+                  <td class="py-2 px-4 font-mono font-bold">0.1–3.9</td>
+                  <td class="py-2 px-4 font-bold">Low</td>
+                  <td class="py-2 px-4">A planned, risk-based review cycle</td>
+                </tr>
+                <tr>
+                  <td class="py-2 px-4 font-mono font-bold">0.0</td>
+                  <td class="py-2 px-4 font-bold">None</td>
+                  <td class="py-2 px-4">—</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="p-3.5 rounded-lg bg-amber-50 dark:bg-amber-950/30 border border-amber-300 dark:border-amber-800 text-sm">
+            ⚠️ <strong>CVSS vs. Business Risk:</strong> The targets are organizational policy. <span class="hl-pink">CVSS measures severity, not business risk:</span> active exploitation, exposure, and other controls can outweigh the score — <span class="hl-yellow">a "medium" on a public server can beat a "critical" on an isolated one</span>.
+          </div>
+        </article>
+
+        <!-- Slide 27/38 -->
+        <article class="study-card p-6">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              Protecting the Network Edge: WAF and DDoS Protection
+            </h3>
+            <span class="slide-badge">Slide 27/38</span>
+          </div>
+
+          <p class="text-sm sm:text-base mb-3">
+            Previous topics: subnets, firewall rules, private connections. Two more layers sit in front of public services:
+          </p>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <div class="p-4 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700">
+              <div class="font-display font-bold text-base mb-1"><span class="hl-yellow">Web application firewall (WAF)</span></div>
+              <p class="text-sm">
+                A <span class="hl-green">layer 7 filter</span> that reads web requests and blocks many known attack patterns, such as <span class="hl-code">SQL injection</span>. <span class="hl-pink">It reduces risk; it does not replace fixing the application (parameterized queries).</span>
+              </p>
+            </div>
+
+            <div class="p-4 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700">
+              <div class="font-display font-bold text-base mb-1"><span class="hl-yellow">DDoS protection</span></div>
+              <p class="text-sm">
+                Absorbs or filters floods of traffic from many machines (distributed denial of service), which attack <strong>availability</strong>. <span class="hl-pink">It has limits: application-level floods, and the cost of scaling up, can still hurt.</span>
+              </p>
+            </div>
+          </div>
+
+          <div class="flex flex-wrap items-center gap-2 text-xs sm:text-sm mb-3">
+            <span class="font-bold text-slate-600 dark:text-slate-300">Provider Names:</span>
+            <span class="hl-blue">AWS WAF and Shield</span>
+            <span class="hl-blue">Azure Web Application Firewall and DDoS Protection</span>
+            <span class="hl-blue">Google Cloud Armor</span>
+          </div>
+
+          <div class="p-3.5 rounded-lg bg-rose-50 dark:bg-rose-950/30 border border-rose-200 dark:border-rose-800 text-sm">
+            <strong>A WAF is software too:</strong> It has settings, and wrong settings open holes. <span class="hl-pink">In the Capital One breach (2019), a misconfigured WAF running on the bank's own server was the entry point.</span>
+          </div>
+        </article>
+
+        <!-- Slide 28/38 -->
+        <article class="study-card p-6">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              Testing Your Own Security
+            </h3>
+            <span class="slide-badge">Slide 28/38</span>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+            <div class="p-4 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700">
+              <div class="font-display font-bold text-base mb-1"><span class="hl-yellow">Vulnerability scan</span></div>
+              <p class="text-sm">
+                Automatic, broad, frequent: <em>"which known weaknesses seem present?"</em> <span class="hl-pink">A finding is not proof it can be used.</span>
+              </p>
+            </div>
+
+            <div class="p-4 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700">
+              <div class="font-display font-bold text-base mb-1"><span class="hl-yellow">Penetration test</span></div>
+              <p class="text-sm">
+                People try to break in, the way an attacker would: <em>"can the weaknesses actually be used, and how far can they get?"</em>
+              </p>
+            </div>
+
+            <div class="p-4 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700">
+              <div class="font-display font-bold text-base mb-1"><span class="hl-yellow">Configuration review</span></div>
+              <p class="text-sm">
+                Tools compare account settings with a baseline: public buckets, open ports, logging switched off.
+              </p>
+            </div>
+          </div>
+
+          <div class="p-3.5 rounded-lg bg-indigo-50 dark:bg-slate-800 border border-indigo-200 dark:border-slate-700 text-sm">
+            📋 <strong>Before testing in the cloud:</strong> Read the provider's testing policy: policies differ, many common tests of your own resources need no prior approval, and <span class="hl-pink">all forbid some activities (such as flooding shared services)</span>. <span class="hl-green">Agree in writing on targets you own, scope, test types, and limits.</span>
+          </div>
+        </article>
+      </section>
+
+
+      <!-- ====================================================================
+           PART 7: DETECTING AND RESPONDING TO ATTACKS (Slides 29/38 – 33/38)
+           ==================================================================== -->
+      <section id="part-7" class="space-y-6">
+        <div class="flex items-center gap-3 border-b-2 border-slate-700 dark:border-slate-700 pb-2">
+          <span class="px-3 py-1 rounded-md bg-slate-700 text-white font-display font-bold text-sm">PART 7</span>
+          <h2 class="font-display text-xl sm:text-2xl font-bold text-slate-900 dark:text-white">
+            Detecting and Responding to Attacks
+          </h2>
+          <span class="ml-auto text-xs font-mono text-slate-500">Slides 29/38 – 33/38</span>
+        </div>
+
+        <!-- Slide 29/38 -->
+        <article class="study-card p-6">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              Logs: The Camera of the Cloud
+            </h3>
+            <span class="slide-badge">Slide 29/38</span>
+          </div>
+
+          <div class="overflow-x-auto rounded-lg border border-slate-300 dark:border-slate-700 mb-4">
+            <table class="w-full text-left text-xs sm:text-sm">
+              <thead class="bg-slate-100 dark:bg-slate-800 font-display">
+                <tr>
+                  <th class="py-2.5 px-4 w-1/4">Log</th>
+                  <th class="py-2.5 px-4">Answers the question</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-200 dark:divide-slate-800">
+                <tr>
+                  <td class="py-2.5 px-4 font-bold"><span class="hl-yellow">Audit log</span></td>
+                  <td class="py-2.5 px-4">Who changed what in the account, and when? (Created a machine, opened a port, deleted a key.) <span class="hl-pink">Reads of data often need extra "data event" logging switched on.</span></td>
+                </tr>
+                <tr>
+                  <td class="py-2.5 px-4 font-bold"><span class="hl-yellow">Flow logs</span></td>
+                  <td class="py-2.5 px-4">Summaries of accepted and rejected traffic (connectivity topic)</td>
+                </tr>
+                <tr>
+                  <td class="py-2.5 px-4 font-bold"><span class="hl-yellow">Operating system logs</span></td>
+                  <td class="py-2.5 px-4">Who logged in to this machine? What failed?</td>
+                </tr>
+                <tr>
+                  <td class="py-2.5 px-4 font-bold"><span class="hl-yellow">Application logs</span></td>
+                  <td class="py-2.5 px-4">What did users and programs do inside the application?</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="p-3.5 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-sm mb-3">
+            <strong>Rules for logs:</strong> <span class="hl-green">switch them on before you need them;</span> <span class="hl-yellow">send them to a separate, protected place with its own permissions;</span> keep clocks synchronized; set retention and an owner; <span class="hl-pink">keep secrets and needless personal data out of them</span>.
+          </div>
+
+          <div class="flex flex-wrap items-center gap-2 text-xs sm:text-sm">
+            <span class="font-bold text-slate-600 dark:text-slate-300">Audit Log Service Names:</span>
+            <span class="hl-blue">AWS CloudTrail</span>
+            <span class="hl-blue">Azure Activity Log</span>
+            <span class="hl-blue">Google Cloud Audit Logs</span>
+          </div>
+        </article>
+
+        <!-- Slide 30/38 -->
+        <article class="study-card p-6">
+          <div class="flex items-center justify-between mb-3">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              From Logs to Alerts & SIEM
+            </h3>
+            <span class="slide-badge">Slide 30/38</span>
+          </div>
+          <p class="text-sm sm:text-base mb-3">
+            Nobody reads millions of log lines. Tools read them and raise <span class="hl-yellow">alerts</span> — <span class="hl-pink">signals to investigate, not proof</span>:
+          </p>
+
+          <ul class="space-y-1.5 text-sm sm:text-base list-disc list-inside mb-4">
+            <li>a login from a new country at 3 a.m.;</li>
+            <li><span class="hl-pink">audit logging switched off;</span></li>
+            <li>a storage bucket made public;</li>
+            <li>many rejected connections from one address;</li>
+            <li><span class="hl-pink">a sudden jump in the bill</span> — a common sign of a stolen access key used for cryptocurrency mining (<em>billing data often arrives late</em>).</li>
+          </ul>
+
+          <p class="text-sm mb-3">
+            Each alert needs a <span class="hl-green">severity, an owner, and a planned response</span>; tune out false alarms.
+          </p>
+
+          <div class="p-3.5 rounded-lg bg-indigo-50 dark:bg-slate-800 border border-indigo-200 dark:border-slate-700 text-sm">
+            <strong><span class="hl-yellow">SIEM (security information and event management)</span>:</strong> Collects logs from everywhere and <span class="hl-green">correlates them</span>: three harmless events together may be one attack. Providers also offer threat detection services that learn what is normal for your account.
+          </div>
+        </article>
+
+        <!-- Slide 31/38 -->
+        <article class="study-card p-6">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              Incident Response (6-Step Workflow)
+            </h3>
+            <span class="slide-badge">Slide 31/38</span>
+          </div>
+
+          <!-- 6-Step Visual Workflow Grid -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 mb-4">
+            <div class="p-3.5 rounded-lg bg-slate-100 dark:bg-slate-800 border-l-4 border-indigo-500">
+              <div class="text-xs font-mono font-bold text-indigo-600 dark:text-indigo-400">STEP 1</div>
+              <div class="font-display font-bold text-base mb-1">1. Prepare</div>
+              <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-300">A written plan, contacts, tools, and practice, before anything happens.</p>
+            </div>
+            <div class="p-3.5 rounded-lg bg-slate-100 dark:bg-slate-800 border-l-4 border-indigo-500">
+              <div class="text-xs font-mono font-bold text-indigo-600 dark:text-indigo-400">STEP 2</div>
+              <div class="font-display font-bold text-base mb-1">2. Identify</div>
+              <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-300">Is this really an incident? What is affected?</p>
+            </div>
+            <div class="p-3.5 rounded-lg bg-amber-50/80 dark:bg-slate-800 border-l-4 border-amber-500">
+              <div class="text-xs font-mono font-bold text-amber-700 dark:text-amber-400">STEP 3</div>
+              <div class="font-display font-bold text-base mb-1">3. Contain</div>
+              <p class="text-xs sm:text-sm text-slate-700 dark:text-slate-300"><span class="hl-yellow">Stop the harm now:</span> isolate the machine, revoke the leaked key. <span class="hl-green">Preserve evidence alongside (snapshots, logs, memory where possible)</span>, without delaying urgent containment.</p>
+            </div>
+            <div class="p-3.5 rounded-lg bg-slate-100 dark:bg-slate-800 border-l-4 border-rose-500">
+              <div class="text-xs font-mono font-bold text-rose-600 dark:text-rose-400">STEP 4</div>
+              <div class="font-display font-bold text-base mb-1">4. Eradicate</div>
+              <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-300">Remove the cause: the malware, the backdoor account, the open port.</p>
+            </div>
+            <div class="p-3.5 rounded-lg bg-slate-100 dark:bg-slate-800 border-l-4 border-emerald-500">
+              <div class="text-xs font-mono font-bold text-emerald-600 dark:text-emerald-400">STEP 5</div>
+              <div class="font-display font-bold text-base mb-1">5. Recover</div>
+              <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-300">Rebuild from a clean image or backup, watch closely.</p>
+            </div>
+            <div class="p-3.5 rounded-lg bg-slate-100 dark:bg-slate-800 border-l-4 border-purple-500">
+              <div class="text-xs font-mono font-bold text-purple-600 dark:text-purple-400">STEP 6</div>
+              <div class="font-display font-bold text-base mb-1">6. Lessons learned</div>
+              <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-300">What happened, why, what changes. <span class="hl-green">Without blame, or people hide the next one.</span></p>
+            </div>
+          </div>
+
+          <div class="p-3.5 rounded-lg bg-purple-50 dark:bg-purple-950/30 border border-purple-300 dark:border-purple-800 text-sm">
+            ⏱️ <strong>Cloud Advantage & Legal Clock:</strong> The cloud helps: a suspect machine can be isolated and copied in minutes. <span class="hl-purple">Legal deadlines run from when the organization becomes aware of a personal data breach — assess them as soon as that happens.</span>
+          </div>
+        </article>
+
+        <!-- Slide 32/38 -->
+        <article class="study-card p-6 border-l-4 border-l-rose-600">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              Case Study: Capital One, 2019
+            </h3>
+            <span class="slide-badge">Slide 32/38</span>
+          </div>
+
+          <!-- Visual Attack Chain Diagram -->
+          <div class="p-4 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 mb-4">
+            <div class="text-xs font-mono uppercase text-rose-600 dark:text-rose-400 font-bold mb-2">Attack Chain Visualization</div>
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-3 text-xs">
+              <div class="p-3 rounded bg-white dark:bg-slate-800 border-2 border-rose-400">
+                <div class="font-bold text-rose-700 dark:text-rose-300 mb-1">1. Entry Point</div>
+                Attacker (former employee of the cloud provider, not the bank) used a <span class="hl-pink">misconfigured WAF</span> on the bank's server.
+              </div>
+              <div class="p-3 rounded bg-white dark:bg-slate-800 border-2 border-rose-400">
+                <div class="font-bold text-rose-700 dark:text-rose-300 mb-1">2. Metadata Request</div>
+                Made the WAF send requests on her behalf to the <span class="hl-yellow">cloud's internal metadata service</span>.
+              </div>
+              <div class="p-3 rounded bg-white dark:bg-slate-800 border-2 border-rose-400">
+                <div class="font-bold text-rose-700 dark:text-rose-300 mb-1">3. Over-Privileged Role</div>
+                Returned temporary credentials of a role with <span class="hl-pink">far more permission than it needed</span>, including reading storage buckets.
+              </div>
+              <div class="p-3 rounded bg-white dark:bg-slate-800 border-2 border-rose-600">
+                <div class="font-bold text-rose-700 dark:text-rose-300 mb-1">4. Impact & Fine</div>
+                Credit card application data of <span class="hl-code">~100M</span> US + <span class="hl-code">6M</span> Canada people copied out. Fined <span class="hl-pink">$80 million</span>.
+              </div>
+            </div>
+          </div>
+
+          <div class="p-3.5 rounded-lg bg-amber-50 dark:bg-amber-950/30 border border-amber-300 dark:border-amber-800 text-xs sm:text-sm space-y-1.5">
+            <div class="font-bold text-amber-900 dark:text-amber-300">Slide Review Questions & Direct Connections to Today's Principles:</div>
+            <div>• <strong>Which principles failed?</strong> <span class="hl-yellow">Least privilege</span> (the WAF role could read storage buckets), <span class="hl-yellow">hardening / configuration review</span> (misconfigured WAF + weak risk assessment before moving to the cloud).</div>
+            <div>• <strong>Shared responsibility duties on the customer's side:</strong> Configuring the WAF running on the bank's server, setting IAM role permissions, and protecting customer data.</div>
+            <div>• <strong>Controls that would have limited damage most:</strong> Strict least privilege on the WAF's role (no bucket read access), metadata service protection, configuration review, and alerts on unusual bucket reads.</div>
+          </div>
+        </article>
+
+        <!-- Slide 33/38 -->
+        <article class="study-card p-6 border-l-4 border-l-emerald-500">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              Exercise: Principle/Control at Stake & First Action (All 5 Scenarios + Suggested Answers)
+            </h3>
+            <span class="slide-badge">Slide 33/38</span>
+          </div>
+
+          <div class="space-y-3 text-sm">
+            <div class="p-3.5 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700">
+              <div class="font-bold text-slate-900 dark:text-white">
+                1. A student pushes a project to a public repository; it contains the cloud account's access key.
+              </div>
+              <div class="mt-1 text-emerald-800 dark:text-emerald-300">
+                <strong>Suggested Answer:</strong> <span class="hl-yellow">secrets</span> — <span class="hl-green">revoke the key first, then check the audit log for its use</span>.
+              </div>
+            </div>
+
+            <div class="p-3.5 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700">
+              <div class="font-bold text-slate-900 dark:text-white">
+                2. The audit log shows logging was switched off at 02:14 last night.
+              </div>
+              <div class="mt-1 text-emerald-800 dark:text-emerald-300">
+                <strong>Suggested Answer:</strong> <span class="hl-yellow">detection</span> — <span class="hl-green">treat it as an incident: who did it, from where, and what else changed</span>.
+              </div>
+            </div>
+
+            <div class="p-3.5 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700">
+              <div class="font-bold text-slate-900 dark:text-white">
+                3. A test database holds a full copy of real customer data.
+              </div>
+              <div class="mt-1 text-emerald-800 dark:text-emerald-300">
+                <strong>Suggested Answer:</strong> <span class="hl-yellow">data minimization</span> — <span class="hl-green">replace it with synthetic or properly de-identified data, delete the copy</span>.
+              </div>
+            </div>
+
+            <div class="p-3.5 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700">
+              <div class="font-bold text-slate-900 dark:text-white">
+                4. A critical CVE is published for the web server software on the shop's public machines.
+              </div>
+              <div class="mt-1 text-emerald-800 dark:text-emerald-300">
+                <strong>Suggested Answer:</strong> <span class="hl-yellow">patching by risk</span> — <span class="hl-green">patch exposed machines first within days; until then, apply the vendor's mitigation (a WAF rule can help for web-borne attacks)</span>.
+              </div>
+            </div>
+
+            <div class="p-3.5 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700">
+              <div class="font-bold text-slate-900 dark:text-white">
+                5. A company plans to store Turkish customers' data in a region outside Türkiye.
+              </div>
+              <div class="mt-1 text-emerald-800 dark:text-emerald-300">
+                <strong>Suggested Answer:</strong> <span class="hl-purple">KVKK transfer abroad</span> — <span class="hl-green">map all data flows (storage, backups, support access), find the legal basis (e.g., a standard contract notified within 5 business days), and involve the legal office</span>.
+              </div>
+            </div>
+          </div>
+        </article>
+      </section>
+
+
+      <!-- ====================================================================
+           PART 8: WRAP-UP, MASTER GLOSSARY, SUMMARY & TASKS (Slides 34/38 – 38/38)
+           ==================================================================== -->
+      <section id="part-8" class="space-y-6">
+        <div class="flex items-center gap-3 border-b-2 border-slate-700 dark:border-slate-700 pb-2">
+          <span class="px-3 py-1 rounded-md bg-slate-700 text-white font-display font-bold text-sm">PART 8</span>
+          <h2 class="font-display text-xl sm:text-2xl font-bold text-slate-900 dark:text-white">
+            Wrap-Up, Master Glossary, Summary & Assignment
+          </h2>
+          <span class="ml-auto text-xs font-mono text-slate-500">Slides 34/38 – 38/38</span>
+        </div>
+
+        <!-- Slides 34/38 & 35/38 -->
+        <article class="study-card p-6">
+          <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              Words from the Security Topic (Complete 23-Term Revision Glossary)
+            </h3>
+            <div class="flex items-center gap-2">
+              <span class="slide-badge">Slide 34/38 (1/2)</span>
+              <span class="slide-badge">Slide 35/38 (2/2)</span>
+            </div>
+          </div>
+
+          <div class="overflow-x-auto rounded-lg border border-slate-300 dark:border-slate-700">
+            <table class="w-full text-left text-xs sm:text-sm">
+              <thead class="bg-slate-100 dark:bg-slate-800 font-display">
+                <tr>
+                  <th class="py-2.5 px-4 w-1/3">Term</th>
+                  <th class="py-2.5 px-4">Meaning in one line</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-200 dark:divide-slate-800">
+                <!-- Slide 34/38 (1/2) -->
+                <tr>
+                  <td class="py-2 px-4 font-semibold"><span class="hl-yellow">CIA triad</span></td>
+                  <td class="py-2 px-4">Confidentiality, integrity, availability.</td>
+                </tr>
+                <tr>
+                  <td class="py-2 px-4 font-semibold"><span class="hl-yellow">Defense in depth</span></td>
+                  <td class="py-2 px-4">Several layers of protection, so one failure is not the end.</td>
+                </tr>
+                <tr>
+                  <td class="py-2 px-4 font-semibold"><span class="hl-yellow">Least privilege</span></td>
+                  <td class="py-2 px-4">Only the access needed, only for as long as needed.</td>
+                </tr>
+                <tr>
+                  <td class="py-2 px-4 font-semibold"><span class="hl-yellow">Zero trust</span></td>
+                  <td class="py-2 px-4">No request trusted because of where it comes from.</td>
+                </tr>
+                <tr>
+                  <td class="py-2 px-4 font-semibold"><span class="hl-yellow">Threat / vulnerability / risk</span></td>
+                  <td class="py-2 px-4">What could harm / a weakness / likelihood and impact combined.</td>
+                </tr>
+                <tr>
+                  <td class="py-2 px-4 font-semibold"><span class="hl-green">SLE / ARO / ALE</span></td>
+                  <td class="py-2 px-4">Cost of one incident / incidents per year / expected loss per year.</td>
+                </tr>
+                <tr>
+                  <td class="py-2 px-4 font-semibold"><span class="hl-yellow">Mitigate / transfer / avoid / accept</span></td>
+                  <td class="py-2 px-4">The four responses to a risk.</td>
+                </tr>
+                <tr>
+                  <td class="py-2 px-4 font-semibold"><span class="hl-yellow">At rest / in transit / in use</span></td>
+                  <td class="py-2 px-4">Stored / moving / being processed.</td>
+                </tr>
+                <tr>
+                  <td class="py-2 px-4 font-semibold"><span class="hl-yellow">Symmetric / public-key / hash</span></td>
+                  <td class="py-2 px-4">One shared key / key pair for key agreement, signatures, encryption / one-way fingerprint.</td>
+                </tr>
+                <tr>
+                  <td class="py-2 px-4 font-semibold"><span class="hl-green">Password hashing</span></td>
+                  <td class="py-2 px-4">Slow, salted hashing (<span class="hl-code">Argon2id</span>, <span class="hl-code">bcrypt</span>); never a plain fast hash.</td>
+                </tr>
+                <tr>
+                  <td class="py-2 px-4 font-semibold"><span class="hl-blue">TLS / certificate</span></td>
+                  <td class="py-2 px-4">Encryption in transit / binds a server name to a key; public ones issued from Mar. 15, 2026 last at most 200 days.</td>
+                </tr>
+                <tr>
+                  <td class="py-2 px-4 font-semibold"><span class="hl-blue">KMS / HSM</span></td>
+                  <td class="py-2 px-4">Service that holds and uses keys / dedicated key hardware.</td>
+                </tr>
+                <tr>
+                  <td class="py-2 px-4 font-semibold"><span class="hl-yellow">Envelope encryption</span></td>
+                  <td class="py-2 px-4">A data key encrypts the data; a KMS key encrypts the data key.</td>
+                </tr>
+                <!-- Slide 35/38 (2/2) -->
+                <tr>
+                  <td class="py-2 px-4 font-semibold"><span class="hl-blue">Secrets manager</span></td>
+                  <td class="py-2 px-4">Stores passwords and keys outside the code.</td>
+                </tr>
+                <tr>
+                  <td class="py-2 px-4 font-semibold"><span class="hl-yellow">Data classification</span></td>
+                  <td class="py-2 px-4">Labels data by the harm of disclosure, change, or loss.</td>
+                </tr>
+                <tr>
+                  <td class="py-2 px-4 font-semibold"><span class="hl-yellow">Masking / tokenization</span></td>
+                  <td class="py-2 px-4">Hide part of a value / replace it with a token kept elsewhere.</td>
+                </tr>
+                <tr>
+                  <td class="py-2 px-4 font-semibold"><span class="hl-purple">KVKK / GDPR</span></td>
+                  <td class="py-2 px-4">Turkish / EU personal data protection law.</td>
+                </tr>
+                <tr>
+                  <td class="py-2 px-4 font-semibold"><span class="hl-purple">Transfer abroad</span></td>
+                  <td class="py-2 px-4">Personal data sent to or stored in another country; needs a legal basis.</td>
+                </tr>
+                <tr>
+                  <td class="py-2 px-4 font-semibold"><span class="hl-purple">Hardening / CIS Benchmarks</span></td>
+                  <td class="py-2 px-4">Removing what is not needed / published checklists for it.</td>
+                </tr>
+                <tr>
+                  <td class="py-2 px-4 font-semibold"><span class="hl-yellow">CVE / CVSS</span></td>
+                  <td class="py-2 px-4">ID of a published weakness / its severity score from 0 to 10.</td>
+                </tr>
+                <tr>
+                  <td class="py-2 px-4 font-semibold"><span class="hl-blue">WAF / DDoS</span></td>
+                  <td class="py-2 px-4">Layer 7 attack filter / traffic flood against availability.</td>
+                </tr>
+                <tr>
+                  <td class="py-2 px-4 font-semibold"><span class="hl-blue">Audit log / SIEM</span></td>
+                  <td class="py-2 px-4">Who changed what / system that correlates logs into alerts.</td>
+                </tr>
+                <tr>
+                  <td class="py-2 px-4 font-semibold"><span class="hl-green">Incident response</span></td>
+                  <td class="py-2 px-4">Prepare, identify, contain, eradicate, recover, learn.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </article>
+
+        <!-- Slide 36/38 -->
+        <article class="study-card p-6 border-2 border-rose-600">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              8-Point Lecture Summary
+            </h3>
+            <span class="slide-badge">Slide 36/38</span>
+          </div>
+
+          <ol class="space-y-2.5 text-sm sm:text-base list-decimal list-inside">
+            <li>Common cloud incidents start with the <span class="hl-pink">customer's configuration, credentials, or unpatched software</span>.</li>
+            <li>The provider secures the cloud; <span class="hl-yellow">you secure your data, access, and settings in every service model</span>.</li>
+            <li>Use <span class="hl-green">layers, least privilege, and a small attack surface; trust no request by location</span>.</li>
+            <li>Spend on security by risk (<span class="hl-code">ALE = SLE × ARO</span>), within what the law requires anyway.</li>
+            <li>Encrypt at rest and in transit; <span class="hl-pink">attackers usually go around encryption, through keys and access</span>.</li>
+            <li><span class="hl-green">Keep secrets out of code; automate certificate renewal.</span></li>
+            <li><span class="hl-purple">The region is a legal choice;</span> on becoming aware of a personal data breach, <span class="hl-green">assess notification duties at once (72-hour deadlines)</span>.</li>
+            <li><span class="hl-yellow">Harden, patch, log, alert, and have a response plan before you need it.</span></li>
+          </ol>
+        </article>
+
+        <!-- Slide 37/38 -->
+        <article class="study-card p-6">
+          <div class="flex items-center justify-between mb-3">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              What to Do Next (Reading & Practical Tasks on Paper)
+            </h3>
+            <span class="slide-badge">Slide 37/38</span>
+          </div>
+
+          <div class="mb-4 text-sm">
+            <strong>Reading:</strong> Module 6 in full, including the self-check questions. Look through the next topic, <em>Identity and Access Management</em>.
+          </div>
+
+          <div class="space-y-3 text-sm">
+            <div class="p-3.5 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700">
+              <strong>Task 1:</strong> Classify the shop's data into the four classes (<span class="hl-code">Public</span>, <span class="hl-code">Internal</span>, <span class="hl-code">Confidential</span>, <span class="hl-code">Restricted</span>), with one example each.
+            </div>
+
+            <div class="p-3.5 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700">
+              <strong>Task 2:</strong> For the customer database: what is encrypted at rest and in transit, who holds the key, and how you would restore it after ransomware.
+            </div>
+
+            <div class="p-3.5 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700">
+              <strong>Task 3:</strong> Choose a region and list the legal questions it raises (<span class="hl-purple">KVKK transfer rules, backups, support access</span>) — questions, not a compliance verdict.
+            </div>
+
+            <div class="p-3.5 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700">
+              <strong>Task 4:</strong> Compute the ALE of a database breach before and after one control. Use value <span class="hl-code">$1,000,000</span>, exposure factor <span class="hl-code">0.4</span>, ARO <span class="hl-code">0.2</span>, or state your own estimates; say whether the control is worth its cost.
+              <div class="mt-2 p-2.5 rounded bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 font-mono text-xs">
+                Applying Slide 11 formulas: SLE = $1,000,000 × 0.4 = <span class="hl-yellow">$400,000</span>. Initial ALE = $400,000 × 0.2 = <span class="hl-pink">$80,000 / year</span>. Compare the annual reduction in ALE against the annual cost of your chosen control.
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- Slide 38/38 -->
+        <article class="study-card p-6">
+          <div class="flex items-center justify-between mb-3">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              References
+            </h3>
+            <span class="slide-badge">Slide 38/38</span>
+          </div>
+          <ul class="space-y-1.5 text-xs sm:text-sm text-slate-600 dark:text-slate-300 list-disc list-inside">
+            <li>West, J. (2023). <em>CompTIA Cloud+ Guide to Cloud Computing</em>, 2nd ed. Cengage. ISBN 9780357883457, Module 6. (Written for exam version CV0-003.)</li>
+            <li>Law No. 6698 on the Protection of Personal Data (KVKK), Art. 9 as amended by Law No. 7499 (2024); Art. 12; Board Decision 2019/10 on breach notification. kvkk.gov.tr</li>
+            <li>Regulation (EU) 2016/679 (GDPR), Arts. 3, 32–34, and Chapter V.</li>
+            <li>CA/Browser Forum (2025). <em>Ballot SC-081v3: Introduce Schedule of Reducing Validity and Data Reuse Periods</em>. cabforum.org</li>
+            <li>Rescorla, E. (2018). <em>The Transport Layer Security (TLS) Protocol Version 1.3</em>. RFC 8446.</li>
+            <li>AWS. <em>AWS KMS Developer Guide: "AWS KMS concepts" (key types)</em>. docs.aws.amazon.com/kms</li>
+            <li>NIST (2025). <em>Incident Response Recommendations and Considerations for Cybersecurity Risk Management</em>. SP 800-61 Rev. 3.</li>
+            <li>Office of the Comptroller of the Currency (2020). <em>Consent order and civil money penalty, Capital One, N.A.</em> occ.gov</li>
+            <li>Center for Internet Security. <em>CIS Benchmarks</em>. cisecurity.org</li>
+            <li>CompTIA. <em>Cloud+ (CV0-004) Exam Objectives</em> (newer exam version).</li>
+          </ul>
+        </article>
+
+        <!-- HIGHLIGHT KEY & EXAM TAXONOMY -->
+        <article class="study-card p-6 border-t-2 border-slate-300 dark:border-slate-700">
+          <div class="flex items-center justify-between mb-3">
+            <h3 class="font-display font-bold text-base text-slate-900 dark:text-white flex items-center gap-2">
+              <span>🎨</span>
+              <span>Highlight Key & Study Legend</span>
+            </h3>
+            <span class="font-mono text-[11px] text-slate-400">Exam Marker System</span>
+          </div>
+          <p class="text-xs text-slate-500 dark:text-slate-400 mb-3">
+            Color-coded highlighters used across this study guide:
+          </p>
+          <div class="flex flex-wrap items-center gap-2 text-xs">
+            <span class="hl-yellow">Core Concept</span>
+            <span class="hl-green">Formula / Deadline / Best Practice</span>
+            <span class="hl-pink">Mistake / Exam Trap</span>
+            <span class="hl-blue">Cloud Service / Protocol</span>
+            <span class="hl-purple">Law / Standard</span>
+          </div>
+        </article>
+
+      </section>
+
+    </main>
+  </div>
+
+</body>
+</html>

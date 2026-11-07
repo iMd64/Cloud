@@ -1,0 +1,1871 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SEN421 Module 3 Study Notes — Migration to the Cloud</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Navigation & Outline Engine -->
+  <script src="nav.js" defer></script>
+  <!-- Google Fonts: Inter, JetBrains Mono, Space Grotesk -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+
+  <!-- Theme Preference Script (Instant Anti-FOUC Execution) -->
+  <script>
+    (function() {
+      try {
+        const theme = localStorage.getItem('ca_theme');
+        if (theme === 'dark' || (!theme && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+          document.documentElement.classList.add('dark');
+        } else {
+          document.documentElement.classList.remove('dark');
+        }
+      } catch (_) {}
+    })();
+  </script>
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            display: ['Space Grotesk', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Warm Study Notebook Grid Background */
+    :root {
+      --bg-grid: rgba(148, 163, 184, 0.14);
+    }
+    .dark {
+      --bg-grid: rgba(51, 65, 85, 0.22);
+    }
+    body {
+      background-image: 
+        linear-gradient(to right, var(--bg-grid) 1px, transparent 1px),
+        linear-gradient(to bottom, var(--bg-grid) 1px, transparent 1px);
+      background-size: 28px 28px;
+    }
+
+    /* Realistic Marker Highlighter Styles */
+    .hl-yellow {
+      background: linear-gradient(104deg, rgba(253, 224, 71, 0) 0.9%, rgba(253, 224, 71, 0.85) 2.4%, rgba(253, 224, 71, 0.58) 5.8%, rgba(253, 224, 71, 0.78) 93%, rgba(253, 224, 71, 0.6) 96%, rgba(253, 224, 71, 0) 98%);
+      padding: 0.08rem 0.35rem;
+      border-radius: 0.25rem;
+      color: #0f172a;
+      font-weight: 600;
+      box-decoration-break: clone;
+      -webkit-box-decoration-break: clone;
+    }
+    .dark .hl-yellow {
+      background: rgba(234, 179, 8, 0.28);
+      border-bottom: 2px solid rgba(250, 204, 21, 0.8);
+      color: #fef08a;
+    }
+
+    .hl-green {
+      background: linear-gradient(104deg, rgba(110, 231, 183, 0) 0.9%, rgba(110, 231, 183, 0.8) 2.4%, rgba(110, 231, 183, 0.55) 93%, rgba(110, 231, 183, 0) 98%);
+      padding: 0.08rem 0.35rem;
+      border-radius: 0.25rem;
+      color: #064e3b;
+      font-weight: 600;
+      box-decoration-break: clone;
+      -webkit-box-decoration-break: clone;
+    }
+    .dark .hl-green {
+      background: rgba(16, 185, 129, 0.25);
+      border-bottom: 2px solid rgba(52, 211, 153, 0.75);
+      color: #a7f3d0;
+    }
+
+    .hl-red, .hl-pink {
+      background: linear-gradient(104deg, rgba(253, 164, 175, 0) 0.9%, rgba(253, 164, 175, 0.8) 2.4%, rgba(253, 164, 175, 0.56) 93%, rgba(253, 164, 175, 0) 98%);
+      padding: 0.08rem 0.35rem;
+      border-radius: 0.25rem;
+      color: #881337;
+      font-weight: 600;
+      box-decoration-break: clone;
+      -webkit-box-decoration-break: clone;
+    }
+    .dark .hl-red, .dark .hl-pink {
+      background: rgba(244, 63, 94, 0.26);
+      border-bottom: 2px solid rgba(251, 113, 133, 0.8);
+      color: #fecdd3;
+    }
+
+    .hl-blue {
+      background: linear-gradient(104deg, rgba(147, 197, 253, 0) 0.9%, rgba(147, 197, 253, 0.8) 2.4%, rgba(147, 197, 253, 0.56) 93%, rgba(147, 197, 253, 0) 98%);
+      padding: 0.08rem 0.35rem;
+      border-radius: 0.25rem;
+      color: #1e3a8a;
+      font-weight: 600;
+      box-decoration-break: clone;
+      -webkit-box-decoration-break: clone;
+    }
+    .dark .hl-blue {
+      background: rgba(59, 130, 246, 0.26);
+      border-bottom: 2px solid rgba(96, 165, 250, 0.8);
+      color: #bfdbfe;
+    }
+
+    .hl-purple {
+      background: linear-gradient(104deg, rgba(216, 180, 254, 0) 0.9%, rgba(216, 180, 254, 0.8) 2.4%, rgba(216, 180, 254, 0.56) 93%, rgba(216, 180, 254, 0) 98%);
+      padding: 0.08rem 0.35rem;
+      border-radius: 0.25rem;
+      color: #581c87;
+      font-weight: 600;
+      box-decoration-break: clone;
+      -webkit-box-decoration-break: clone;
+    }
+    .dark .hl-purple {
+      background: rgba(168, 85, 247, 0.26);
+      border-bottom: 2px solid rgba(192, 132, 252, 0.8);
+      color: #e9d5ff;
+    }
+
+    .hl-code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.86em;
+      background-color: #f1f5f9;
+      color: #0f172a;
+      border: 1px solid #cbd5e1;
+      padding: 0.1rem 0.4rem;
+      border-radius: 0.3rem;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+    .dark .hl-code {
+      background-color: rgba(30, 41, 59, 0.9);
+      color: #e2e8f0;
+      border-color: #475569;
+    }
+
+    /* Slide Reference Badge */
+    .slide-badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      padding: 0.25rem 0.65rem;
+      border-radius: 9999px;
+      background-color: #1e293b;
+      color: #f8fafc;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    }
+    .dark .slide-badge {
+      background-color: #f59e0b;
+      color: #0f172a;
+    }
+
+    /* Study Note Card */
+    .study-card {
+      background-color: #ffffff;
+      border: 1px solid #d6d3cd;
+      border-radius: 0.85rem;
+      box-shadow: 0 4px 12px -2px rgba(15, 23, 42, 0.06);
+    }
+    .dark .study-card {
+      background-color: rgba(15, 23, 42, 0.94);
+      border-color: #334155;
+      box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.4);
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #94a3b8;
+      border-radius: 4px;
+    }
+    .dark ::-webkit-scrollbar-thumb {
+      background: #475569;
+    }
+  </style>
+</head>
+<body class="bg-[#fcfbf7] text-slate-800 dark:bg-slate-950 dark:text-slate-100 antialiased selection:bg-amber-300 selection:text-slate-900">
+
+  <!-- TOP STICKY BAR: COURSE HEADER & HIGHLIGHT KEY -->
+  <header class="sticky top-0 z-50 backdrop-blur-md bg-white/95 dark:bg-slate-900/95 border-b border-slate-200 dark:border-slate-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2.5 flex flex-wrap items-center justify-between gap-3">
+      <div class="flex items-center gap-3">
+        <span class="px-2.5 py-1 rounded-md bg-slate-700 text-white font-mono text-xs font-bold tracking-wider">SEN421</span>
+        <div>
+          <h1 class="font-display font-bold text-base sm:text-lg text-slate-900 dark:text-white leading-tight">
+            Module 3: Migration to the Cloud
+          </h1>
+          <p class="text-xs text-slate-500 dark:text-slate-400 hidden sm:block">
+            Complete Exam Study Notes • Slides 1/37 – 37/37 • Zero Hidden Content
+          </p>
+        </div>
+      </div>
+
+      <!-- Theme Toggle -->
+      <div class="flex items-center gap-2 text-xs">
+        <button id="themeToggle" onclick="window.toggleCaTheme ? window.toggleCaTheme() : (document.documentElement.classList.toggle('dark'), localStorage.setItem('ca_theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light'))" class="ml-1 px-3 py-1.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 font-medium hover:bg-slate-200 dark:hover:bg-slate-700 transition" title="Switch Paper / Dark Study Mode">
+          🌙 Dark
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN PAGE LAYOUT: SIDEBAR TOC + CONTINUOUS STUDY NOTE STREAM -->
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col lg:flex-row gap-8 items-start">
+
+    <!-- STICKY LEFT INDEX (DESKTOP) -->
+    <aside class="hidden lg:block w-64 shrink-0 sticky top-28 study-card p-4 text-xs">
+      <div class="font-display font-bold text-base text-slate-900 dark:text-white mb-3 pb-2 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
+        <span>📑 Module 3 Outline</span>
+        <span class="font-mono text-[11px] text-amber-700 dark:text-amber-400">37 Slides</span>
+      </div>
+      <ul class="space-y-1.5 font-medium text-slate-600 dark:text-slate-300">
+        <li>
+          <a href="#overview" class="flex justify-between items-center py-1 px-2 rounded hover:bg-amber-50 dark:hover:bg-slate-800 hover:text-amber-700 dark:hover:text-amber-400 transition">
+            <span>0. Title & Today's Plan</span>
+            <span class="font-mono text-[10px] text-slate-400">1–2</span>
+          </a>
+        </li>
+        <li>
+          <a href="#part-1" class="flex justify-between items-center py-1 px-2 rounded hover:bg-amber-50 dark:hover:bg-slate-800 hover:text-amber-700 dark:hover:text-amber-400 transition">
+            <span>1. What Migration Means</span>
+            <span class="font-mono text-[10px] text-slate-400">3–6</span>
+          </a>
+        </li>
+        <li>
+          <a href="#part-2" class="flex justify-between items-center py-1 px-2 rounded hover:bg-amber-50 dark:hover:bg-slate-800 hover:text-amber-700 dark:hover:text-amber-400 transition">
+            <span>2. Planning a Migration</span>
+            <span class="font-mono text-[10px] text-slate-400">7–14</span>
+          </a>
+        </li>
+        <li>
+          <a href="#part-3" class="flex justify-between items-center py-1 px-2 rounded hover:bg-amber-50 dark:hover:bg-slate-800 hover:text-amber-700 dark:hover:text-amber-400 transition">
+            <span>3. Carrying Out Migration</span>
+            <span class="font-mono text-[10px] text-slate-400">15–22</span>
+          </a>
+        </li>
+        <li>
+          <a href="#part-4" class="flex justify-between items-center py-1 px-2 rounded hover:bg-amber-50 dark:hover:bg-slate-800 hover:text-amber-700 dark:hover:text-amber-400 transition">
+            <span>4. Testing Before Users Arrive</span>
+            <span class="font-mono text-[10px] text-slate-400">23–25</span>
+          </a>
+        </li>
+        <li>
+          <a href="#part-5" class="flex justify-between items-center py-1 px-2 rounded hover:bg-amber-50 dark:hover:bg-slate-800 hover:text-amber-700 dark:hover:text-amber-400 transition">
+            <span>5. Working in Small Steps</span>
+            <span class="font-mono text-[10px] text-slate-400">26–28</span>
+          </a>
+        </li>
+        <li>
+          <a href="#part-6" class="flex justify-between items-center py-1 px-2 rounded hover:bg-amber-50 dark:hover:bg-slate-800 hover:text-amber-700 dark:hover:text-amber-400 transition">
+            <span>6. Planning for Problems</span>
+            <span class="font-mono text-[10px] text-slate-400">29–33</span>
+          </a>
+        </li>
+        <li>
+          <a href="#part-7" class="flex justify-between items-center py-1 px-2 rounded hover:bg-amber-50 dark:hover:bg-slate-800 hover:text-amber-700 dark:hover:text-amber-400 transition">
+            <span>7. Glossary & Summary</span>
+            <span class="font-mono text-[10px] text-slate-400">34–37</span>
+          </a>
+        </li>
+      </ul>
+
+      <div class="mt-4 pt-3 border-t border-slate-200 dark:border-slate-800 text-[11px] text-slate-500 dark:text-slate-400 space-y-1.5">
+        <div class="font-semibold text-slate-700 dark:text-slate-300">Fast Exam Cheat Box:</div>
+        <div>• <strong>Phases:</strong> <span class="hl-yellow">Assess ➔ Plan ➔ Migrate ➔ Test ➔ Operate</span></div>
+        <div>• <strong>#1 Failure Cause:</strong> <span class="hl-red">Assessment</span> (missed dependency/baseline)</div>
+        <div>• <strong>Data Time:</strong> <span class="hl-blue">(bytes × 8) ÷ bits/s</span></div>
+        <div>• <strong>50 TB @ 1 Gbps:</strong> <span class="hl-purple">4.6d (100%) / 6.6d (70%)</span></div>
+        <div>• <strong>RPO vs RTO:</strong> <span class="hl-yellow">Data loss time vs Downtime</span></div>
+      </div>
+    </aside>
+
+    <!-- MAIN CONTENT STREAM -->
+    <main class="flex-1 min-w-0 space-y-10">
+
+      <!-- ====================================================================
+           COURSE BANNER & SLIDES 1/37 - 2/37
+           ==================================================================== -->
+      <section id="overview" class="study-card p-6 sm:p-8 border-t-4 border-t-amber-600">
+        <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
+          <div class="flex items-center gap-2">
+            <span class="slide-badge">Slide 1/37</span>
+            <span class="slide-badge">Slide 2/37</span>
+          </div>
+          <span class="text-xs font-mono uppercase tracking-wider px-2.5 py-1 rounded bg-amber-50 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 font-semibold">
+            Istanbul Aydın University • Dept. of Computer Engineering
+          </span>
+        </div>
+
+        <h2 class="font-display text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white mb-2">
+          SEN421 Cloud Architecture and Services: Migration to the Cloud
+        </h2>
+        <p class="text-sm text-slate-600 dark:text-slate-300 mb-6">
+          <strong>Instructor:</strong> Dr. Hazm Talab • <strong>Semester:</strong> Fall Semester • <strong>Reading:</strong> West, J. <em>CompTIA Cloud+ Guide to Cloud Computing</em>, 2nd ed., Cengage, 2024, <span class="hl-purple">Module 3 (Sections 3-1 to 3-5)</span>.
+        </p>
+
+        <!-- 7-Part Plan Grid (Slide 2/37) -->
+        <div class="bg-slate-100/80 dark:bg-slate-800/60 rounded-lg p-4 border border-slate-200 dark:border-slate-700">
+          <h3 class="text-xs font-mono uppercase tracking-wider text-slate-500 dark:text-slate-400 font-bold mb-2.5">
+            Today's Plan (7 Core Parts — Slide 2/37)
+          </h3>
+          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-2 text-xs sm:text-sm font-medium">
+            <div class="p-2.5 rounded bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">1. Starting simple: what migration means</div>
+            <div class="p-2.5 rounded bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">2. Planning a migration</div>
+            <div class="p-2.5 rounded bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">3. Carrying out the migration</div>
+            <div class="p-2.5 rounded bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">4. Testing before users arrive</div>
+            <div class="p-2.5 rounded bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">5. Working in small steps</div>
+            <div class="p-2.5 rounded bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">6. Planning for problems</div>
+            <div class="p-2.5 rounded bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 sm:col-span-2">7. Wrap-up and assignment</div>
+          </div>
+        </div>
+      </section>
+
+
+      <!-- ====================================================================
+           PART 1: STARTING SIMPLE — WHAT MIGRATION MEANS (Slides 3/37 – 6/37)
+           ==================================================================== -->
+      <section id="part-1" class="space-y-6">
+        <div class="flex items-center gap-3 border-b-2 border-slate-700 dark:border-slate-700 pb-2">
+          <span class="px-3 py-1 rounded-md bg-slate-700 text-white font-display font-bold text-sm">PART 1</span>
+          <h2 class="font-display text-xl sm:text-2xl font-bold text-slate-900 dark:text-white">
+            Starting Simple: What Migration Means
+          </h2>
+          <span class="ml-auto text-xs font-mono text-slate-500">Slides 3/37 – 6/37</span>
+        </div>
+
+        <!-- Slide 3/37 -->
+        <article class="study-card p-6">
+          <div class="flex items-center justify-between mb-3">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              Where We Are & Today's Question
+            </h3>
+            <span class="slide-badge">Slide 3/37</span>
+          </div>
+          <p class="text-xs font-mono uppercase text-slate-500 dark:text-slate-400 mb-2">From the Last Session:</p>
+          <ul class="space-y-1.5 text-sm sm:text-base list-disc list-inside mb-4">
+            <li><span class="hl-yellow">Cloud computing</span> means using computers someone else owns, over a network, paying for what you use.</li>
+            <li><span class="hl-yellow">Service models</span> decide how much of the system you run yourself: <span class="hl-purple">IaaS, PaaS, SaaS</span>.</li>
+            <li>A <span class="hl-blue">cloud machine</span> is an image, a size, storage, and network rules. <span class="hl-blue">Containers</span> are a lighter alternative.</li>
+          </ul>
+          <div class="p-4 rounded-lg bg-amber-50/70 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800 text-sm">
+            <strong>Today's Question:</strong> An organization already has systems running in its own building. They work. People use them every day. <span class="hl-yellow">How do you move them to the cloud without breaking anything?</span>
+          </div>
+        </article>
+
+        <!-- Slide 4/37 -->
+        <article class="study-card p-6">
+          <div class="flex items-center justify-between mb-3">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              A Comparison You Already Understand: Moving House
+            </h3>
+            <span class="slide-badge">Slide 4/37</span>
+          </div>
+          <p class="text-sm text-slate-600 dark:text-slate-300 mb-3">Before you move house, you:</p>
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 mb-4 text-xs sm:text-sm">
+            <div class="p-3 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700">
+              <div class="font-bold text-amber-800 dark:text-amber-300 mb-1">1. Make a list</div>
+              Make a list of everything you own ➔ <span class="hl-yellow">Inventory</span>
+            </div>
+            <div class="p-3 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700">
+              <div class="font-bold text-amber-800 dark:text-amber-300 mb-1">2. Decide fate</div>
+              Take as it is, repair first, replace, or throw away ➔ <span class="hl-yellow">The "R"s</span>
+            </div>
+            <div class="p-3 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700">
+              <div class="font-bold text-amber-800 dark:text-amber-300 mb-1">3. Check new place</div>
+              Check rooms, power, internet ➔ <span class="hl-yellow">Requirements & Capacity</span>
+            </div>
+            <div class="p-3 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700">
+              <div class="font-bold text-amber-800 dark:text-amber-300 mb-1">4. Choose a day</div>
+              Avoid the week of your exams ➔ <span class="hl-green">Quiet window, not busy period</span>
+            </div>
+            <div class="p-3 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700">
+              <div class="font-bold text-amber-800 dark:text-amber-300 mb-1">5. Test first</div>
+              Test the new place before giving back keys to the old one ➔ <span class="hl-green">Test & Rollback ready</span>
+            </div>
+          </div>
+          <p class="text-sm font-medium text-center text-slate-700 dark:text-slate-300">
+            Cloud migration is the same list, applied to computer systems.
+          </p>
+        </article>
+
+        <!-- Slide 5/37 -->
+        <article class="study-card p-6 border-l-4 border-l-amber-600">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              What Cloud Migration Means & Core Vocabulary
+            </h3>
+            <span class="slide-badge">Slide 5/37</span>
+          </div>
+
+          <div class="p-3.5 rounded-lg bg-amber-50 dark:bg-amber-950/30 border border-amber-300 dark:border-amber-700 text-sm sm:text-base mb-5">
+            <span class="hl-yellow">Cloud migration:</span> moving applications, data, and machines from where they run now to a cloud — <span class="hl-purple">or from one cloud to another</span>.
+          </div>
+
+          <!-- Visual Flow Diagram: Workload, Source, Target, Cutover, Rollback -->
+          <div class="p-4 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 mb-5">
+            <div class="text-xs font-mono uppercase text-slate-500 dark:text-slate-400 font-bold mb-3 text-center">
+              Visualizing the 4 Core Migration Terms (Slide 5/37)
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
+              <!-- Source -->
+              <div class="p-4 rounded-lg bg-white dark:bg-slate-800 border-2 border-slate-400 text-center">
+                <div class="text-xs font-mono uppercase text-slate-500 font-bold">SOURCE (Where it is now)</div>
+                <div class="font-display font-bold text-base mt-1">Current Environment</div>
+                <div class="mt-2 p-2.5 rounded bg-amber-50 dark:bg-slate-900 border border-amber-300 dark:border-amber-700 text-xs">
+                  📦 <strong>Workload:</strong> Application + Machines + Data + Settings
+                </div>
+              </div>
+
+              <!-- Cutover / Rollback Arrows -->
+              <div class="flex flex-col items-center justify-center space-y-2 text-xs font-mono">
+                <div class="w-full py-1.5 px-3 rounded bg-emerald-100 dark:bg-emerald-950/80 border border-emerald-500 text-emerald-900 dark:text-emerald-200 text-center font-bold">
+                  1. Copy & Migrate Workload ───►
+                </div>
+                <div class="w-full py-1.5 px-3 rounded bg-sky-100 dark:bg-sky-950/80 border border-sky-500 text-sky-900 dark:text-sky-200 text-center font-bold">
+                  2. CUTOVER: Switch Users ───►
+                </div>
+                <div class="w-full py-1.5 px-3 rounded bg-rose-100 dark:bg-rose-950/80 border border-rose-500 text-rose-900 dark:text-rose-200 text-center font-bold">
+                  ◄─── 3. ROLLBACK (if new system fails)
+                </div>
+              </div>
+
+              <!-- Target -->
+              <div class="p-4 rounded-lg bg-white dark:bg-slate-800 border-2 border-emerald-500 text-center">
+                <div class="text-xs font-mono uppercase text-emerald-700 dark:text-emerald-400 font-bold">TARGET (Where it is going)</div>
+                <div class="font-display font-bold text-base mt-1">Cloud Environment</div>
+                <div class="mt-2 p-2.5 rounded bg-emerald-50 dark:bg-slate-900 border border-emerald-300 dark:border-emerald-700 text-xs">
+                  ☁️ <strong>Workload:</strong> Application + Machines + Data + Settings
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <ul class="space-y-2 text-sm sm:text-base list-disc list-inside">
+            <li><span class="hl-yellow">Workload</span> — one application together with everything it needs to run: <strong>its machines, its data, its settings</strong>.</li>
+            <li><span class="hl-yellow">Source and target</span> — where the workload is now, and where it is going.</li>
+            <li><span class="hl-yellow">Cutover</span> — the moment users are switched from the old system to the new one.</li>
+            <li><span class="hl-yellow">Rollback</span> — <span class="hl-red">going back to the old system when the new one fails</span>.</li>
+          </ul>
+        </article>
+
+        <!-- Slide 6/37 -->
+        <article class="study-card p-6">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              Why Organizations Migrate — and Why Some Do Not
+            </h3>
+            <span class="slide-badge">Slide 6/37</span>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <div class="p-4 rounded-xl bg-emerald-50/70 dark:bg-emerald-950/20 border-2 border-emerald-400 dark:border-emerald-700">
+              <h4 class="font-display font-bold text-emerald-950 dark:text-emerald-300 text-base mb-2">
+                ✅ Common Reasons to Move
+              </h4>
+              <ul class="space-y-1.5 text-sm list-disc list-inside">
+                <li><span class="hl-green">Old hardware must be replaced anyway</span></li>
+                <li><span class="hl-green">The data center lease or contract is ending</span></li>
+                <li><span class="hl-green">Demand changes a lot during the year</span></li>
+                <li><span class="hl-green">The company wants to stop running buildings and servers</span></li>
+              </ul>
+            </div>
+
+            <div class="p-4 rounded-xl bg-rose-50/70 dark:bg-rose-950/20 border-2 border-rose-400 dark:border-rose-700">
+              <h4 class="font-display font-bold text-rose-950 dark:text-rose-300 text-base mb-2">
+                🛑 Common Reasons to Stay
+              </h4>
+              <ul class="space-y-1.5 text-sm list-disc list-inside">
+                <li><span class="hl-red">Laws require data to stay in a specific place</span></li>
+                <li><span class="hl-red">The system is very old and nobody understands it</span></li>
+                <li><span class="hl-red">The hardware is new and already paid for</span></li>
+                <li><span class="hl-red">Moving costs more than it would save</span></li>
+              </ul>
+            </div>
+          </div>
+
+          <p class="text-sm font-medium text-center p-3 rounded-lg bg-slate-100 dark:bg-slate-800">
+            <span class="hl-yellow">Not every system should move.</span> Deciding which ones should, and how, is what migration planning is for.
+          </p>
+        </article>
+      </section>
+
+
+      <!-- ====================================================================
+           PART 2: PLANNING A MIGRATION (Slides 7/37 – 14/37)
+           ==================================================================== -->
+      <section id="part-2" class="space-y-6">
+        <div class="flex items-center gap-3 border-b-2 border-slate-700 dark:border-slate-700 pb-2">
+          <span class="px-3 py-1 rounded-md bg-slate-700 text-white font-display font-bold text-sm">PART 2</span>
+          <h2 class="font-display text-xl sm:text-2xl font-bold text-slate-900 dark:text-white">
+            Planning a Migration
+          </h2>
+          <span class="ml-auto text-xs font-mono text-slate-500">Slides 7/37 – 14/37</span>
+        </div>
+
+        <!-- Slide 7/37 -->
+        <article class="study-card p-6">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              The 5 Phases of a Migration
+            </h3>
+            <span class="slide-badge">Slide 7/37</span>
+          </div>
+
+          <!-- 5-Phase Pipeline Visual Diagram -->
+          <div class="grid grid-cols-1 sm:grid-cols-5 gap-3 mb-4">
+            <div class="p-3.5 rounded-xl bg-amber-50 dark:bg-slate-800 border-2 border-amber-400 dark:border-amber-600">
+              <div class="font-mono text-xs font-bold text-amber-800 dark:text-amber-300">PHASE 1</div>
+              <div class="font-display font-bold text-base my-1"><span class="hl-yellow">1. Assess</span></div>
+              <p class="text-xs text-slate-600 dark:text-slate-300">
+                Find out what you have, what it depends on, and how well it runs today.
+              </p>
+            </div>
+            <div class="p-3.5 rounded-xl bg-sky-50 dark:bg-slate-800 border-2 border-sky-400 dark:border-sky-600">
+              <div class="font-mono text-xs font-bold text-sky-800 dark:text-sky-300">PHASE 2</div>
+              <div class="font-display font-bold text-base my-1"><span class="hl-yellow">2. Plan</span></div>
+              <p class="text-xs text-slate-600 dark:text-slate-300">
+                Choose a strategy for each workload, an order, and dates.
+              </p>
+            </div>
+            <div class="p-3.5 rounded-xl bg-indigo-50 dark:bg-slate-800 border-2 border-indigo-400 dark:border-indigo-600">
+              <div class="font-mono text-xs font-bold text-indigo-800 dark:text-indigo-300">PHASE 3</div>
+              <div class="font-display font-bold text-base my-1"><span class="hl-yellow">3. Migrate</span></div>
+              <p class="text-xs text-slate-600 dark:text-slate-300">
+                Build the target, copy the data, move the workload.
+              </p>
+            </div>
+            <div class="p-3.5 rounded-xl bg-emerald-50 dark:bg-slate-800 border-2 border-emerald-400 dark:border-emerald-600">
+              <div class="font-mono text-xs font-bold text-emerald-800 dark:text-emerald-300">PHASE 4</div>
+              <div class="font-display font-bold text-base my-1"><span class="hl-yellow">4. Test & validate</span></div>
+              <p class="text-xs text-slate-600 dark:text-slate-300">
+                Prove the new system works before users arrive.
+              </p>
+            </div>
+            <div class="p-3.5 rounded-xl bg-purple-50 dark:bg-slate-800 border-2 border-purple-400 dark:border-purple-600">
+              <div class="font-mono text-xs font-bold text-purple-800 dark:text-purple-300">PHASE 5</div>
+              <div class="font-display font-bold text-base my-1"><span class="hl-yellow">5. Operate & improve</span></div>
+              <p class="text-xs text-slate-600 dark:text-slate-300">
+                Run it, watch it, and adjust size and cost.
+              </p>
+            </div>
+          </div>
+
+          <div class="p-3 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-xs sm:text-sm">
+            📌 <strong>Provider Naming Note:</strong> Providers use different names for these phases (<span class="hl-purple">AWS: assess, mobilize, migrate</span>; <span class="hl-purple">Microsoft: prepare, assess, deploy, release</span>), <span class="hl-yellow">but the order is always the same</span>.
+          </div>
+        </article>
+
+        <!-- Slide 8/37 -->
+        <article class="study-card p-6 border-l-4 border-l-rose-600">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              Assessment: Know What You Have
+            </h3>
+            <span class="slide-badge">Slide 8/37</span>
+          </div>
+
+          <p class="text-sm mb-3">Before moving anything, collect:</p>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4 text-sm">
+            <div class="p-3.5 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700">
+              📋 <span class="hl-yellow">Inventory</span> — every server, application, database, and the <strong>software licenses</strong> they use.
+            </div>
+            <div class="p-3.5 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700">
+              🔗 <span class="hl-yellow">Dependencies</span> — what each workload needs in order to work: other servers, databases, shared folders, login systems.
+            </div>
+            <div class="p-3.5 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700">
+              📊 <span class="hl-yellow">Baseline</span> — measurements of how the system performs today: <strong>processor and memory use, response time, number of users</strong>. You will compare the new system against these numbers.
+            </div>
+            <div class="p-3.5 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700">
+              ⚖️ <span class="hl-yellow">Requirements</span> — rules the new location must meet: <strong>security, laws about data, and how long the system may be unavailable</strong>.
+            </div>
+          </div>
+
+          <div class="p-3.5 rounded-lg bg-rose-50 dark:bg-rose-950/30 border border-rose-300 dark:border-rose-800 text-sm font-bold text-center">
+            ⚠️ <span class="hl-red">Most failed migrations fail here, because something was never written down.</span>
+          </div>
+        </article>
+
+        <!-- Slide 9/37 -->
+        <article class="study-card p-6">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              Dependencies: The Hidden Part & Migration Waves
+            </h3>
+            <span class="slide-badge">Slide 9/37</span>
+          </div>
+
+          <!-- Visual Dependency Chain Diagram: Student Registration System -->
+          <div class="p-4 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 mb-4">
+            <div class="text-xs font-mono uppercase text-slate-500 font-bold mb-3">
+              Example Dependency Chain: Student Registration System (Slide 9/37)
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-4 gap-3 text-center text-xs sm:text-sm items-center">
+              <div class="p-3 rounded-lg bg-white dark:bg-slate-800 border-2 border-sky-500">
+                <div class="font-bold">1. Web Server</div>
+                <div class="text-[11px] text-slate-500 mt-1">Students open in their browser</div>
+              </div>
+              <div class="p-3 rounded-lg bg-white dark:bg-slate-800 border-2 border-amber-500">
+                <div class="font-bold">2. Database Server</div>
+                <div class="text-[11px] text-slate-500 mt-1">Web server reads from database</div>
+              </div>
+              <div class="p-3 rounded-lg bg-white dark:bg-slate-800 border-2 border-purple-500">
+                <div class="font-bold">3. University Login System</div>
+                <div class="text-[11px] text-slate-500 mt-1">Checks student passwords</div>
+              </div>
+              <div class="p-3 rounded-lg bg-white dark:bg-slate-800 border-2 border-emerald-500">
+                <div class="font-bold">4. Shared Folder</div>
+                <div class="text-[11px] text-slate-500 mt-1">Writes reports for finance office</div>
+              </div>
+            </div>
+
+            <div class="mt-3 p-3 rounded-lg bg-rose-50 dark:bg-rose-950/40 border border-rose-300 dark:border-rose-800 text-xs sm:text-sm">
+              ❌ <strong>What happens if you move ONLY the web server?</strong> It will be <span class="hl-red">slower</span> (every request now crosses the internet to reach the database) or <span class="hl-red">it will stop working completely</span> (a firewall blocks the connection).
+            </div>
+          </div>
+
+          <div class="p-4 rounded-xl bg-emerald-50 dark:bg-emerald-950/30 border-2 border-emerald-400 dark:border-emerald-700 text-sm">
+            <strong>Rule:</strong> <span class="hl-green">Workloads that depend on each other are usually moved together</span>, in the same <span class="hl-yellow">migration wave</span> — a group of workloads moved at the same time.
+          </div>
+        </article>
+
+        <!-- Slide 10/37 -->
+        <article class="study-card p-6">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              Is It Worth It? Counting the Full Cost (TCO)
+            </h3>
+            <span class="slide-badge">Slide 10/37</span>
+          </div>
+
+          <p class="text-sm sm:text-base mb-4">
+            <span class="hl-yellow">Total cost of ownership (TCO):</span> everything a system costs over its life, <span class="hl-red">not only the price of the machines</span>.
+          </p>
+
+          <div class="overflow-x-auto rounded-xl border border-slate-300 dark:border-slate-700 mb-4">
+            <table class="w-full text-left text-xs sm:text-sm">
+              <thead class="bg-slate-100 dark:bg-slate-800 font-display text-base">
+                <tr>
+                  <th class="py-3 px-4 border-b border-slate-300 dark:border-slate-700 w-1/2">🏢 Staying in your own building</th>
+                  <th class="py-3 px-4 border-b border-slate-300 dark:border-slate-700 w-1/2">☁️ Moving to the cloud</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-200 dark:divide-slate-800">
+                <tr>
+                  <td class="py-2.5 px-4">Servers, storage, network equipment</td>
+                  <td class="py-2.5 px-4">Monthly bill for machines and storage</td>
+                </tr>
+                <tr>
+                  <td class="py-2.5 px-4">Electricity, cooling, building space</td>
+                  <td class="py-2.5 px-4"><span class="hl-red">Charges for data leaving the provider</span></td>
+                </tr>
+                <tr>
+                  <td class="py-2.5 px-4">Staff time for repairs and updates</td>
+                  <td class="py-2.5 px-4">Staff time to learn new tools</td>
+                </tr>
+                <tr>
+                  <td class="py-2.5 px-4">Replacing hardware every few years</td>
+                  <td class="py-2.5 px-4"><span class="hl-yellow">One-time cost of the migration itself</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-300">
+            Compare both columns over the same period, usually <span class="hl-purple">three to five years</span>. Every provider offers a free calculator for this.
+          </p>
+        </article>
+
+        <!-- Slide 11/37 -->
+        <article class="study-card p-6 border-l-4 border-l-sky-600">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              Migration Strategies: The "R"s (6 R's + 7th Relocate)
+            </h3>
+            <span class="slide-badge">Slide 11/37</span>
+          </div>
+
+          <div class="overflow-x-auto rounded-xl border border-slate-300 dark:border-slate-700 mb-4">
+            <table class="w-full text-left text-xs sm:text-sm">
+              <thead class="bg-slate-100 dark:bg-slate-800 font-display text-base">
+                <tr>
+                  <th class="py-3 px-4 w-1/5">Strategy</th>
+                  <th class="py-3 px-4 w-2/5">What you do</th>
+                  <th class="py-3 px-4 w-2/5">Example</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-200 dark:divide-slate-800">
+                <tr>
+                  <td class="py-2.5 px-4 font-bold"><span class="hl-yellow">Rehost</span></td>
+                  <td class="py-2.5 px-4">Move it as it is onto cloud VMs (<span class="hl-blue">lift and shift</span>).</td>
+                  <td class="py-2.5 px-4">Copy a web server VM to the cloud unchanged.</td>
+                </tr>
+                <tr>
+                  <td class="py-2.5 px-4 font-bold"><span class="hl-yellow">Replatform</span></td>
+                  <td class="py-2.5 px-4">Move it with small changes that use a cloud service.</td>
+                  <td class="py-2.5 px-4">Use the provider's managed database instead of your own.</td>
+                </tr>
+                <tr>
+                  <td class="py-2.5 px-4 font-bold"><span class="hl-yellow">Refactor</span></td>
+                  <td class="py-2.5 px-4">Redesign and rewrite it for the cloud.</td>
+                  <td class="py-2.5 px-4">Split a large program into containers.</td>
+                </tr>
+                <tr>
+                  <td class="py-2.5 px-4 font-bold"><span class="hl-yellow">Repurchase</span></td>
+                  <td class="py-2.5 px-4">Replace it with a <span class="hl-purple">SaaS</span> product.</td>
+                  <td class="py-2.5 px-4">In-house email server ➔ Microsoft 365.</td>
+                </tr>
+                <tr>
+                  <td class="py-2.5 px-4 font-bold"><span class="hl-yellow">Retire</span></td>
+                  <td class="py-2.5 px-4">Switch it off; nobody needs it.</td>
+                  <td class="py-2.5 px-4">A tool nobody has opened in two years.</td>
+                </tr>
+                <tr>
+                  <td class="py-2.5 px-4 font-bold"><span class="hl-yellow">Retain</span></td>
+                  <td class="py-2.5 px-4">Keep it where it is, for now.</td>
+                  <td class="py-2.5 px-4">A system that laws require to stay in-house.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="p-3 rounded-lg bg-purple-50 dark:bg-purple-950/30 border border-purple-300 dark:border-purple-800 text-xs sm:text-sm">
+            ➕ <strong>The 7th "R":</strong> <span class="hl-purple">AWS adds a seventh, relocate:</span> moving a whole virtualization platform to the cloud without changing the machines on it.
+          </div>
+        </article>
+
+        <!-- Slide 12/37 -->
+        <article class="study-card p-6">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              Choosing a Strategy: Speed & Low Risk vs. Long-Term Benefit
+            </h3>
+            <span class="slide-badge">Slide 12/37</span>
+          </div>
+
+          <p class="text-sm mb-4">
+            The strategies trade <strong>speed and low risk</strong> against <strong>long-term benefit</strong>:
+          </p>
+
+          <!-- Visual Trade-off Spectrum: Rehost vs Refactor -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <div class="p-4 rounded-xl bg-emerald-50/60 dark:bg-slate-800 border-2 border-emerald-400 dark:border-emerald-600">
+              <div class="flex items-center justify-between mb-2">
+                <span class="font-display font-bold text-base text-emerald-950 dark:text-emerald-300"><span class="hl-yellow">Rehost</span> (Lift & Shift)</span>
+                <span class="text-xs font-mono px-2 py-0.5 rounded bg-emerald-200 dark:bg-emerald-900 text-emerald-900 dark:text-emerald-200 font-bold">Fastest / Low Risk</span>
+              </div>
+              <ul class="space-y-1.5 text-sm list-disc list-inside">
+                <li><span class="hl-green">Fastest and cheapest to do</span></li>
+                <li><span class="hl-green">Least risk of breaking the application</span></li>
+                <li><span class="hl-red">Gains little:</span> the same system, now renting instead of owning</li>
+              </ul>
+            </div>
+
+            <div class="p-4 rounded-xl bg-sky-50/60 dark:bg-slate-800 border-2 border-sky-400 dark:border-sky-600">
+              <div class="flex items-center justify-between mb-2">
+                <span class="font-display font-bold text-base text-sky-950 dark:text-sky-300"><span class="hl-yellow">Refactor</span> (Cloud-Native Redesign)</span>
+                <span class="text-xs font-mono px-2 py-0.5 rounded bg-sky-200 dark:bg-sky-900 text-sky-900 dark:text-sky-200 font-bold">Highest Long-Term Benefit</span>
+              </div>
+              <ul class="space-y-1.5 text-sm list-disc list-inside">
+                <li><span class="hl-red">Slowest and most expensive to do</span></li>
+                <li><span class="hl-red">Highest risk during the change</span></li>
+                <li><span class="hl-green">Gains the most:</span> elasticity, managed services, lower running cost</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="p-3.5 rounded-lg bg-amber-50 dark:bg-amber-950/30 border border-amber-300 dark:border-amber-800 text-sm">
+            💡 <strong>A common path:</strong> <span class="hl-green">rehost first to leave the data center on time</span>, then <span class="hl-blue">replatform or refactor</span> the important systems once they are running in the cloud.
+          </div>
+        </article>
+
+        <!-- Slide 13/37 -->
+        <article class="study-card p-6 border-l-4 border-l-emerald-500">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              Worked Exercise: Choose a Strategy for Each Workload
+            </h3>
+            <span class="slide-badge">Slide 13/37</span>
+          </div>
+
+          <div class="space-y-3 text-sm mb-4">
+            <div class="p-3.5 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+              <div>
+                <strong>1.</strong> A timesheet application on its own server, which works well, and the data center closes in three months.
+              </div>
+              <div class="shrink-0">
+                <span class="hl-green">1 ➔ Rehost</span> <span class="text-xs text-slate-500 block sm:inline">(Fast deadline; works as-is)</span>
+              </div>
+            </div>
+
+            <div class="p-3.5 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+              <div>
+                <strong>2.</strong> A company runs its own email server, and two staff spend half their time keeping it working.
+              </div>
+              <div class="shrink-0">
+                <span class="hl-green">2 ➔ Repurchase</span> <span class="text-xs text-slate-500 block sm:inline">(Replace with SaaS email)</span>
+              </div>
+            </div>
+
+            <div class="p-3.5 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+              <div>
+                <strong>3.</strong> A reporting tool whose last login was eighteen months ago.
+              </div>
+              <div class="shrink-0">
+                <span class="hl-green">3 ➔ Retire</span> <span class="text-xs text-slate-500 block sm:inline">(Unused; switch it off)</span>
+              </div>
+            </div>
+
+            <div class="p-3.5 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+              <div>
+                <strong>4.</strong> An online shop that slows down every holiday season and must grow and shrink automatically.
+              </div>
+              <div class="shrink-0">
+                <span class="hl-green">4 ➔ Refactor (or replatform)</span> <span class="text-xs text-slate-500 block sm:inline">(Needs cloud elasticity)</span>
+              </div>
+            </div>
+
+            <div class="p-3.5 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+              <div>
+                <strong>5.</strong> A laboratory system connected by cable to a physical measuring device.
+              </div>
+              <div class="shrink-0">
+                <span class="hl-green">5 ➔ Retain</span> <span class="text-xs text-slate-500 block sm:inline">(Tied to local hardware)</span>
+              </div>
+            </div>
+          </div>
+
+          <p class="text-xs sm:text-sm font-semibold text-center text-slate-600 dark:text-slate-300">
+            📌 Slide Note: <span class="hl-yellow">The reason matters more than the label.</span>
+          </p>
+        </article>
+
+        <!-- Slide 14/37 -->
+        <article class="study-card p-6">
+          <div class="flex items-center justify-between mb-3">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              Timing: When to Move
+            </h3>
+            <span class="slide-badge">Slide 14/37</span>
+          </div>
+
+          <ul class="space-y-2.5 text-sm sm:text-base list-disc list-inside">
+            <li><span class="hl-yellow">Start with a pilot</span> — <span class="hl-green">one small, low-risk workload, moved first</span>, to learn the process before anything important is touched.</li>
+            <li><span class="hl-yellow">Move in waves</span> — groups of related workloads, one group at a time, <span class="hl-red">never everything at once</span>.</li>
+            <li><span class="hl-yellow">Choose quiet times</span> — nights, weekends, or holidays when few people use the system.</li>
+            <li><span class="hl-yellow">Avoid busy periods</span> — <span class="hl-red">no university moves its registration system during registration week</span>.</li>
+            <li><span class="hl-yellow">Leave time to go back</span> — plan the cutover so that a <span class="hl-green">rollback is still possible if the tests fail</span>.</li>
+          </ul>
+        </article>
+      </section>
+
+
+      <!-- ====================================================================
+           PART 3: CARRYING OUT THE MIGRATION (Slides 15/37 – 22/37)
+           ==================================================================== -->
+      <section id="part-3" class="space-y-6">
+        <div class="flex items-center gap-3 border-b-2 border-slate-700 dark:border-slate-700 pb-2">
+          <span class="px-3 py-1 rounded-md bg-slate-700 text-white font-display font-bold text-sm">PART 3</span>
+          <h2 class="font-display text-xl sm:text-2xl font-bold text-slate-900 dark:text-white">
+            Carrying Out the Migration
+          </h2>
+          <span class="ml-auto text-xs font-mono text-slate-500">Slides 15/37 – 22/37</span>
+        </div>
+
+        <!-- Slide 15/37 -->
+        <article class="study-card p-6">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              Change Management (5 Controlled Steps)
+            </h3>
+            <span class="slide-badge">Slide 15/37</span>
+          </div>
+          <p class="text-sm sm:text-base mb-4">
+            Migration changes systems people depend on. <span class="hl-yellow">Change management</span> is the process that keeps those changes controlled:
+          </p>
+
+          <div class="grid grid-cols-1 sm:grid-cols-5 gap-3 text-xs sm:text-sm">
+            <div class="p-3.5 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700">
+              <div class="font-bold text-amber-800 dark:text-amber-300 mb-1">1. Request</div>
+              Write down what will change, why, when, the risk, and <span class="hl-green">how to undo it</span>.
+            </div>
+            <div class="p-3.5 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700">
+              <div class="font-bold text-amber-800 dark:text-amber-300 mb-1">2. Approve</div>
+              The people responsible (often a <span class="hl-yellow">change advisory board</span>) agree to it.
+            </div>
+            <div class="p-3.5 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700">
+              <div class="font-bold text-amber-800 dark:text-amber-300 mb-1">3. Announce</div>
+              Tell users when the system will be unavailable.
+            </div>
+            <div class="p-3.5 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700">
+              <div class="font-bold text-amber-800 dark:text-amber-300 mb-1">4. Carry out</div>
+              In the agreed time slot, called a <span class="hl-yellow">maintenance window</span>.
+            </div>
+            <div class="p-3.5 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700">
+              <div class="font-bold text-amber-800 dark:text-amber-300 mb-1">5. Record</div>
+              Write down what happened, including anything that went wrong.
+            </div>
+          </div>
+        </article>
+
+        <!-- Slide 16/37 -->
+        <article class="study-card p-6">
+          <div class="flex items-center justify-between mb-3">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              Deployment Automation: Infrastructure as Code (IaC)
+            </h3>
+            <span class="slide-badge">Slide 16/37</span>
+          </div>
+
+          <p class="text-sm sm:text-base mb-3">
+            Building the target by clicking in a web console works for one machine. <span class="hl-red">It does not work for two hundred, and nobody can repeat it exactly.</span>
+          </p>
+
+          <div class="p-3.5 rounded-lg bg-sky-50 dark:bg-sky-950/30 border border-sky-300 dark:border-sky-800 text-sm sm:text-base mb-4">
+            <span class="hl-yellow">Infrastructure as code:</span> describing machines, networks, and settings in <strong>text files</strong>, which a tool reads and then creates everything automatically.
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4 text-sm">
+            <div class="p-3.5 rounded-lg bg-emerald-50/70 dark:bg-slate-800 border border-emerald-300 dark:border-emerald-700">
+              🔁 <span class="hl-green">Repeatable</span> — run it again and get <strong>exactly the same result</strong>.
+            </div>
+            <div class="p-3.5 rounded-lg bg-emerald-50/70 dark:bg-slate-800 border border-emerald-300 dark:border-emerald-700">
+              👀 <span class="hl-green">Reviewable</span> — colleagues can <strong>read and check the file</strong> before it runs.
+            </div>
+            <div class="p-3.5 rounded-lg bg-emerald-50/70 dark:bg-slate-800 border border-emerald-300 dark:border-emerald-700">
+              📝 <span class="hl-green">Recorded</span> — every change is saved, so <strong>"what changed?" has an answer</strong>.
+            </div>
+          </div>
+
+          <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-300">
+            <strong>Common tools:</strong> <span class="hl-blue">Terraform</span> (works with every provider), <span class="hl-purple">AWS CloudFormation</span>, <span class="hl-purple">Azure Bicep</span>. We return to this in the automation topic.
+          </p>
+        </article>
+
+        <!-- Slide 17/37 -->
+        <article class="study-card p-6 border-l-4 border-l-blue-600">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              Moving Data: How Long Does It Take? (Formula & Calculation)
+            </h3>
+            <span class="slide-badge">Slide 17/37</span>
+          </div>
+
+          <p class="text-sm sm:text-base mb-4">
+            Data travels at the speed of your network connection. A quick calculation:
+          </p>
+
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 items-center mb-4">
+            <!-- Formula Box -->
+            <div class="lg:col-span-5 p-4 rounded-xl bg-blue-50 dark:bg-blue-950/40 border-2 border-blue-500 text-center">
+              <div class="text-xs font-mono uppercase text-blue-800 dark:text-blue-300 font-bold mb-1">How to Calculate Transfer Time</div>
+              <div class="font-mono text-sm sm:text-base font-bold text-blue-950 dark:text-blue-200 my-2">
+                bytes × 8 = bits<br/>
+                bits ÷ bits per second = seconds
+              </div>
+              <div class="text-xs font-mono text-slate-700 dark:text-slate-300 bg-white/80 dark:bg-slate-900 p-2 rounded border border-blue-200 dark:border-slate-700">
+                Example (50 TB @ 1 Gbps):<br/>
+                50 × 10^12 × 8 ÷ 10^9 = 400,000 s ≈ <strong>4.6 days</strong>
+              </div>
+            </div>
+
+            <!-- Transfer Table -->
+            <div class="lg:col-span-7 overflow-x-auto rounded-xl border border-slate-300 dark:border-slate-700">
+              <table class="w-full text-left text-xs sm:text-sm font-mono">
+                <thead class="bg-slate-100 dark:bg-slate-800 font-display text-sm">
+                  <tr>
+                    <th class="py-3 px-4">Amount of data</th>
+                    <th class="py-3 px-4">100 Mbps line (100%)</th>
+                    <th class="py-3 px-4">1 Gbps line (100%)</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-200 dark:divide-slate-800">
+                  <tr>
+                    <td class="py-2.5 px-4 font-bold">5 TB</td>
+                    <td class="py-2.5 px-4"><span class="hl-red">about 4.6 days</span></td>
+                    <td class="py-2.5 px-4"><span class="hl-green">about 11 hours</span></td>
+                  </tr>
+                  <tr>
+                    <td class="py-2.5 px-4 font-bold">50 TB</td>
+                    <td class="py-2.5 px-4"><span class="hl-red">about 46 days</span></td>
+                    <td class="py-2.5 px-4"><span class="hl-purple">about 4.6 days</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="p-3.5 rounded-lg bg-amber-50 dark:bg-amber-950/30 border border-amber-300 dark:border-amber-800 text-xs sm:text-sm">
+            ⚠️ <strong>Realistic Throughput Rule:</strong> These assume the line is used at 100% the whole time, <span class="hl-red">which never happens</span>. At a more realistic <span class="hl-purple">70%</span>, <span class="hl-yellow">50 TB over 1 Gbps takes about 6.6 days</span>.
+          </div>
+        </article>
+
+        <!-- Slide 18/37 -->
+        <article class="study-card p-6">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              Moving Data: Online or Offline Transfer
+            </h3>
+            <span class="slide-badge">Slide 18/37</span>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <div class="p-4 rounded-xl bg-sky-50/50 dark:bg-slate-800 border-2 border-sky-400 dark:border-sky-600">
+              <h4 class="font-display font-bold text-base text-sky-950 dark:text-sky-300 mb-2">
+                🌐 <span class="hl-yellow">Online transfer</span>
+              </h4>
+              <p class="text-sm mb-2">
+                Copy over the network — the internet, a VPN, or a private line to the provider.
+              </p>
+              <ul class="space-y-1 text-xs sm:text-sm list-disc list-inside">
+                <li><span class="hl-green">Simple, and can keep copying changes</span></li>
+                <li><span class="hl-red">Too slow for very large amounts</span></li>
+              </ul>
+            </div>
+
+            <div class="p-4 rounded-xl bg-amber-50/50 dark:bg-slate-800 border-2 border-amber-400 dark:border-amber-600">
+              <h4 class="font-display font-bold text-base text-amber-950 dark:text-amber-300 mb-2">
+                🚚 <span class="hl-yellow">Offline transfer</span>
+              </h4>
+              <p class="text-sm mb-2">
+                The provider sends a physical storage device; you fill it and ship it back.
+              </p>
+              <ul class="space-y-1 text-xs sm:text-sm list-disc list-inside">
+                <li><span class="hl-green">Fast for very large amounts</span></li>
+                <li><span class="hl-red">Days of shipping; no updates during that time</span></li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Hybrid Combination Diagram -->
+          <div class="p-4 rounded-xl bg-emerald-50/60 dark:bg-slate-900 border border-emerald-300 dark:border-emerald-700 mb-3 text-sm">
+            <div class="font-display font-bold text-emerald-950 dark:text-emerald-300 mb-1">
+              ✅ A Common Combination (Hybrid Bulk + Delta Sync):
+            </div>
+            <p>
+              <span class="hl-green">Send the bulk of the data offline</span> (Step 1: physical appliance), then <span class="hl-green">copy only the changes made since then over the network</span>, just before cutover (Step 2: online delta sync).
+            </p>
+          </div>
+
+          <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-300">
+            <strong>Examples:</strong> <span class="hl-purple">Azure Data Box</span>. The textbook also mentions <span class="hl-purple">AWS Snowball</span>; <span class="hl-red">since November 2025, AWS no longer offers it to new customers</span>.
+          </p>
+        </article>
+
+        <!-- Slide 19/37 -->
+        <article class="study-card p-6">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              Moving Virtual Machines (P2V, V2V, V2C)
+            </h3>
+            <span class="slide-badge">Slide 19/37</span>
+          </div>
+
+          <p class="text-sm mb-3">Three types of move, named by where the machine starts and where it ends:</p>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4 text-sm">
+            <div class="p-3.5 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700">
+              🖥️ ➔ 📦 <span class="hl-yellow">P2V (physical to virtual):</span> turn a real server into a virtual machine.
+            </div>
+            <div class="p-3.5 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700">
+              📦 ➔ 📦 <span class="hl-yellow">V2V (virtual to virtual):</span> move a virtual machine to a different hypervisor.
+            </div>
+            <div class="p-3.5 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700">
+              📦 ➔ ☁️ <span class="hl-yellow">V2C (virtual to cloud):</span> move a virtual machine to a cloud provider.
+            </div>
+          </div>
+
+          <div class="p-4 rounded-xl bg-rose-50/60 dark:bg-rose-950/20 border border-rose-300 dark:border-rose-800 mb-3 text-sm">
+            <div class="font-display font-bold text-rose-950 dark:text-rose-300 mb-1">
+              🔧 What Makes It Harder Than Copying a File:
+            </div>
+            <ul class="space-y-1.5 list-disc list-inside">
+              <li>Each hypervisor stores virtual disks in its own format — <span class="hl-blue">VMDK for VMware</span>, <span class="hl-blue">VHD for Microsoft</span>, <span class="hl-blue">QCOW2 for KVM</span> — so <span class="hl-yellow">the disk may need converting</span>.</li>
+              <li>The machine may also need <span class="hl-yellow">new drivers</span> to run on the new hypervisor.</li>
+            </ul>
+          </div>
+
+          <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-300">
+            Migration tools can <span class="hl-green">copy a machine while it keeps running, then switch over in minutes at the end</span>.
+          </p>
+        </article>
+
+        <!-- Slide 20/37 -->
+        <article class="study-card p-6">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              Moving Storage and Databases (Minimizing Downtime)
+            </h3>
+            <span class="slide-badge">Slide 20/37</span>
+          </div>
+
+          <p class="text-sm sm:text-base mb-4">
+            A database is in use while you copy it, so its contents keep changing. The usual 4-step method:
+          </p>
+
+          <!-- 4-Step Live Database Migration Timeline Diagram -->
+          <div class="p-4 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 mb-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-3 text-xs sm:text-sm">
+              <div class="p-3 rounded-lg bg-emerald-50 dark:bg-slate-800 border-2 border-emerald-500">
+                <div class="font-mono font-bold text-emerald-700 dark:text-emerald-400">STEP 1 (Users Online)</div>
+                <div class="font-bold mt-1">Initial Full Copy</div>
+                <p class="text-xs mt-1">Copy everything while the old system keeps running.</p>
+              </div>
+              <div class="p-3 rounded-lg bg-emerald-50 dark:bg-slate-800 border-2 border-emerald-500">
+                <div class="font-mono font-bold text-emerald-700 dark:text-emerald-400">STEP 2 (Users Online)</div>
+                <div class="font-bold mt-1">Ongoing <span class="hl-blue">Replication</span></div>
+                <p class="text-xs mt-1">Keep copying the changes as they happen.</p>
+              </div>
+              <div class="p-3 rounded-lg bg-rose-50 dark:bg-rose-950/60 border-2 border-rose-500">
+                <div class="font-mono font-bold text-rose-700 dark:text-rose-300">STEP 3 (Brief Stop)</div>
+                <div class="font-bold mt-1">Stop & Final Sync</div>
+                <p class="text-xs mt-1">Stop the old system briefly, copy the last few changes.</p>
+              </div>
+              <div class="p-3 rounded-lg bg-sky-50 dark:bg-slate-800 border-2 border-sky-500">
+                <div class="font-mono font-bold text-sky-700 dark:text-sky-400">STEP 4 (Live on Cloud)</div>
+                <div class="font-bold mt-1">Switch Users</div>
+                <p class="text-xs mt-1">Switch users to the new database.</p>
+              </div>
+            </div>
+            <div class="mt-3 p-2.5 rounded bg-amber-100/80 dark:bg-amber-950/50 border border-amber-400 text-center text-xs sm:text-sm font-semibold">
+              ⏱️ <span class="hl-yellow">The time between steps 3 and 4 is the ONLY time users cannot work.</span> Good planning makes it <span class="hl-green">minutes instead of days</span>.
+            </div>
+          </div>
+
+          <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-300">
+            ⚠️ <strong>Cross-Engine Warning:</strong> Moving between two different database products (for example, from <span class="hl-purple">Oracle to PostgreSQL</span>) is <span class="hl-red">much harder than moving the same product</span>, because the data types and features differ.
+          </p>
+        </article>
+
+        <!-- Slide 21/37 -->
+        <article class="study-card p-6">
+          <div class="flex items-center justify-between mb-3">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              Moving From One Cloud to Another (Vendor Lock-In)
+            </h3>
+            <span class="slide-badge">Slide 21/37</span>
+          </div>
+
+          <p class="text-sm mb-3">Everything on the previous slides still applies, plus three new problems:</p>
+          <ul class="space-y-2 text-sm sm:text-base list-disc list-inside mb-4">
+            <li><span class="hl-red">Egress charges</span> — the old provider charges for every gigabyte that leaves it.</li>
+            <li><span class="hl-red">Different services</span> — a managed database or function service on one provider has no exact equal on the other, so some parts must be rebuilt.</li>
+            <li><span class="hl-red">Different tools and names</span> — permissions, networks, and monitoring all work differently.</li>
+          </ul>
+
+          <div class="p-3.5 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-sm">
+            This is <span class="hl-yellow">vendor lock-in</span> from last session, now with a price on it. <span class="hl-green">Workloads built on standard tools — virtual machines, containers, common databases — are much easier to move.</span>
+          </div>
+        </article>
+
+        <!-- Slide 22/37 -->
+        <article class="study-card p-6 border-l-4 border-l-amber-500">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              Cutover: Switching the Users (DNS & TTL)
+            </h3>
+            <span class="slide-badge">Slide 22/37</span>
+          </div>
+
+          <p class="text-sm sm:text-base mb-4">
+            Most systems are reached by a name, such as <span class="hl-code">obs.aydin.edu.tr</span>, not by a numeric address.<br/>
+            <span class="hl-yellow">DNS (Domain Name System)</span> is the internet's address book: it turns a name into the numeric address of a server. To switch users, you change the DNS entry to point to the new system.
+          </p>
+
+          <!-- Visual DNS Cutover & Rollback Diagram -->
+          <div class="p-4 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 mb-4 text-xs sm:text-sm">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-3 items-center text-center">
+              <div class="p-3 rounded-lg bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700">
+                <div class="font-bold">Users' Browsers</div>
+                <div class="font-mono text-xs mt-1">obs.aydin.edu.tr</div>
+                <div class="text-[11px] text-slate-500 mt-1">Caches answer for <strong>TTL</strong> duration</div>
+              </div>
+              <div class="p-3 rounded-lg bg-amber-50 dark:bg-slate-800 border-2 border-amber-500">
+                <div class="font-bold">DNS Record</div>
+                <div class="text-xs mt-1"><span class="hl-green">Lower TTL a day before cutover!</span></div>
+              </div>
+              <div class="space-y-2">
+                <div class="p-2 rounded bg-slate-200 dark:bg-slate-800 border border-slate-400 text-xs">
+                  Old Server (Keep running until proven ➔ <strong>Rollback</strong>)
+                </div>
+                <div class="p-2 rounded bg-emerald-100 dark:bg-emerald-950 border-2 border-emerald-500 text-xs font-bold">
+                  New Cloud Server (<strong>Cutover Target</strong>)
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
+            <div class="p-3.5 rounded-lg bg-amber-50 dark:bg-amber-950/30 border border-amber-300 dark:border-amber-800">
+              1️⃣ <strong>Two things to know (TTL):</strong> The switch is not instant: computers remember old DNS answers for a set time (the <span class="hl-yellow">TTL, time to live</span>), so <span class="hl-green">lower it a day before cutover</span>.
+            </div>
+            <div class="p-3.5 rounded-lg bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-300 dark:border-emerald-800">
+              2️⃣ <strong>Rollback Safety:</strong> <span class="hl-green">Keep the old system running until the new one is proven.</span> Pointing the name back is your <span class="hl-yellow">rollback</span>.
+            </div>
+          </div>
+        </article>
+      </section>
+
+
+      <!-- ====================================================================
+           PART 4: TESTING BEFORE USERS ARRIVE (Slides 23/37 – 25/37)
+           ==================================================================== -->
+      <section id="part-4" class="space-y-6">
+        <div class="flex items-center gap-3 border-b-2 border-slate-700 dark:border-slate-700 pb-2">
+          <span class="px-3 py-1 rounded-md bg-slate-700 text-white font-display font-bold text-sm">PART 4</span>
+          <h2 class="font-display text-xl sm:text-2xl font-bold text-slate-900 dark:text-white">
+            Testing Before Users Arrive
+          </h2>
+          <span class="ml-auto text-xs font-mono text-slate-500">Slides 23/37 – 25/37</span>
+        </div>
+
+        <!-- Slide 23/37 -->
+        <article class="study-card p-6">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              6 Types of Testing
+            </h3>
+            <span class="slide-badge">Slide 23/37</span>
+          </div>
+
+          <div class="overflow-x-auto rounded-xl border border-slate-300 dark:border-slate-700">
+            <table class="w-full text-left text-xs sm:text-sm">
+              <thead class="bg-slate-100 dark:bg-slate-800 font-display text-base">
+                <tr>
+                  <th class="py-3 px-4 w-1/3">Test</th>
+                  <th class="py-3 px-4">The question it answers</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-200 dark:divide-slate-800">
+                <tr>
+                  <td class="py-2.5 px-4 font-bold"><span class="hl-yellow">Functional</span></td>
+                  <td class="py-2.5 px-4">Does every feature still do what it did before?</td>
+                </tr>
+                <tr>
+                  <td class="py-2.5 px-4 font-bold"><span class="hl-yellow">Performance and load</span></td>
+                  <td class="py-2.5 px-4">Is it <span class="hl-blue">as fast as the baseline</span>, with a normal number of users and with many users at once?</td>
+                </tr>
+                <tr>
+                  <td class="py-2.5 px-4 font-bold"><span class="hl-yellow">Data validation</span></td>
+                  <td class="py-2.5 px-4">Did every record arrive, complete and unchanged?</td>
+                </tr>
+                <tr>
+                  <td class="py-2.5 px-4 font-bold"><span class="hl-yellow">Security</span></td>
+                  <td class="py-2.5 px-4">Are only the right people and ports allowed in? Is the data encrypted?</td>
+                </tr>
+                <tr>
+                  <td class="py-2.5 px-4 font-bold"><span class="hl-yellow">Regression</span></td>
+                  <td class="py-2.5 px-4">Did fixing one thing break something that worked before?</td>
+                </tr>
+                <tr>
+                  <td class="py-2.5 px-4 font-bold"><span class="hl-yellow">User acceptance</span></td>
+                  <td class="py-2.5 px-4">Do real users agree it is ready?</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </article>
+
+        <!-- Slide 24/37 -->
+        <article class="study-card p-6">
+          <div class="flex items-center justify-between mb-3">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              Deciding Whether the Test Passed
+            </h3>
+            <span class="slide-badge">Slide 24/37</span>
+          </div>
+
+          <ul class="space-y-2.5 text-sm sm:text-base list-disc list-inside">
+            <li><span class="hl-green">Decide the pass rule before testing</span> — for example, <em>"pages load in under two seconds for 500 users at once"</em>. <span class="hl-red">Deciding afterwards invites excuses.</span></li>
+            <li><span class="hl-yellow">Compare with the baseline</span> — the measurements taken during assessment. <em>"Fast enough"</em> means <span class="hl-green">"at least as fast as before"</span>.</li>
+            <li><span class="hl-green">Test in a copy first</span> — a separate environment that looks like the real one, <span class="hl-red">never on the system users depend on</span>.</li>
+            <li><span class="hl-yellow">If it fails</span> — fix it and test again, or roll back. <span class="hl-red">Never cut over and hope.</span></li>
+          </ul>
+        </article>
+
+        <!-- Slide 25/37 -->
+        <article class="study-card p-6 border-l-4 border-l-rose-600">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              Common Problems After a Migration & Their Usual Causes
+            </h3>
+            <span class="slide-badge">Slide 25/37</span>
+          </div>
+
+          <div class="overflow-x-auto rounded-xl border border-slate-300 dark:border-slate-700">
+            <table class="w-full text-left text-xs sm:text-sm">
+              <thead class="bg-slate-100 dark:bg-slate-800 font-display text-base">
+                <tr>
+                  <th class="py-3 px-4 w-2/5">Problem</th>
+                  <th class="py-3 px-4">Usual cause</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-200 dark:divide-slate-800">
+                <tr>
+                  <td class="py-2.5 px-4 font-bold"><span class="hl-red">The application cannot reach its database</span></td>
+                  <td class="py-2.5 px-4">A <span class="hl-yellow">firewall rule was not copied</span>, or the <span class="hl-yellow">database moved separately</span>.</td>
+                </tr>
+                <tr>
+                  <td class="py-2.5 px-4 font-bold"><span class="hl-red">Everything works but is slow</span></td>
+                  <td class="py-2.5 px-4">The <span class="hl-yellow">machine is too small</span>, or <span class="hl-yellow">part of the system stayed behind</span> and every request crosses the internet.</td>
+                </tr>
+                <tr>
+                  <td class="py-2.5 px-4 font-bold"><span class="hl-red">It works for some users and not others</span></td>
+                  <td class="py-2.5 px-4">An <span class="hl-yellow">address was written into the program instead of a name</span> (hard-coded IP).</td>
+                </tr>
+                <tr>
+                  <td class="py-2.5 px-4 font-bold"><span class="hl-red">It stopped after a few days</span></td>
+                  <td class="py-2.5 px-4">A <span class="hl-yellow">software license was tied to the old hardware</span>.</td>
+                </tr>
+                <tr>
+                  <td class="py-2.5 px-4 font-bold"><span class="hl-red">Times and dates are wrong</span></td>
+                  <td class="py-2.5 px-4">The <span class="hl-yellow">new machines use a different time zone</span>.</td>
+                </tr>
+                <tr>
+                  <td class="py-2.5 px-4 font-bold"><span class="hl-red">Users cannot log in</span></td>
+                  <td class="py-2.5 px-4"><span class="hl-yellow">Permissions or the login system connection were not moved.</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </article>
+      </section>
+
+
+      <!-- ====================================================================
+           PART 5: WORKING IN SMALL STEPS (Slides 26/37 – 28/37)
+           ==================================================================== -->
+      <section id="part-5" class="space-y-6">
+        <div class="flex items-center gap-3 border-b-2 border-slate-700 dark:border-slate-700 pb-2">
+          <span class="px-3 py-1 rounded-md bg-slate-700 text-white font-display font-bold text-sm">PART 5</span>
+          <h2 class="font-display text-xl sm:text-2xl font-bold text-slate-900 dark:text-white">
+            Working in Small Steps
+          </h2>
+          <span class="ml-auto text-xs font-mono text-slate-500">Slides 26/37 – 28/37</span>
+        </div>
+
+        <!-- Slide 26/37 -->
+        <article class="study-card p-6">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              Two Ways to Run a Project: Waterfall vs. Agile
+            </h3>
+            <span class="slide-badge">Slide 26/37</span>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <div class="p-4 rounded-xl bg-slate-100 dark:bg-slate-800 border-2 border-slate-400">
+              <h4 class="font-display font-bold text-base mb-1"><span class="hl-yellow">Waterfall</span></h4>
+              <p class="text-sm mb-2">
+                Plan everything first, then build everything, then test everything, then deliver once at the end.
+              </p>
+              <ul class="space-y-1 text-xs sm:text-sm list-disc list-inside">
+                <li><span class="hl-green">Clear and predictable</span></li>
+                <li><span class="hl-red">Problems are found late, when they cost most to fix</span></li>
+              </ul>
+            </div>
+
+            <div class="p-4 rounded-xl bg-emerald-50/60 dark:bg-slate-800 border-2 border-emerald-400 dark:border-emerald-600">
+              <h4 class="font-display font-bold text-base mb-1"><span class="hl-yellow">Agile</span></h4>
+              <p class="text-sm mb-2">
+                Work in short cycles of <strong>one to four weeks</strong>. Each cycle delivers something small that works.
+              </p>
+              <ul class="space-y-1 text-xs sm:text-sm list-disc list-inside">
+                <li><span class="hl-green">Problems are found early</span></li>
+                <li><span class="hl-green">Plans change as you learn</span></li>
+              </ul>
+            </div>
+          </div>
+
+          <p class="text-sm font-medium p-3 rounded-lg bg-amber-50 dark:bg-amber-950/30 border border-amber-300 dark:border-amber-800 text-center">
+            <span class="hl-yellow">Migrating in waves, starting with a pilot, is the agile idea applied to migration:</span> move a little, learn, then move more.
+          </p>
+        </article>
+
+        <!-- Slide 27/37 -->
+        <article class="study-card p-6">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              Where Changes Are Tried Before Users See Them (Environments & CI/CD)
+            </h3>
+            <span class="slide-badge">Slide 27/37</span>
+          </div>
+
+          <p class="text-sm mb-3">
+            Organizations keep separate copies of a system, called <span class="hl-yellow">environments</span>:
+          </p>
+
+          <!-- Environments Promotion Pipeline Diagram -->
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4 text-sm">
+            <div class="p-4 rounded-xl bg-slate-100 dark:bg-slate-800 border-2 border-slate-400">
+              <div class="font-mono text-xs text-slate-500 font-bold">STEP 1</div>
+              <div class="font-display font-bold text-base my-1"><span class="hl-yellow">Development</span></div>
+              <p class="text-xs sm:text-sm">Where programmers write and try changes.</p>
+            </div>
+            <div class="p-4 rounded-xl bg-sky-50 dark:bg-slate-800 border-2 border-sky-400">
+              <div class="font-mono text-xs text-sky-700 dark:text-sky-300 font-bold">STEP 2 (Passes Tests ➔)</div>
+              <div class="font-display font-bold text-base my-1"><span class="hl-yellow">Test (or staging)</span></div>
+              <p class="text-xs sm:text-sm">A copy that looks like the real system, used for the tests in Part 4.</p>
+            </div>
+            <div class="p-4 rounded-xl bg-emerald-50 dark:bg-slate-800 border-2 border-emerald-500">
+              <div class="font-mono text-xs text-emerald-700 dark:text-emerald-300 font-bold">STEP 3 (Passes Tests ➔)</div>
+              <div class="font-display font-bold text-base my-1"><span class="hl-yellow">Production</span></div>
+              <p class="text-xs sm:text-sm">The real system that users depend on.</p>
+            </div>
+          </div>
+
+          <p class="text-sm mb-2">
+            A change moves from <strong>development to test to production</strong>, and <span class="hl-green">only moves forward when it passes</span>. Cloud makes this cheap: a test environment can be created for a day and deleted afterwards.
+          </p>
+          <p class="text-sm">
+            Doing these steps automatically every time the code changes is called <span class="hl-blue">CI/CD (continuous integration and continuous delivery)</span>.
+          </p>
+        </article>
+
+        <!-- Slide 28/37 -->
+        <article class="study-card p-6 border-l-4 border-l-emerald-600">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              Releasing Changes Safely: Blue-Green, Canary, and Rolling
+            </h3>
+            <span class="slide-badge">Slide 28/37</span>
+          </div>
+
+          <p class="text-sm mb-4">
+            Three common ways to release a new version <span class="hl-green">without stopping the service</span>:
+          </p>
+
+          <!-- Visual Diagrams for Blue-Green, Canary, Rolling -->
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+            <!-- Blue-Green -->
+            <div class="p-4 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-300 dark:border-slate-700">
+              <div class="font-display font-bold text-base mb-1"><span class="hl-yellow">1. Blue-green</span></div>
+              <p class="text-xs sm:text-sm mb-3">
+                Run <strong>two identical environments</strong>. Users are on one (<span class="hl-blue">blue</span>); the new version goes on the other (<span class="hl-green">green</span>). Switch everyone at once, and switch back if needed.
+              </p>
+              <div class="p-2.5 rounded bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-xs font-mono space-y-1.5">
+                <div class="p-1.5 rounded bg-sky-100 dark:bg-sky-950 text-sky-900 dark:text-sky-200">BLUE (v1) — 100% ➔ 0%</div>
+                <div class="p-1.5 rounded bg-emerald-100 dark:bg-emerald-950 text-emerald-900 dark:text-emerald-200 font-bold">GREEN (v2) — 0% ➔ 100%</div>
+              </div>
+            </div>
+
+            <!-- Canary -->
+            <div class="p-4 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-300 dark:border-slate-700">
+              <div class="font-display font-bold text-base mb-1"><span class="hl-yellow">2. Canary</span></div>
+              <p class="text-xs sm:text-sm mb-3">
+                Send a <strong>small share of users, say <span class="hl-purple">5%</span></strong>, to the new version first. If nothing goes wrong, increase the share step by step.
+              </p>
+              <div class="p-2.5 rounded bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-xs font-mono space-y-1.5">
+                <div class="p-1.5 rounded bg-slate-200 dark:bg-slate-700">Old Version (v1) — 95% users</div>
+                <div class="p-1.5 rounded bg-amber-200 dark:bg-amber-900 text-amber-950 dark:text-amber-200 font-bold">🐤 Canary (v2) — 5% users</div>
+              </div>
+            </div>
+
+            <!-- Rolling -->
+            <div class="p-4 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-300 dark:border-slate-700">
+              <div class="font-display font-bold text-base mb-1"><span class="hl-yellow">3. Rolling</span></div>
+              <p class="text-xs sm:text-sm mb-3">
+                Update the machines <strong>a few at a time</strong>, so some are always serving users.
+              </p>
+              <div class="p-2.5 rounded bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-xs font-mono grid grid-cols-4 gap-1 text-center">
+                <div class="p-1.5 rounded bg-emerald-200 dark:bg-emerald-900 font-bold">v2</div>
+                <div class="p-1.5 rounded bg-emerald-200 dark:bg-emerald-900 font-bold">v2</div>
+                <div class="p-1.5 rounded bg-slate-200 dark:bg-slate-700">v1</div>
+                <div class="p-1.5 rounded bg-slate-200 dark:bg-slate-700">v1</div>
+              </div>
+            </div>
+          </div>
+
+          <p class="text-xs text-slate-500 dark:text-slate-400">
+            🐤 <em>Origin of "canary":</em> Coal miners took a canary underground; if the bird got sick, the miners left before they did too.
+          </p>
+        </article>
+      </section>
+
+
+      <!-- ====================================================================
+           PART 6: PLANNING FOR PROBLEMS (Slides 29/37 – 33/37)
+           ==================================================================== -->
+      <section id="part-6" class="space-y-6">
+        <div class="flex items-center gap-3 border-b-2 border-slate-700 dark:border-slate-700 pb-2">
+          <span class="px-3 py-1 rounded-md bg-slate-700 text-white font-display font-bold text-sm">PART 6</span>
+          <h2 class="font-display text-xl sm:text-2xl font-bold text-slate-900 dark:text-white">
+            Planning for Problems: Capacity, RPO/RTO & Recovery Sites
+          </h2>
+          <span class="ml-auto text-xs font-mono text-slate-500">Slides 29/37 – 33/37</span>
+        </div>
+
+        <!-- Slide 29/37 -->
+        <article class="study-card p-6">
+          <div class="flex items-center justify-between mb-3">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              Capacity: The Cloud Is Not Endless
+            </h3>
+            <span class="slide-badge">Slide 29/37</span>
+          </div>
+
+          <ul class="space-y-2 text-sm sm:text-base list-disc list-inside mb-4">
+            <li><span class="hl-yellow">Account limits (quotas)</span> — every provider limits how many processors, machines, or addresses an account may use in each region. <span class="hl-red">New accounts have low limits.</span></li>
+            <li><span class="hl-yellow">Regional shortages</span> — a particular machine type can be sold out in a region, <span class="hl-red">especially GPU machines</span>.</li>
+            <li><span class="hl-yellow">Network limits</span> — your own connection to the provider can become the slowest point.</li>
+          </ul>
+
+          <div class="p-3.5 rounded-lg bg-amber-50 dark:bg-amber-950/30 border border-amber-300 dark:border-amber-800 text-sm">
+            📈 <strong><span class="hl-yellow">Capacity planning:</span></strong> Measure how use grows over time, estimate what you will need, and <span class="hl-green">ask the provider to raise your limits weeks before a migration</span> — <span class="hl-red">not on the day, when the request can take days to approve</span>.
+          </div>
+        </article>
+
+        <!-- Slide 30/37 -->
+        <article class="study-card p-6">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              Continuity and Recovery (BC vs. DR)
+            </h3>
+            <span class="slide-badge">Slide 30/37</span>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <div class="p-4 rounded-xl bg-amber-50/60 dark:bg-slate-800 border-2 border-amber-400 dark:border-amber-600">
+              <h4 class="font-display font-bold text-base mb-1"><span class="hl-yellow">Business continuity</span></h4>
+              <p class="text-sm">
+                How the <strong>organization keeps working during a disruption</strong>: people, procedures, alternatives.<br/>
+                <em>Example:</em> staff take payments by hand while the system is down.
+              </p>
+            </div>
+
+            <div class="p-4 rounded-xl bg-sky-50/60 dark:bg-slate-800 border-2 border-sky-400 dark:border-sky-600">
+              <h4 class="font-display font-bold text-base mb-1"><span class="hl-yellow">Disaster recovery</span></h4>
+              <p class="text-sm">
+                How the <strong>IT systems are brought back after a failure</strong>: backups, a second site, the steps to restore.
+              </p>
+            </div>
+          </div>
+
+          <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-300">
+            📌 <span class="hl-yellow">Disaster recovery is one part of business continuity.</span> A disaster does not need to be a fire or an earthquake — <span class="hl-red">a deleted database or a failed region counts</span>.
+          </p>
+        </article>
+
+        <!-- Slide 31/37 -->
+        <article class="study-card p-6 border-2 border-amber-600">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              Two Numbers Every Recovery Plan Needs: RPO and RTO
+            </h3>
+            <span class="slide-badge">Slide 31/37</span>
+          </div>
+
+          <!-- Visual Timeline Diagram of RPO vs RTO -->
+          <div class="p-4 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 mb-5">
+            <div class="text-xs font-mono uppercase text-slate-500 font-bold mb-3 text-center">
+              Visualizing RPO (Past Data Loss) vs. RTO (Future Downtime)
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-3 items-center text-center text-xs sm:text-sm">
+              <div class="p-3.5 rounded-lg bg-amber-100 dark:bg-amber-950/70 border-2 border-amber-500">
+                <div class="font-mono font-bold text-amber-900 dark:text-amber-300">◄─── RPO (Recovery Point Objective)</div>
+                <div class="font-bold mt-1">Last Good Backup ➔ Failure</div>
+                <div class="text-xs mt-1"><strong>How much data can we afford to lose?</strong> (Measured in time since last copy)</div>
+              </div>
+
+              <div class="p-3.5 rounded-lg bg-rose-600 text-white font-mono font-bold shadow">
+                ⚡ FAILURE EVENT<br/>
+                <span class="text-[11px] font-normal">(System Goes Down)</span>
+              </div>
+
+              <div class="p-3.5 rounded-lg bg-sky-100 dark:bg-sky-950/70 border-2 border-sky-500">
+                <div class="font-mono font-bold text-sky-900 dark:text-sky-300">RTO (Recovery Time Objective) ───►</div>
+                <div class="font-bold mt-1">Failure ➔ System Restored</div>
+                <div class="text-xs mt-1"><strong>How long can the system be unavailable?</strong> (Max allowed downtime)</div>
+              </div>
+            </div>
+          </div>
+
+          <ul class="space-y-2 text-sm sm:text-base list-disc list-inside mb-4">
+            <li><span class="hl-yellow">RPO — recovery point objective:</span> How much data can we afford to lose? Measured in time since the last copy.
+              <span class="block ml-5 text-xs sm:text-sm text-slate-600 dark:text-slate-300">• <strong>RPO of 1 hour</strong> ➔ a copy is needed at least every hour.</span>
+            </li>
+            <li><span class="hl-yellow">RTO — recovery time objective:</span> How long can the system be unavailable?
+              <span class="block ml-5 text-xs sm:text-sm text-slate-600 dark:text-slate-300">• <strong>RTO of 4 hours</strong> ➔ it must be running again within 4 hours of the failure.</span>
+            </li>
+          </ul>
+
+          <div class="p-3.5 rounded-lg bg-rose-50 dark:bg-rose-950/30 border border-rose-300 dark:border-rose-800 text-sm">
+            💰 <strong>The trade-off:</strong> <span class="hl-red">Smaller numbers cost more.</span> An <strong>RPO of zero</strong> means every change is copied to a second place instantly; an <strong>RTO of minutes</strong> means a second copy of the whole system is always running. <span class="hl-green">Set them by how much the business loses per hour, not by what sounds best.</span>
+          </div>
+        </article>
+
+        <!-- Slide 32/37 -->
+        <article class="study-card p-6">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              Recovery Sites: Hot, Warm, and Cold
+            </h3>
+            <span class="slide-badge">Slide 32/37</span>
+          </div>
+
+          <div class="overflow-x-auto rounded-xl border border-slate-300 dark:border-slate-700 mb-4">
+            <table class="w-full text-left text-xs sm:text-sm">
+              <thead class="bg-slate-100 dark:bg-slate-800 font-display text-base">
+                <tr>
+                  <th class="py-3 px-4">Site</th>
+                  <th class="py-3 px-4">What is ready</th>
+                  <th class="py-3 px-4">Back in</th>
+                  <th class="py-3 px-4">Cost</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-200 dark:divide-slate-800">
+                <tr class="bg-rose-50/40 dark:bg-rose-950/20">
+                  <td class="py-2.5 px-4 font-bold"><span class="hl-red">Hot</span></td>
+                  <td class="py-2.5 px-4">A full copy of the system, running, with current data.</td>
+                  <td class="py-2.5 px-4 font-mono font-bold"><span class="hl-green">Minutes</span></td>
+                  <td class="py-2.5 px-4 font-bold"><span class="hl-red">Highest</span></td>
+                </tr>
+                <tr class="bg-amber-50/40 dark:bg-amber-950/20">
+                  <td class="py-2.5 px-4 font-bold"><span class="hl-yellow">Warm</span></td>
+                  <td class="py-2.5 px-4">Machines and network ready but small; data copied regularly.</td>
+                  <td class="py-2.5 px-4 font-mono font-bold"><span class="hl-yellow">Hours</span></td>
+                  <td class="py-2.5 px-4 font-bold">Medium</td>
+                </tr>
+                <tr class="bg-sky-50/40 dark:bg-sky-950/20">
+                  <td class="py-2.5 px-4 font-bold"><span class="hl-blue">Cold</span></td>
+                  <td class="py-2.5 px-4">Only the space, or in the cloud only the backups. Everything must be built.</td>
+                  <td class="py-2.5 px-4 font-mono font-bold"><span class="hl-purple">Days</span></td>
+                  <td class="py-2.5 px-4 font-bold"><span class="hl-green">Lowest</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p class="text-sm">
+            💡 <span class="hl-green">In the cloud, a cold site costs almost nothing while unused, because you pay only for stored backups.</span> This is one of the strongest reasons to use the cloud for recovery, even for systems that stay in-house.
+          </p>
+        </article>
+
+        <!-- Slide 33/37 -->
+        <article class="study-card p-6 border-l-4 border-l-emerald-500">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              Worked Self-Check: Online Shop vs. School Library Catalog
+            </h3>
+            <span class="slide-badge">Slide 33/37</span>
+          </div>
+
+          <div class="p-3.5 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-sm mb-4">
+            <strong>Question:</strong> An online shop loses a lot of money for every hour it is down, and it cannot lose any order. A school's library catalog can be down for a day, and losing the last day of changes is acceptable. Give each a rough RPO, RTO, and recovery site.
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+            <div class="p-4 rounded-xl bg-rose-50/60 dark:bg-slate-800 border-2 border-rose-400">
+              <div class="font-display font-bold text-base mb-1">🛒 Online Shop</div>
+              <p>
+                • <strong>RPO:</strong> <span class="hl-green">Close to zero</span><br/>
+                • <strong>RTO:</strong> <span class="hl-green">Minutes</span><br/>
+                • <strong>Site:</strong> <span class="hl-red">Hot site</span> (Expensive, but cheaper than the losses).
+              </p>
+            </div>
+
+            <div class="p-4 rounded-xl bg-sky-50/60 dark:bg-slate-800 border-2 border-sky-400">
+              <div class="font-display font-bold text-base mb-1">📚 School Library Catalog</div>
+              <p>
+                • <strong>RPO:</strong> <span class="hl-blue">One day</span><br/>
+                • <strong>RTO:</strong> <span class="hl-blue">One day</span><br/>
+                • <strong>Site:</strong> <span class="hl-green">Cold site</span> (daily backups in the cloud; almost free).
+              </p>
+            </div>
+          </div>
+        </article>
+      </section>
+
+
+      <!-- ====================================================================
+           PART 7: WRAP-UP, GLOSSARY, SUMMARY & TASKS (Slides 34/37 – 37/37)
+           ==================================================================== -->
+      <section id="part-7" class="space-y-6">
+        <div class="flex items-center gap-3 border-b-2 border-slate-700 dark:border-slate-700 pb-2">
+          <span class="px-3 py-1 rounded-md bg-slate-700 text-white font-display font-bold text-sm">PART 7</span>
+          <h2 class="font-display text-xl sm:text-2xl font-bold text-slate-900 dark:text-white">
+            Wrap-Up, Revision Glossary, Summary & Assignment
+          </h2>
+          <span class="ml-auto text-xs font-mono text-slate-500">Slides 34/37 – 37/37</span>
+        </div>
+
+        <!-- Slide 34/37 -->
+        <article class="study-card p-6">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              Words from the Migration Topic (13-Row Revision Glossary)
+            </h3>
+            <span class="slide-badge">Slide 34/37</span>
+          </div>
+
+          <div class="overflow-x-auto rounded-lg border border-slate-300 dark:border-slate-700">
+            <table class="w-full text-left text-xs sm:text-sm">
+              <thead class="bg-slate-100 dark:bg-slate-800 font-display text-base">
+                <tr>
+                  <th class="py-2.5 px-4 w-1/3">Term</th>
+                  <th class="py-2.5 px-4">Meaning in one line</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-200 dark:divide-slate-800">
+                <tr>
+                  <td class="py-2 px-4 font-semibold"><span class="hl-yellow">Workload</span></td>
+                  <td class="py-2 px-4">An application with its machines, data, and settings.</td>
+                </tr>
+                <tr>
+                  <td class="py-2 px-4 font-semibold"><span class="hl-yellow">Cutover / rollback</span></td>
+                  <td class="py-2 px-4">Switching users to the new system / going back to the old one.</td>
+                </tr>
+                <tr>
+                  <td class="py-2 px-4 font-semibold"><span class="hl-yellow">Dependency</span></td>
+                  <td class="py-2 px-4">Something a workload needs in order to work.</td>
+                </tr>
+                <tr>
+                  <td class="py-2 px-4 font-semibold"><span class="hl-yellow">Baseline</span></td>
+                  <td class="py-2 px-4">Measurements of today's system, used for comparison later.</td>
+                </tr>
+                <tr>
+                  <td class="py-2 px-4 font-semibold"><span class="hl-green">Migration wave</span></td>
+                  <td class="py-2 px-4">A group of related workloads moved together.</td>
+                </tr>
+                <tr>
+                  <td class="py-2 px-4 font-semibold"><span class="hl-purple">TCO</span></td>
+                  <td class="py-2 px-4">Total cost of ownership: everything a system costs over its life.</td>
+                </tr>
+                <tr>
+                  <td class="py-2 px-4 font-semibold"><span class="hl-yellow">Rehost / replatform / refactor</span></td>
+                  <td class="py-2 px-4">Move as is / move with small changes / redesign for the cloud.</td>
+                </tr>
+                <tr>
+                  <td class="py-2 px-4 font-semibold"><span class="hl-yellow">Repurchase / retire / retain</span></td>
+                  <td class="py-2 px-4">Replace with SaaS / switch off / keep where it is.</td>
+                </tr>
+                <tr>
+                  <td class="py-2 px-4 font-semibold"><span class="hl-blue">P2V / V2V / V2C</span></td>
+                  <td class="py-2 px-4">Physical to virtual / virtual to virtual / virtual to cloud.</td>
+                </tr>
+                <tr>
+                  <td class="py-2 px-4 font-semibold"><span class="hl-blue">Infrastructure as code</span></td>
+                  <td class="py-2 px-4">Describing machines and networks in files that a tool builds from.</td>
+                </tr>
+                <tr>
+                  <td class="py-2 px-4 font-semibold"><span class="hl-blue">DNS / TTL</span></td>
+                  <td class="py-2 px-4">The internet's address book / how long an answer is remembered.</td>
+                </tr>
+                <tr>
+                  <td class="py-2 px-4 font-semibold"><span class="hl-green">Blue-green / canary</span></td>
+                  <td class="py-2 px-4">Switch between two copies / try the new version on a few users first.</td>
+                </tr>
+                <tr>
+                  <td class="py-2 px-4 font-semibold"><span class="hl-yellow">RPO / RTO</span></td>
+                  <td class="py-2 px-4">How much data you may lose / how long you may be down.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </article>
+
+        <!-- Slide 35/37 -->
+        <article class="study-card p-6 border-2 border-amber-600">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              7-Point Lecture Summary
+            </h3>
+            <span class="slide-badge">Slide 35/37</span>
+          </div>
+
+          <ol class="space-y-2.5 text-sm sm:text-base list-decimal list-inside">
+            <li>Migration moves workloads to the cloud: <span class="hl-yellow">assess, plan, migrate, test, operate</span>.</li>
+            <li><span class="hl-red">Most failures come from assessment:</span> a dependency or a baseline nobody recorded.</li>
+            <li>Each workload gets a strategy: <span class="hl-yellow">rehost, replatform, refactor, repurchase, retire, or retain</span>.</li>
+            <li><span class="hl-green">Start with a pilot, move in waves, and keep a rollback ready.</span></li>
+            <li>For large data, <span class="hl-red">the network is the slowest part</span>; <span class="hl-blue">calculate the time first</span>.</li>
+            <li><span class="hl-green">Test against the baseline with rules decided in advance.</span></li>
+            <li>Every recovery plan needs an <span class="hl-yellow">RPO and an RTO</span>, and they decide the cost.</li>
+          </ol>
+        </article>
+
+        <!-- Slide 36/37 -->
+        <article class="study-card p-6">
+          <div class="flex items-center justify-between mb-3">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              What to Do Next (Reading & Practical Task)
+            </h3>
+            <span class="slide-badge">Slide 36/37</span>
+          </div>
+
+          <div class="mb-4 text-sm">
+            <strong>Reading:</strong> Module 3 in full, including the self-check questions. Look through Module 4, <em>Cloud Networking</em>.
+          </div>
+
+          <div class="space-y-2.5 text-sm">
+            <div class="p-3.5 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700">
+              <strong>Task 1:</strong> Choose one system you know well — at the university, at work, or a project of your own.
+            </div>
+            <div class="p-3.5 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700">
+              <strong>Task 2:</strong> Write down its dependencies, a strategy from today's list, and a sensible RPO and RTO, each with a one-line reason.
+            </div>
+            <div class="p-3.5 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700">
+              <strong>Task 3:</strong> Calculate how long its data would take to move over a 100 Mbps line.
+            </div>
+          </div>
+        </article>
+
+        <!-- Slide 37/37 -->
+        <article class="study-card p-6">
+          <div class="flex items-center justify-between mb-3">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              References
+            </h3>
+            <span class="slide-badge">Slide 37/37</span>
+          </div>
+          <ul class="space-y-1.5 text-xs sm:text-sm text-slate-600 dark:text-slate-300 list-disc list-inside">
+            <li>West, J. (2024). <em>CompTIA Cloud+ Guide to Cloud Computing</em>, 2nd ed. Cengage. ISBN 9780357883457, Module 3.</li>
+            <li>AWS. <em>Snowball Edge availability change (November 2025)</em>. docs.aws.amazon.com/snowball</li>
+            <li>Microsoft. <em>Cloud Adoption Framework: Migrate methodology</em>. learn.microsoft.com</li>
+            <li>CompTIA. <em>Cloud+ (CV0-004) Exam Objectives</em>.</li>
+          </ul>
+        </article>
+
+        <!-- HIGHLIGHT KEY & EXAM TAXONOMY -->
+        <article class="study-card p-6 border-t-2 border-slate-300 dark:border-slate-700">
+          <div class="flex items-center justify-between mb-3">
+            <h3 class="font-display font-bold text-base text-slate-900 dark:text-white flex items-center gap-2">
+              <span>🎨</span>
+              <span>Highlight Key & Study Legend</span>
+            </h3>
+            <span class="font-mono text-[11px] text-slate-400">Exam Marker System</span>
+          </div>
+          <p class="text-xs text-slate-500 dark:text-slate-400 mb-3">
+            Color-coded highlighters used across this study guide:
+          </p>
+          <div class="flex flex-wrap items-center gap-2 text-xs">
+            <span class="hl-yellow">Core Term / Rule</span>
+            <span class="hl-green">Best Practice / Low Risk</span>
+            <span class="hl-blue">Tool / Formula / Mechanism</span>
+            <span class="hl-red">Risk / Failure / Trap</span>
+            <span class="hl-purple">Provider / Metric</span>
+          </div>
+        </article>
+
+      </section>
+
+    </main>
+  </div>
+
+</body>
+</html>

@@ -1,0 +1,2168 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SEN421 Module 1 & 2 Study Notes — Cloud Computing & Virtual Hardware</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Navigation & Outline Engine -->
+  <script src="nav.js" defer></script>
+  <!-- Google Fonts: Inter, JetBrains Mono, Space Grotesk -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+
+  <!-- Theme Preference Script (Instant Anti-FOUC Execution) -->
+  <script>
+    (function() {
+      try {
+        const theme = localStorage.getItem('ca_theme');
+        if (theme === 'dark' || (!theme && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+          document.documentElement.classList.add('dark');
+        } else {
+          document.documentElement.classList.remove('dark');
+        }
+      } catch (_) {}
+    })();
+  </script>
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            display: ['Space Grotesk', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Warm Study Notebook Grid Background */
+    :root {
+      --bg-grid: rgba(148, 163, 184, 0.14);
+    }
+    .dark {
+      --bg-grid: rgba(51, 65, 85, 0.22);
+    }
+    body {
+      background-image: 
+        linear-gradient(to right, var(--bg-grid) 1px, transparent 1px),
+        linear-gradient(to bottom, var(--bg-grid) 1px, transparent 1px);
+      background-size: 28px 28px;
+    }
+
+    /* Realistic Marker Highlighter Styles */
+    .hl-yellow {
+      background: linear-gradient(104deg, rgba(253, 224, 71, 0) 0.9%, rgba(253, 224, 71, 0.85) 2.4%, rgba(253, 224, 71, 0.58) 5.8%, rgba(253, 224, 71, 0.78) 93%, rgba(253, 224, 71, 0.6) 96%, rgba(253, 224, 71, 0) 98%);
+      padding: 0.08rem 0.35rem;
+      border-radius: 0.25rem;
+      color: #0f172a;
+      font-weight: 600;
+      box-decoration-break: clone;
+      -webkit-box-decoration-break: clone;
+    }
+    .dark .hl-yellow {
+      background: rgba(234, 179, 8, 0.28);
+      border-bottom: 2px solid rgba(250, 204, 21, 0.8);
+      color: #fef08a;
+    }
+
+    .hl-green {
+      background: linear-gradient(104deg, rgba(110, 231, 183, 0) 0.9%, rgba(110, 231, 183, 0.8) 2.4%, rgba(110, 231, 183, 0.55) 93%, rgba(110, 231, 183, 0) 98%);
+      padding: 0.08rem 0.35rem;
+      border-radius: 0.25rem;
+      color: #064e3b;
+      font-weight: 600;
+      box-decoration-break: clone;
+      -webkit-box-decoration-break: clone;
+    }
+    .dark .hl-green {
+      background: rgba(16, 185, 129, 0.25);
+      border-bottom: 2px solid rgba(52, 211, 153, 0.75);
+      color: #a7f3d0;
+    }
+
+    .hl-red, .hl-pink {
+      background: linear-gradient(104deg, rgba(253, 164, 175, 0) 0.9%, rgba(253, 164, 175, 0.8) 2.4%, rgba(253, 164, 175, 0.56) 93%, rgba(253, 164, 175, 0) 98%);
+      padding: 0.08rem 0.35rem;
+      border-radius: 0.25rem;
+      color: #881337;
+      font-weight: 600;
+      box-decoration-break: clone;
+      -webkit-box-decoration-break: clone;
+    }
+    .dark .hl-red, .dark .hl-pink {
+      background: rgba(244, 63, 94, 0.26);
+      border-bottom: 2px solid rgba(251, 113, 133, 0.8);
+      color: #fecdd3;
+    }
+
+    .hl-blue {
+      background: linear-gradient(104deg, rgba(147, 197, 253, 0) 0.9%, rgba(147, 197, 253, 0.8) 2.4%, rgba(147, 197, 253, 0.56) 93%, rgba(147, 197, 253, 0) 98%);
+      padding: 0.08rem 0.35rem;
+      border-radius: 0.25rem;
+      color: #1e3a8a;
+      font-weight: 600;
+      box-decoration-break: clone;
+      -webkit-box-decoration-break: clone;
+    }
+    .dark .hl-blue {
+      background: rgba(59, 130, 246, 0.26);
+      border-bottom: 2px solid rgba(96, 165, 250, 0.8);
+      color: #bfdbfe;
+    }
+
+    .hl-purple {
+      background: linear-gradient(104deg, rgba(216, 180, 254, 0) 0.9%, rgba(216, 180, 254, 0.8) 2.4%, rgba(216, 180, 254, 0.56) 93%, rgba(216, 180, 254, 0) 98%);
+      padding: 0.08rem 0.35rem;
+      border-radius: 0.25rem;
+      color: #581c87;
+      font-weight: 600;
+      box-decoration-break: clone;
+      -webkit-box-decoration-break: clone;
+    }
+    .dark .hl-purple {
+      background: rgba(168, 85, 247, 0.26);
+      border-bottom: 2px solid rgba(192, 132, 252, 0.8);
+      color: #e9d5ff;
+    }
+
+    .hl-code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.86em;
+      background-color: #f1f5f9;
+      color: #0f172a;
+      border: 1px solid #cbd5e1;
+      padding: 0.1rem 0.4rem;
+      border-radius: 0.3rem;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+    .dark .hl-code {
+      background-color: rgba(30, 41, 59, 0.9);
+      color: #e2e8f0;
+      border-color: #475569;
+    }
+
+    /* Slide Reference Badge */
+    .slide-badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      padding: 0.25rem 0.65rem;
+      border-radius: 9999px;
+      background-color: #1e293b;
+      color: #f8fafc;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    }
+    .dark .slide-badge {
+      background-color: #38bdf8;
+      color: #0f172a;
+    }
+
+    /* Study Note Card */
+    .study-card {
+      background-color: #ffffff;
+      border: 1px solid #cbd5e1;
+      border-radius: 0.85rem;
+      box-shadow: 0 4px 12px -2px rgba(15, 23, 42, 0.06);
+    }
+    .dark .study-card {
+      background-color: rgba(15, 23, 42, 0.94);
+      border-color: #334155;
+      box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.4);
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #94a3b8;
+      border-radius: 4px;
+    }
+    .dark ::-webkit-scrollbar-thumb {
+      background: #475569;
+    }
+  </style>
+</head>
+<body class="bg-[#fcfbf7] text-slate-800 dark:bg-slate-950 dark:text-slate-100 antialiased selection:bg-amber-300 selection:text-slate-900">
+
+  <!-- TOP STICKY BAR: COURSE HEADER & HIGHLIGHT KEY -->
+  <header class="sticky top-0 z-50 backdrop-blur-md bg-white/95 dark:bg-slate-900/95 border-b border-slate-200 dark:border-slate-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2.5 flex flex-wrap items-center justify-between gap-3">
+      <div class="flex items-center gap-3">
+        <span class="px-2.5 py-1 rounded-md bg-slate-700 text-white font-mono text-xs font-bold tracking-wider">SEN421</span>
+        <div>
+          <h1 class="font-display font-bold text-base sm:text-lg text-slate-900 dark:text-white leading-tight">
+            Module 1 & 2: Cloud Computing & Virtual Hardware
+          </h1>
+          <p class="text-xs text-slate-500 dark:text-slate-400 hidden sm:block">
+            Complete Exam Study Notes • Slides 1/53 – 53/53 • Zero Hidden Content
+          </p>
+        </div>
+      </div>
+
+      <!-- Theme Toggle -->
+      <div class="flex items-center gap-2 text-xs">
+        <button id="themeToggle" onclick="window.toggleCaTheme ? window.toggleCaTheme() : (document.documentElement.classList.toggle('dark'), localStorage.setItem('ca_theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light'))" class="ml-1 px-3 py-1.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 font-medium hover:bg-slate-200 dark:hover:bg-slate-700 transition" title="Switch Paper / Dark Study Mode">
+          🌙 Dark
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN PAGE LAYOUT: SIDEBAR TOC + CONTINUOUS STUDY NOTE STREAM -->
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col lg:flex-row gap-8 items-start">
+
+    <!-- STICKY LEFT INDEX (DESKTOP) -->
+    <aside class="hidden lg:block w-64 shrink-0 sticky top-28 study-card p-4 text-xs">
+      <div class="font-display font-bold text-base text-slate-900 dark:text-white mb-3 pb-2 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
+        <span>📑 Module 1 & 2 Index</span>
+        <span class="font-mono text-[11px] text-sky-700 dark:text-sky-400">53 Slides</span>
+      </div>
+      <ul class="space-y-1 font-medium text-slate-600 dark:text-slate-300">
+        <li>
+          <a href="#part-0" class="flex justify-between items-center py-1 px-2 rounded hover:bg-sky-50 dark:hover:bg-slate-800 hover:text-sky-700 dark:hover:text-sky-400 transition">
+            <span>0. Course Information</span>
+            <span class="font-mono text-[10px] text-slate-400">1–5</span>
+          </a>
+        </li>
+        <li>
+          <a href="#part-1" class="flex justify-between items-center py-1 px-2 rounded hover:bg-sky-50 dark:hover:bg-slate-800 hover:text-sky-700 dark:hover:text-sky-400 transition">
+            <span>1. What You Already Use</span>
+            <span class="font-mono text-[10px] text-slate-400">6–12</span>
+          </a>
+        </li>
+        <li>
+          <a href="#part-2" class="flex justify-between items-center py-1 px-2 rounded hover:bg-sky-50 dark:hover:bg-slate-800 hover:text-sky-700 dark:hover:text-sky-400 transition">
+            <span>2. What Makes It Cloud</span>
+            <span class="font-mono text-[10px] text-slate-400">13–21</span>
+          </a>
+        </li>
+        <li>
+          <a href="#part-3" class="flex justify-between items-center py-1 px-2 rounded hover:bg-sky-50 dark:hover:bg-slate-800 hover:text-sky-700 dark:hover:text-sky-400 transition">
+            <span>3. Deployment Models</span>
+            <span class="font-mono text-[10px] text-slate-400">22–25</span>
+          </a>
+        </li>
+        <li>
+          <a href="#part-4" class="flex justify-between items-center py-1 px-2 rounded hover:bg-sky-50 dark:hover:bg-slate-800 hover:text-sky-700 dark:hover:text-sky-400 transition">
+            <span>4. Cloud Service Models</span>
+            <span class="font-mono text-[10px] text-slate-400">26–30</span>
+          </a>
+        </li>
+        <li>
+          <a href="#part-5" class="flex justify-between items-center py-1 px-2 rounded hover:bg-sky-50 dark:hover:bg-slate-800 hover:text-sky-700 dark:hover:text-sky-400 transition">
+            <span>5. Cloud Service Providers</span>
+            <span class="font-mono text-[10px] text-slate-400">31–33</span>
+          </a>
+        </li>
+        <li>
+          <a href="#part-6" class="flex justify-between items-center py-1 px-2 rounded hover:bg-sky-50 dark:hover:bg-slate-800 hover:text-sky-700 dark:hover:text-sky-400 transition">
+            <span>6. Troubleshooting Method</span>
+            <span class="font-mono text-[10px] text-slate-400">34–35</span>
+          </a>
+        </li>
+        <li>
+          <a href="#part-7" class="flex justify-between items-center py-1 px-2 rounded hover:bg-sky-50 dark:hover:bg-slate-800 hover:text-sky-700 dark:hover:text-sky-400 transition">
+            <span>7. 1 Computer ➔ Many</span>
+            <span class="font-mono text-[10px] text-slate-400">36–38</span>
+          </a>
+        </li>
+        <li>
+          <a href="#part-8" class="flex justify-between items-center py-1 px-2 rounded hover:bg-sky-50 dark:hover:bg-slate-800 hover:text-sky-700 dark:hover:text-sky-400 transition">
+            <span>8. Processors & Memory</span>
+            <span class="font-mono text-[10px] text-slate-400">39–40</span>
+          </a>
+        </li>
+        <li>
+          <a href="#part-9" class="flex justify-between items-center py-1 px-2 rounded hover:bg-sky-50 dark:hover:bg-slate-800 hover:text-sky-700 dark:hover:text-sky-400 transition">
+            <span>9. VMs in the Cloud</span>
+            <span class="font-mono text-[10px] text-slate-400">41–44</span>
+          </a>
+        </li>
+        <li>
+          <a href="#part-10" class="flex justify-between items-center py-1 px-2 rounded hover:bg-sky-50 dark:hover:bg-slate-800 hover:text-sky-700 dark:hover:text-sky-400 transition">
+            <span>10. Alternatives to VMs</span>
+            <span class="font-mono text-[10px] text-slate-400">45–48</span>
+          </a>
+        </li>
+        <li>
+          <a href="#part-11" class="flex justify-between items-center py-1 px-2 rounded hover:bg-sky-50 dark:hover:bg-slate-800 hover:text-sky-700 dark:hover:text-sky-400 transition">
+            <span>11. Glossaries & Summary</span>
+            <span class="font-mono text-[10px] text-slate-400">49–53</span>
+          </a>
+        </li>
+      </ul>
+
+      <div class="mt-4 pt-3 border-t border-slate-200 dark:border-slate-800 text-[11px] text-slate-500 dark:text-slate-400 space-y-1.5">
+        <div class="font-semibold text-slate-700 dark:text-slate-300">Fast Exam Cheat Box:</div>
+        <div>• <strong>NIST 800-145:</strong> <span class="hl-purple">5 chars, 4 deploy, 3 service</span></div>
+        <div>• <strong>Always Yours:</strong> <span class="hl-pink">Your data & who can access it</span></div>
+        <div>• <strong>Egress:</strong> <span class="hl-pink">Data leaving provider (paid)</span></div>
+        <div>• <strong>Type 1 vs 2:</strong> <span class="hl-blue">Bare metal vs Hosted OS</span></div>
+        <div>• <strong>vCPU:</strong> <span class="hl-yellow">A turn on a real core</span></div>
+        <div>• <strong>Containers:</strong> <span class="hl-green">Share host OS kernel</span></div>
+      </div>
+    </aside>
+
+    <!-- MAIN CONTENT STREAM -->
+    <main class="flex-1 min-w-0 space-y-10">
+
+      <!-- ====================================================================
+           PART 0: COURSE INFORMATION (Slides 1/53 – 5/53)
+           ==================================================================== -->
+      <section id="part-0" class="space-y-6">
+        <!-- Title & Slide 1-2 Card -->
+        <article class="study-card p-6 sm:p-8 border-t-4 border-t-sky-600">
+          <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
+            <div class="flex items-center gap-2">
+              <span class="slide-badge">Slide 1/53</span>
+              <span class="slide-badge">Slide 2/53</span>
+            </div>
+            <span class="text-xs font-mono uppercase tracking-wider px-2.5 py-1 rounded bg-sky-50 dark:bg-sky-950/60 text-sky-800 dark:text-sky-300 font-semibold">
+              Istanbul Aydın University • Dept. of Computer Engineering
+            </span>
+          </div>
+
+          <h2 class="font-display text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white mb-2">
+            SEN421 Cloud Architecture and Services: Introduction to Cloud Computing and Virtual Hardware
+          </h2>
+          <p class="text-sm text-slate-600 dark:text-slate-300 mb-6">
+            <strong>Instructor:</strong> Dr. Hazm Talab • <strong>Semester:</strong> Fall Semester • <strong>Reading:</strong> West, J. <em>CompTIA Cloud+ Guide to Cloud Computing</em>, 2nd ed., Cengage, 2024 — <span class="hl-purple">Module 1 (Sections 1-1 to 1-5) and Module 2 (Sections 2-1 to 2-4)</span>.
+          </p>
+
+          <!-- 12-Part Plan Grid (Slide 2/53) -->
+          <div class="bg-slate-100/80 dark:bg-slate-800/60 rounded-lg p-4 border border-slate-200 dark:border-slate-700">
+            <h3 class="text-xs font-mono uppercase tracking-wider text-slate-500 dark:text-slate-400 font-bold mb-2.5">
+              Today's Plan (12 Sections — Slide 2/53)
+            </h3>
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 text-xs sm:text-sm font-medium">
+              <div class="p-2 rounded bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">1. Course information</div>
+              <div class="p-2 rounded bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">2. Starting from what you already use</div>
+              <div class="p-2 rounded bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">3. What makes something cloud computing</div>
+              <div class="p-2 rounded bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">4. Cloud deployment models</div>
+              <div class="p-2 rounded bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">5. Cloud service models</div>
+              <div class="p-2 rounded bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">6. Cloud service providers</div>
+              <div class="p-2 rounded bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">7. Troubleshooting method</div>
+              <div class="p-2 rounded bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">8. How one computer becomes many</div>
+              <div class="p-2 rounded bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">9. Processors and memory in VMs</div>
+              <div class="p-2 rounded bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">10. Virtual machines in the cloud</div>
+              <div class="p-2 rounded bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">11. Alternatives to virtual machines</div>
+              <div class="p-2 rounded bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">12. Wrap-up and assignment</div>
+            </div>
+          </div>
+        </article>
+
+        <!-- Slides 3/53, 4/53, 5/53 Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <!-- Slide 3/53 -->
+          <article class="study-card p-6">
+            <div class="flex items-center justify-between mb-3">
+              <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">Course Objectives</h3>
+              <span class="slide-badge">Slide 3/53</span>
+            </div>
+            <ol class="space-y-1.5 text-xs sm:text-sm list-decimal list-inside mb-4">
+              <li>Understand the core ideas and principles of cloud computing.</li>
+              <li>Understand the available techniques, platforms, and open problems.</li>
+              <li>Analyze the architecture and design of different cloud platforms.</li>
+              <li>Design and build cloud applications.</li>
+              <li>Design and build data and database services for the cloud.</li>
+            </ol>
+            <div class="p-3 rounded-lg bg-amber-50 dark:bg-amber-950/40 border border-amber-300 dark:border-amber-700 text-xs">
+              <strong>What "analyze" means here:</strong> Given a real system, <span class="hl-yellow">you can explain why it was built that way, and what would break if you changed it</span>. <span class="hl-pink">Listing service names is not analysis.</span>
+            </div>
+          </article>
+
+          <!-- Slide 4/53 -->
+          <article class="study-card p-6">
+            <div class="flex items-center justify-between mb-3">
+              <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">Topics We Will Cover</h3>
+              <span class="slide-badge">Slide 4/53</span>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-1.5 text-xs mb-4">
+              <div class="p-1.5 rounded bg-sky-50 dark:bg-slate-800 font-semibold">1. Intro to cloud computing</div>
+              <div class="p-1.5 rounded bg-sky-50 dark:bg-slate-800 font-semibold">2. Virtual hardware</div>
+              <div class="p-1.5 rounded bg-slate-100 dark:bg-slate-800">3. Migration to the cloud</div>
+              <div class="p-1.5 rounded bg-slate-100 dark:bg-slate-800">4. Cloud networking</div>
+              <div class="p-1.5 rounded bg-slate-100 dark:bg-slate-800">5. Connectivity & troubleshooting</div>
+              <div class="p-1.5 rounded bg-slate-100 dark:bg-slate-800">6. Securing cloud resources</div>
+              <div class="p-1.5 rounded bg-slate-100 dark:bg-slate-800">7. Identity & access management</div>
+              <div class="p-1.5 rounded bg-slate-100 dark:bg-slate-800">8. Cloud storage</div>
+              <div class="p-1.5 rounded bg-slate-100 dark:bg-slate-800">9. Managing cloud performance</div>
+              <div class="p-1.5 rounded bg-slate-100 dark:bg-slate-800">10. Cloud automation</div>
+            </div>
+            <p class="text-xs text-slate-600 dark:text-slate-300">
+              ⚠️ <span class="hl-yellow">The first topics are the technical foundation.</span> If you fall behind there, the later topics will not make sense.
+            </p>
+          </article>
+
+          <!-- Slide 5/53 -->
+          <article class="study-card p-6">
+            <div class="flex items-center justify-between mb-3">
+              <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">Assessment</h3>
+              <span class="slide-badge">Slide 5/53</span>
+            </div>
+            <div class="overflow-x-auto rounded-lg border border-slate-300 dark:border-slate-700">
+              <table class="w-full text-left text-xs sm:text-sm">
+                <thead class="bg-slate-100 dark:bg-slate-800 font-display">
+                  <tr>
+                    <th class="py-2 px-3">Component</th>
+                    <th class="py-2 px-3">Count</th>
+                    <th class="py-2 px-3">Weight</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-200 dark:divide-slate-800 font-mono">
+                  <tr>
+                    <td class="py-2 px-3 font-sans font-semibold">Final exam</td>
+                    <td class="py-2 px-3">1</td>
+                    <td class="py-2 px-3"><span class="hl-yellow">40%</span></td>
+                  </tr>
+                  <tr>
+                    <td class="py-2 px-3 font-sans font-semibold">Midterm exam</td>
+                    <td class="py-2 px-3">1</td>
+                    <td class="py-2 px-3"><span class="hl-yellow">30%</span></td>
+                  </tr>
+                  <tr>
+                    <td class="py-2 px-3 font-sans font-semibold">Project assignment</td>
+                    <td class="py-2 px-3">1</td>
+                    <td class="py-2 px-3">20%</td>
+                  </tr>
+                  <tr>
+                    <td class="py-2 px-3 font-sans font-semibold">Short exam (quiz)</td>
+                    <td class="py-2 px-3">1</td>
+                    <td class="py-2 px-3">10%</td>
+                  </tr>
+                  <tr class="bg-slate-100 dark:bg-slate-800 font-bold">
+                    <td class="py-2 px-3 font-sans">Total</td>
+                    <td class="py-2 px-3"></td>
+                    <td class="py-2 px-3">100%</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </article>
+        </div>
+      </section>
+
+
+      <!-- ====================================================================
+           PART 1: STARTING FROM WHAT YOU ALREADY USE (Slides 6/53 – 12/53)
+           ==================================================================== -->
+      <section id="part-1" class="space-y-6">
+        <div class="flex items-center gap-3 border-b-2 border-slate-700 dark:border-slate-700 pb-2">
+          <span class="px-3 py-1 rounded-md bg-slate-700 text-white font-display font-bold text-sm">PART 1</span>
+          <h2 class="font-display text-xl sm:text-2xl font-bold text-slate-900 dark:text-white">
+            Starting From What You Already Use
+          </h2>
+          <span class="ml-auto text-xs font-mono text-slate-500">Slides 6/53 – 12/53</span>
+        </div>
+
+        <!-- Slides 6/53 & 7/53 -->
+        <article class="study-card p-6 border-l-4 border-l-sky-600">
+          <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              You Already Use the Cloud Every Day & Where Your Photos Really Are
+            </h3>
+            <div class="flex gap-2">
+              <span class="slide-badge">Slide 6/53</span>
+              <span class="slide-badge">Slide 7/53</span>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <div class="p-4 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-sm">
+              <div class="font-bold text-slate-900 dark:text-white mb-2">Everyday Examples (Slide 6/53):</div>
+              <ul class="space-y-1 list-disc list-inside text-xs sm:text-sm">
+                <li>Opened email in a web browser, not stored on your own disk.</li>
+                <li>Took a photo on phone ➔ appeared on laptop a minute later.</li>
+                <li>Watched a video without downloading the file first.</li>
+                <li>Bought a new phone, signed in, and messages came back.</li>
+                <li>Two people edited the same document at the same time.</li>
+              </ul>
+              <div class="mt-3 p-2.5 rounded bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-xs">
+                <strong>Starting Question:</strong> Your phone holds a few hundred GB. Your email, photos, and videos are much larger. <em>Where is all of it actually stored?</em>
+              </div>
+            </div>
+
+            <div class="p-4 rounded-xl bg-sky-50/70 dark:bg-slate-800 border border-sky-300 dark:border-sky-700 text-sm">
+              <div class="font-bold text-sky-950 dark:text-sky-300 mb-2">Where Your Photos Really Are (Slide 7/53):</div>
+              <ul class="space-y-1.5 list-disc list-inside text-xs sm:text-sm">
+                <li>They are <span class="hl-yellow">files on hard disks, inside computers, inside a large building</span>.</li>
+                <li>The building belongs to a company such as <span class="hl-blue">Google, Amazon, Microsoft, or Apple</span>.</li>
+                <li>It may be in <span class="hl-pink">another city, or another country</span>.</li>
+                <li>Your phone holds a copy, or only a small preview. <span class="hl-green">Your phone is a window onto the files, not the place they live.</span></li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="p-4 rounded-xl bg-amber-50 dark:bg-amber-950/40 border-2 border-amber-400 dark:border-amber-700 text-sm">
+            💡 <strong>What "Cloud" Really Means:</strong> <span class="hl-yellow">"The cloud" is not something floating and invisible. It is other people's computers, in buildings, with electricity bills and security guards. You are renting space and time on them.</span>
+          </div>
+        </article>
+
+        <!-- Slide 8/53 -->
+        <article class="study-card p-6">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              Two Ways to Get Computing Power: Own vs. Rent
+            </h3>
+            <span class="slide-badge">Slide 8/53</span>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-3">
+            <div class="p-4 rounded-xl bg-slate-100 dark:bg-slate-800 border-2 border-slate-400">
+              <h4 class="font-display font-bold text-base mb-2">🏢 Own the computers</h4>
+              <ul class="space-y-1.5 text-sm list-disc list-inside">
+                <li>You buy them and <span class="hl-pink">pay the full price at the start</span></li>
+                <li>You find a room, power, and cooling for them</li>
+                <li>You install, update, and repair them</li>
+                <li><span class="hl-pink">They are yours whether you use them or not</span></li>
+              </ul>
+            </div>
+
+            <div class="p-4 rounded-xl bg-emerald-50/70 dark:bg-slate-800 border-2 border-emerald-500">
+              <h4 class="font-display font-bold text-base text-emerald-950 dark:text-emerald-300 mb-2">☁️ Rent the computers (Cloud Computing)</h4>
+              <ul class="space-y-1.5 text-sm list-disc list-inside">
+                <li><span class="hl-green">Someone else buys and keeps them</span></li>
+                <li><span class="hl-green">You use them over the internet</span></li>
+                <li><span class="hl-green">You pay only for the hours you use</span></li>
+                <li><span class="hl-green">You can stop at any time</span></li>
+              </ul>
+            </div>
+          </div>
+        </article>
+
+        <!-- Slide 9/53 -->
+        <article class="study-card p-6">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              A Comparison You Already Understand: Electricity
+            </h3>
+            <span class="slide-badge">Slide 9/53</span>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+            <div class="p-4 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700">
+              <div class="font-bold mb-2">⚡ How Electricity Works (= Cloud Model):</div>
+              <ul class="space-y-1.5 list-disc list-inside">
+                <li>You plug in a device and the power is simply there;</li>
+                <li>You <span class="hl-green">pay for the units you actually use</span>;</li>
+                <li>You can plug in one lamp or twenty, and the supply still works;</li>
+                <li>Somebody else builds and repairs the power stations.</li>
+              </ul>
+            </div>
+
+            <div class="p-4 rounded-xl bg-rose-50/70 dark:bg-rose-950/30 border-2 border-rose-400 dark:border-rose-700">
+              <div class="font-bold text-rose-950 dark:text-rose-300 mb-2">🛑 Where the Comparison Stops:</div>
+              <p>
+                Electricity is all the same. <strong>Computing is not:</strong> <span class="hl-pink">your data has to be kept private, kept correct, and kept in a country whose laws you can live with.</span> That is why this is a whole course and not one lecture.
+              </p>
+            </div>
+          </div>
+        </article>
+
+        <!-- Slide 10/53 -->
+        <article class="study-card p-6 border-l-4 border-l-indigo-600">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              Four Words We Will Use All Semester
+            </h3>
+            <span class="slide-badge">Slide 10/53</span>
+          </div>
+
+          <!-- Visual Diagram of Data Center -> Server -> Hypervisor -> Virtualization (VMs) -->
+          <div class="p-4 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 mb-4">
+            <div class="text-xs font-mono uppercase text-slate-500 font-bold mb-3 text-center">
+              Visualizing the 4 Foundational Building Blocks (Slide 10/53)
+            </div>
+            <div class="p-4 rounded-xl bg-white dark:bg-slate-800 border-2 border-slate-400">
+              <div class="text-xs font-mono font-bold uppercase text-slate-500 mb-2">
+                🏢 1. DATA CENTER (Building with backup power, cooling, fire protection, fast network)
+              </div>
+              <div class="p-3.5 rounded-lg bg-slate-100 dark:bg-slate-900 border-2 border-indigo-500">
+                <div class="text-xs font-mono font-bold uppercase text-indigo-700 dark:text-indigo-300 mb-2">
+                  🖥️ 2. PHYSICAL SERVER (Ordinary hardware mounted in a rack: real CPU, RAM, Disk)
+                </div>
+                <div class="p-2.5 rounded bg-indigo-600 text-white text-center font-mono text-xs font-bold mb-3">
+                  ⚙️ 3. HYPERVISOR (Software that creates VMs & shares real CPU, memory, and disk among them)
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 text-center text-xs">
+                  <div class="p-2.5 rounded bg-emerald-100 dark:bg-emerald-950 border border-emerald-500 font-semibold">
+                    📦 VM 1 (Own OS)<br/><span class="text-[11px] font-normal">4. Virtualization</span>
+                  </div>
+                  <div class="p-2.5 rounded bg-emerald-100 dark:bg-emerald-950 border border-emerald-500 font-semibold">
+                    📦 VM 2 (Own OS)<br/><span class="text-[11px] font-normal">4. Virtualization</span>
+                  </div>
+                  <div class="p-2.5 rounded bg-emerald-100 dark:bg-emerald-950 border border-emerald-500 font-semibold">
+                    📦 VM 3 (Own OS)<br/><span class="text-[11px] font-normal">4. Virtualization</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <ul class="space-y-2 text-sm sm:text-base list-disc list-inside">
+            <li><span class="hl-yellow">Server</span> — a computer that does work for other computers. Physically it is ordinary hardware mounted in a rack.</li>
+            <li><span class="hl-yellow">Data center</span> — a building made to hold servers, with backup power, cooling, fire protection, and fast network connections.</li>
+            <li><span class="hl-yellow">Virtualization</span> — software that splits one physical server into several separate <span class="hl-blue">virtual machines (VMs)</span>, each running its own operating system.</li>
+            <li><span class="hl-yellow">Hypervisor</span> — the software that creates those virtual machines and shares the real CPU, memory, and disk among them.</li>
+          </ul>
+          <p class="mt-3 text-xs sm:text-sm font-semibold text-slate-600 dark:text-slate-300">
+            📌 <span class="hl-green">Cloud computing is built on virtualization: one physical computer can act as many separate ones.</span>
+          </p>
+        </article>
+
+        <!-- Slide 11/53 -->
+        <article class="study-card p-6">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              Who Is Who in the Cloud
+            </h3>
+            <span class="slide-badge">Slide 11/53</span>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 text-xs sm:text-sm">
+            <div class="p-3.5 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700">
+              <div class="font-bold text-sky-800 dark:text-sky-300 mb-1"><span class="hl-yellow">Cloud provider</span></div>
+              The company that owns the buildings and servers, and sells the use of them (<span class="hl-blue">Amazon, Microsoft, Google</span>).
+            </div>
+            <div class="p-3.5 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700">
+              <div class="font-bold text-sky-800 dark:text-sky-300 mb-1"><span class="hl-yellow">Customer</span></div>
+              The person or company renting from the provider. <strong>In this course, that is you.</strong>
+            </div>
+            <div class="p-3.5 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700">
+              <div class="font-bold text-sky-800 dark:text-sky-300 mb-1"><span class="hl-yellow">End user</span></div>
+              The person using the application the customer built.
+            </div>
+            <div class="p-3.5 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700">
+              <div class="font-bold text-sky-800 dark:text-sky-300 mb-1"><span class="hl-yellow">Account</span></div>
+              Your relationship with the provider. Everything you create and every charge you cause belongs to it.
+            </div>
+            <div class="p-3.5 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700">
+              <div class="font-bold text-sky-800 dark:text-sky-300 mb-1"><span class="hl-yellow">Console</span></div>
+              The provider's website where you create/delete things by clicking (also CLI & programming API).
+            </div>
+          </div>
+        </article>
+
+        <!-- Slide 12/53 -->
+        <article class="study-card p-6">
+          <div class="flex items-center justify-between mb-3">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              Cloud Computing in One Sentence (and Why We Must Make It Precise)
+            </h3>
+            <span class="slide-badge">Slide 12/53</span>
+          </div>
+
+          <div class="p-4 rounded-xl bg-sky-50 dark:bg-sky-950/40 border border-sky-300 dark:border-sky-700 text-sm sm:text-base mb-4">
+            <strong>A first definition:</strong> <span class="hl-yellow">Using computers that someone else owns and operates, reaching them over a network, paying for what you use.</span>
+          </div>
+
+          <p class="text-sm mb-3">
+            ⚠️ That sentence is correct, but it is <strong>too loose</strong>: <span class="hl-pink">renting one fixed server for a year also fits it, and that is not cloud computing</span>. The rest of today makes the sentence precise, in three steps:
+          </p>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs sm:text-sm font-medium">
+            <div class="p-3 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700">
+              1️⃣ <strong>What features</strong> make something cloud computing at all (Part 2)
+            </div>
+            <div class="p-3 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700">
+              2️⃣ <strong>Who owns it</strong> and who is allowed to use it (Part 3: Deployment models)
+            </div>
+            <div class="p-3 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700">
+              3️⃣ <strong>How much of it</strong> you run yourself (Part 4: Service models)
+            </div>
+          </div>
+        </article>
+      </section>
+
+
+      <!-- ====================================================================
+           PART 2: WHAT MAKES SOMETHING CLOUD COMPUTING (Slides 13/53 – 21/53)
+           ==================================================================== -->
+      <section id="part-2" class="space-y-6">
+        <div class="flex items-center gap-3 border-b-2 border-slate-700 dark:border-slate-700 pb-2">
+          <span class="px-3 py-1 rounded-md bg-slate-700 text-white font-display font-bold text-sm">PART 2</span>
+          <h2 class="font-display text-xl sm:text-2xl font-bold text-slate-900 dark:text-white">
+            What Makes Something Cloud Computing (NIST SP 800-145)
+          </h2>
+          <span class="ml-auto text-xs font-mono text-slate-500">Slides 13/53 – 21/53</span>
+        </div>
+
+        <!-- Slide 13/53 -->
+        <article class="study-card p-6">
+          <div class="flex items-center justify-between mb-3">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              The Old Way: Everything in Your Own Building ("On-Premises")
+            </h3>
+            <span class="slide-badge">Slide 13/53</span>
+          </div>
+
+          <p class="text-sm mb-3">
+            <span class="hl-yellow">"On-premises"</span> means the organization owns and runs everything itself:
+          </p>
+          <ul class="space-y-1.5 text-sm list-disc list-inside mb-4">
+            <li>the building, the power, the cooling, the locks on the door;</li>
+            <li>the servers, the storage, the network equipment, the cables;</li>
+            <li>the operating systems and their updates;</li>
+            <li>and the staff who fix all of it at 3 a.m.</li>
+          </ul>
+          <div class="p-3.5 rounded-lg bg-rose-50 dark:bg-rose-950/30 border border-rose-300 dark:border-rose-800 text-sm">
+            <strong>The most important consequence:</strong> <span class="hl-pink">you must buy the computers before you know how many people will use the system, and buying and delivery take weeks or months.</span>
+          </div>
+        </article>
+
+        <!-- Slides 14/53 & 15/53 -->
+        <article class="study-card p-6 border-l-4 border-l-rose-500">
+          <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              Guessing How Many Computers to Buy & The 40x Registration Spike
+            </h3>
+            <div class="flex gap-2">
+              <span class="slide-badge">Slide 14/53</span>
+              <span class="slide-badge">Slide 15/53</span>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <div class="p-4 rounded-xl bg-amber-50/70 dark:bg-slate-800 border-2 border-amber-400">
+              <h4 class="font-display font-bold text-base mb-1">📈 Mistake 1: Buy too many</h4>
+              <ul class="space-y-1 text-xs sm:text-sm list-disc list-inside">
+                <li>Enough for the busiest day of the year</li>
+                <li><span class="hl-pink">On every other day, most of them do nothing</span></li>
+                <li>The money is already spent, and the machines lose value each year</li>
+              </ul>
+            </div>
+
+            <div class="p-4 rounded-xl bg-rose-50/70 dark:bg-slate-800 border-2 border-rose-400">
+              <h4 class="font-display font-bold text-base mb-1">📉 Mistake 2: Buy too few</h4>
+              <ul class="space-y-1 text-xs sm:text-sm list-disc list-inside">
+                <li>Enough for a normal day</li>
+                <li><span class="hl-pink">On the busiest day the system slows down or stops</span></li>
+                <li>It fails exactly when the most people need it</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="p-3.5 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-sm mb-4">
+            <strong>The Trap (Slide 14/53):</strong> When the number of computers is fixed, there is no right answer — only a choice of which mistake to make. <span class="hl-green">Cloud computing removes the choice, because the number is not fixed.</span>
+          </div>
+
+          <!-- Slide 15/53 Discussion Box -->
+          <div class="p-4 rounded-xl bg-emerald-50/70 dark:bg-emerald-950/30 border-2 border-emerald-500 text-sm">
+            <div class="font-bold text-emerald-950 dark:text-emerald-300 mb-1">
+              🎓 Discussion Question & Answer (Slide 15/53):
+            </div>
+            <p class="mb-2">
+              <strong>Question:</strong> A university runs its student registration system on its own servers. During registration week, about <strong>40 times as many students</strong> use it as in a normal week. How many servers should the university buy — and what do those servers do during the other 51 weeks?
+            </p>
+            <p class="font-semibold">
+              ✅ <strong>Answer:</strong> <span class="hl-green">Pay for what you actually use, not for the busiest week you might have.</span> (On-premises, 39/40ths of the servers would sit idle for 51 weeks).
+            </p>
+          </div>
+        </article>
+
+        <!-- Slides 16/53 & 17/53 -->
+        <article class="study-card p-6 border-2 border-sky-600">
+          <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              The Standard Definition (NIST SP 800-145) & The 5 Essential Characteristics
+            </h3>
+            <div class="flex gap-2">
+              <span class="slide-badge">Slide 16/53</span>
+              <span class="slide-badge">Slide 17/53</span>
+            </div>
+          </div>
+
+          <div class="p-4 rounded-xl bg-sky-50 dark:bg-sky-950/40 border border-sky-300 dark:border-sky-700 text-sm mb-4">
+            <div class="font-mono text-xs font-bold uppercase text-sky-800 dark:text-sky-300 mb-1">
+              <span class="hl-purple">NIST Special Publication 800-145 (Mell & Grance, 2011)</span>
+            </div>
+            <blockquote class="italic text-slate-800 dark:text-slate-200 mb-2">
+              "Cloud computing is a model for enabling ubiquitous, convenient, on-demand network access to a shared pool of configurable computing resources (e.g. networks, servers, storage, applications, and services) that can be rapidly provisioned and released with minimal management effort or service provider interaction."
+            </blockquote>
+            <p class="text-xs sm:text-sm font-medium">
+              <strong>In plainer words:</strong> <span class="hl-yellow">you can get computing whenever you want it, over the network, from a shared supply, and give it back when you are done, without asking anyone.</span>
+            </p>
+          </div>
+
+          <!-- NIST 3-Part Structure Visual -->
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-5 text-center text-xs sm:text-sm">
+            <div class="p-3 rounded-lg bg-amber-50 dark:bg-slate-800 border-2 border-amber-400 font-bold">
+              <span class="hl-yellow">5 Essential Characteristics</span>
+            </div>
+            <div class="p-3 rounded-lg bg-sky-50 dark:bg-slate-800 border-2 border-sky-400 font-bold">
+              <span class="hl-blue">4 Deployment Models</span>
+            </div>
+            <div class="p-3 rounded-lg bg-emerald-50 dark:bg-slate-800 border-2 border-emerald-400 font-bold">
+              <span class="hl-green">3 Service Models</span>
+            </div>
+          </div>
+
+          <!-- 5 Essential Characteristics Table (Slide 17/53) -->
+          <div class="overflow-x-auto rounded-xl border border-slate-300 dark:border-slate-700">
+            <table class="w-full text-left text-xs sm:text-sm">
+              <thead class="bg-slate-100 dark:bg-slate-800 font-display text-base">
+                <tr>
+                  <th class="py-3 px-4 w-1/3">Characteristic (NIST SP 800-145)</th>
+                  <th class="py-3 px-4">What it means in practice</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-200 dark:divide-slate-800">
+                <tr>
+                  <td class="py-2.5 px-4 font-bold"><span class="hl-yellow">1. On-demand self-service</span></td>
+                  <td class="py-2.5 px-4">You create what you need yourself, in seconds, <span class="hl-green">without anyone at the provider approving it</span>.</td>
+                </tr>
+                <tr>
+                  <td class="py-2.5 px-4 font-bold"><span class="hl-yellow">2. Broad network access</span></td>
+                  <td class="py-2.5 px-4">You reach it over the network in a standard way, from a phone, a tablet, a laptop, or a workstation.</td>
+                </tr>
+                <tr>
+                  <td class="py-2.5 px-4 font-bold"><span class="hl-yellow">3. Resource pooling</span></td>
+                  <td class="py-2.5 px-4">The provider's computers serve many customers at the same time, and <span class="hl-blue">you usually do not know which physical machine you are on</span>.</td>
+                </tr>
+                <tr>
+                  <td class="py-2.5 px-4 font-bold"><span class="hl-yellow">4. Rapid elasticity</span></td>
+                  <td class="py-2.5 px-4">You can <span class="hl-green">add and remove capacity quickly, often automatically</span>, and there always seems to be more available.</td>
+                </tr>
+                <tr>
+                  <td class="py-2.5 px-4 font-bold"><span class="hl-yellow">5. Measured service</span></td>
+                  <td class="py-2.5 px-4">Everything you use is <span class="hl-blue">counted and reported</span> — which is what makes paying by the hour possible.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </article>
+
+        <!-- Slide 18/53 -->
+        <article class="study-card p-6">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              Sharing One Computer Among Customers: Multi-Tenancy
+            </h3>
+            <span class="slide-badge">Slide 18/53</span>
+          </div>
+
+          <div class="p-3.5 rounded-lg bg-amber-50 dark:bg-amber-950/30 border border-amber-300 dark:border-amber-700 text-sm sm:text-base mb-4">
+            <span class="hl-yellow">Multi-tenancy:</span> many customers use the same physical computer at the same time, <span class="hl-blue">kept apart by software</span>.
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-sm">
+            <div class="p-3.5 rounded-lg bg-emerald-50/70 dark:bg-slate-800 border border-emerald-300 dark:border-emerald-700">
+              <div class="font-bold text-emerald-900 dark:text-emerald-300 mb-1">✅ Why providers do it</div>
+              A shared machine stays busy, so <span class="hl-green">each customer pays less</span>. This is why cloud is affordable.
+            </div>
+            <div class="p-3.5 rounded-lg bg-rose-50/70 dark:bg-slate-800 border border-rose-300 dark:border-rose-700">
+              <div class="font-bold text-rose-900 dark:text-rose-300 mb-1">⚠️ What it costs you</div>
+              <span class="hl-pink">Another customer's heavy work can slow yours down</span>, and your separation depends on the software being correct.
+            </div>
+            <div class="p-3.5 rounded-lg bg-purple-50/70 dark:bg-slate-800 border border-purple-300 dark:border-purple-700">
+              <div class="font-bold text-purple-900 dark:text-purple-300 mb-1">⚖️ When it is not allowed</div>
+              <span class="hl-purple">Some laws and contracts forbid sharing a machine.</span> This is one reason <strong>private clouds</strong> exist.
+            </div>
+          </div>
+        </article>
+
+        <!-- Slide 19/53 -->
+        <article class="study-card p-6">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              Growing and Shrinking: Scalability vs. Elasticity & Scaling Up vs. Scaling Out
+            </h3>
+            <span class="slide-badge">Slide 19/53</span>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <div class="p-4 rounded-xl bg-slate-100 dark:bg-slate-800 border-2 border-slate-400">
+              <h4 class="font-display font-bold text-base mb-1"><span class="hl-yellow">Scalability</span></h4>
+              <p class="text-sm">
+                The system can be made bigger when more people use it. Usually a <strong>planned change, made by a person</strong>.
+              </p>
+            </div>
+
+            <div class="p-4 rounded-xl bg-emerald-50/70 dark:bg-slate-800 border-2 border-emerald-500">
+              <h4 class="font-display font-bold text-base mb-1"><span class="hl-yellow">Elasticity</span></h4>
+              <p class="text-sm">
+                The system <span class="hl-green">grows and shrinks by itself</span> as the number of users changes. <strong>Shrinking is where the savings come from.</strong>
+              </p>
+            </div>
+          </div>
+
+          <!-- Visual Diagram: Scaling Up vs Scaling Out -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-3">
+            <div class="p-4 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-300 dark:border-slate-700">
+              <div class="font-bold text-sm mb-2">⬆️ <span class="hl-yellow">Scaling up</span>: replace a machine with a bigger one</div>
+              <div class="flex items-center justify-center gap-4 font-mono text-xs py-2">
+                <div class="p-2 rounded bg-white dark:bg-slate-800 border border-slate-400">🖥️ Small VM</div>
+                <span>───►</span>
+                <div class="p-4 rounded bg-amber-100 dark:bg-amber-950 border-2 border-amber-500 font-bold">🖥️ HUGE VM</div>
+              </div>
+            </div>
+
+            <div class="p-4 rounded-xl bg-sky-50/60 dark:bg-slate-900 border-2 border-sky-500">
+              <div class="font-bold text-sm mb-2">➡️ <span class="hl-yellow">Scaling out</span>: add more machines beside it (Cloud Preferred!)</div>
+              <div class="flex items-center justify-center gap-2 font-mono text-xs py-2">
+                <div class="p-2 rounded bg-white dark:bg-slate-800 border border-sky-500">🖥️ VM 1</div>
+                <span>+</span>
+                <div class="p-2 rounded bg-emerald-100 dark:bg-emerald-950 border border-emerald-500 font-bold">🖥️ VM 2</div>
+                <span>+</span>
+                <div class="p-2 rounded bg-emerald-100 dark:bg-emerald-950 border border-emerald-500 font-bold">🖥️ VM 3</div>
+              </div>
+            </div>
+          </div>
+
+          <p class="text-xs sm:text-sm font-semibold text-center p-2.5 rounded bg-sky-50 dark:bg-slate-800">
+            📌 <span class="hl-green">Cloud systems prefer scaling out:</span> <span class="hl-pink">one machine has a size limit, and if it stops, everything stops.</span>
+          </p>
+        </article>
+
+        <!-- Slide 20/53 -->
+        <article class="study-card p-6 border-l-4 border-l-amber-500">
+          <div class="flex items-center justify-between mb-3">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              Is It Really Cloud? A Quick Test
+            </h3>
+            <span class="slide-badge">Slide 20/53</span>
+          </div>
+
+          <p class="text-sm font-semibold mb-3">
+            <span class="hl-yellow">If even one of the five characteristics is missing, it is usually not cloud computing.</span>
+          </p>
+
+          <div class="space-y-2 text-xs sm:text-sm mb-4">
+            <div class="p-3 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 flex flex-wrap justify-between gap-2">
+              <span>• A server you get by emailing the IT office and waiting two days</span>
+              <span class="hl-pink">❌ no on-demand self-service</span>
+            </div>
+            <div class="p-3 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 flex flex-wrap justify-between gap-2">
+              <span>• A rented machine fixed at 4 CPUs and 8 GB for a whole year</span>
+              <span class="hl-pink">❌ no rapid elasticity</span>
+            </div>
+            <div class="p-3 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 flex flex-wrap justify-between gap-2">
+              <span>• A shared cluster where nobody counts who used what</span>
+              <span class="hl-pink">❌ no measured service</span>
+            </div>
+          </div>
+
+          <div class="p-3.5 rounded-lg bg-amber-50 dark:bg-amber-950/40 border border-amber-400 text-sm font-semibold">
+            ⚠️ <strong>Exam Trap:</strong> <span class="hl-yellow">Moving a program onto a virtual machine in your own data center is virtualization. By itself, that is not cloud computing.</span>
+          </div>
+        </article>
+
+        <!-- Slide 21/53 -->
+        <article class="study-card p-6">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              What You Gain, What You Give Up, and CapEx vs. OpEx
+            </h3>
+            <span class="slide-badge">Slide 21/53</span>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <div class="p-4 rounded-xl bg-emerald-50/70 dark:bg-slate-800 border-2 border-emerald-400">
+              <h4 class="font-display font-bold text-base text-emerald-950 dark:text-emerald-300 mb-2">✅ You gain</h4>
+              <ul class="space-y-1.5 text-sm list-disc list-inside">
+                <li><span class="hl-green">No large purchase at the start</span></li>
+                <li><span class="hl-green">Machines ready in minutes</span></li>
+                <li><span class="hl-green">Capacity that follows demand</span></li>
+                <li><span class="hl-green">The provider does the repairs</span></li>
+              </ul>
+            </div>
+
+            <div class="p-4 rounded-xl bg-rose-50/70 dark:bg-slate-800 border-2 border-rose-400">
+              <h4 class="font-display font-bold text-base text-rose-950 dark:text-rose-300 mb-2">⚠️ You give up, or must watch</h4>
+              <ul class="space-y-1.5 text-sm list-disc list-inside">
+                <li><span class="hl-pink">A bill that never stops, and grows if nobody checks it</span></li>
+                <li>Some control and visibility</li>
+                <li>Easy exit: leaving a provider is hard (<span class="hl-yellow">vendor lock-in</span>)</li>
+                <li>Choice of country: laws such as <span class="hl-purple">KVKK and GDPR</span> decide where data may be kept</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="p-4 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-sm">
+            <div class="font-display font-bold text-base mb-1">💰 Two Words from Finance: CapEx vs. OpEx</div>
+            <p>
+              • <span class="hl-yellow">CapEx:</span> one large purchase of something you own, like servers.<br/>
+              • <span class="hl-yellow">OpEx:</span> a regular payment for what you use, like rent.<br/>
+              <span class="hl-blue">Cloud turns the first into the second.</span> <span class="hl-pink">For a system that runs unchanged for many years, owning can still be cheaper.</span>
+            </p>
+          </div>
+        </article>
+      </section>
+
+
+      <!-- ====================================================================
+           PART 3: CLOUD DEPLOYMENT MODELS (Slides 22/53 – 25/53)
+           ==================================================================== -->
+      <section id="part-3" class="space-y-6">
+        <div class="flex items-center gap-3 border-b-2 border-slate-700 dark:border-slate-700 pb-2">
+          <span class="px-3 py-1 rounded-md bg-slate-700 text-white font-display font-bold text-sm">PART 3</span>
+          <h2 class="font-display text-xl sm:text-2xl font-bold text-slate-900 dark:text-white">
+            Cloud Deployment Models
+          </h2>
+          <span class="ml-auto text-xs font-mono text-slate-500">Slides 22/53 – 25/53</span>
+        </div>
+
+        <!-- Slide 22/53 -->
+        <article class="study-card p-6 border-l-4 border-l-purple-600">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              Two Separate Questions About Any Cloud System
+            </h3>
+            <span class="slide-badge">Slide 22/53</span>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <div class="p-4 rounded-xl bg-sky-50 dark:bg-slate-800 border-2 border-sky-500">
+              <div class="font-display font-bold text-base mb-1">1. <span class="hl-yellow">Deployment model</span></div>
+              <p class="text-sm mb-2"><strong>Who owns the computers, and who may use them?</strong></p>
+              <div class="text-xs font-mono"><span class="hl-blue">Public, private, community, hybrid, multi-cloud</span></div>
+            </div>
+
+            <div class="p-4 rounded-xl bg-emerald-50 dark:bg-slate-800 border-2 border-emerald-500">
+              <div class="font-display font-bold text-base mb-1">2. <span class="hl-yellow">Service model</span></div>
+              <p class="text-sm mb-2"><strong>How much of the system do you run yourself?</strong></p>
+              <div class="text-xs font-mono"><span class="hl-green">IaaS, PaaS, SaaS, FaaS</span></div>
+            </div>
+          </div>
+
+          <div class="p-3 rounded-lg bg-rose-50 dark:bg-rose-950/40 border border-rose-300 text-xs sm:text-sm font-semibold text-center">
+            ⚠️ <strong>Exam Rule:</strong> <span class="hl-yellow">The two answers are independent: any service model can run on any deployment model.</span> <span class="hl-pink">When a question asks for one of them, do not answer with the other.</span>
+          </div>
+        </article>
+
+        <!-- Slide 23/53 -->
+        <article class="study-card p-6">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              The 5 Deployment Models
+            </h3>
+            <span class="slide-badge">Slide 23/53</span>
+          </div>
+
+          <div class="overflow-x-auto rounded-xl border border-slate-300 dark:border-slate-700 mb-4">
+            <table class="w-full text-left text-xs sm:text-sm">
+              <thead class="bg-slate-100 dark:bg-slate-800 font-display text-base">
+                <tr>
+                  <th class="py-3 px-4 w-1/5">Model</th>
+                  <th class="py-3 px-4 w-2/5">Who uses it</th>
+                  <th class="py-3 px-4 w-2/5">Typical reason to choose it</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-200 dark:divide-slate-800">
+                <tr>
+                  <td class="py-2.5 px-4 font-bold"><span class="hl-yellow">Public</span></td>
+                  <td class="py-2.5 px-4">Anyone who pays; the provider owns everything.</td>
+                  <td class="py-2.5 px-4"><span class="hl-green">Start fast, no purchase, growth without limit.</span></td>
+                </tr>
+                <tr>
+                  <td class="py-2.5 px-4 font-bold"><span class="hl-yellow">Private</span></td>
+                  <td class="py-2.5 px-4">One organization only.</td>
+                  <td class="py-2.5 px-4"><span class="hl-purple">Laws or contracts forbid sharing; full control.</span></td>
+                </tr>
+                <tr>
+                  <td class="py-2.5 px-4 font-bold"><span class="hl-yellow">Community</span></td>
+                  <td class="py-2.5 px-4">A group of organizations with the same rules.</td>
+                  <td class="py-2.5 px-4">Hospitals, universities, or agencies sharing costs.</td>
+                </tr>
+                <tr>
+                  <td class="py-2.5 px-4 font-bold"><span class="hl-yellow">Hybrid</span></td>
+                  <td class="py-2.5 px-4">A private and a public cloud, connected.</td>
+                  <td class="py-2.5 px-4">Sensitive data stays inside; extra machines come from outside when needed (<span class="hl-blue">cloud bursting</span>).</td>
+                </tr>
+                <tr>
+                  <td class="py-2.5 px-4 font-bold"><span class="hl-yellow">Multi-cloud</span></td>
+                  <td class="py-2.5 px-4">Two or more public providers side by side.</td>
+                  <td class="py-2.5 px-4">Avoid depending on one provider; use each one's best service.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-300">
+            💰 <strong>Cost Warning:</strong> <span class="hl-pink">Hybrid and multi-cloud have a price:</span> two sets of accounts, networks, and bills to run, and a charge each time data moves between them.
+          </p>
+        </article>
+
+        <!-- Slide 24/53 -->
+        <article class="study-card p-6">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              Public or Private?
+            </h3>
+            <span class="slide-badge">Slide 24/53</span>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <div class="p-4 rounded-xl bg-sky-50/60 dark:bg-slate-800 border border-sky-400">
+              <h4 class="font-display font-bold text-base mb-2">🌐 Public cloud</h4>
+              <ul class="space-y-1 text-sm list-disc list-inside">
+                <li>Machines shared with other customers</li>
+                <li>Pay as you go; running in minutes</li>
+                <li><span class="hl-green">Best when demand is unknown or changes a lot</span></li>
+              </ul>
+            </div>
+
+            <div class="p-4 rounded-xl bg-amber-50/60 dark:bg-slate-800 border border-amber-400">
+              <h4 class="font-display font-bold text-base mb-2">🔒 Private cloud</h4>
+              <ul class="space-y-1 text-sm list-disc list-inside">
+                <li>Machines for one organization</li>
+                <li>Large purchase up front; full control over everything</li>
+                <li><span class="hl-yellow">Best when rules forbid sharing, or demand barely changes</span></li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="p-3.5 rounded-lg bg-amber-50 dark:bg-amber-950/40 border border-amber-400 text-sm">
+            ⚠️ <strong>A common misunderstanding:</strong> <span class="hl-yellow">"Public" means anyone may buy the service. It does not mean your data is visible to others</span> — as long as you set up the separation correctly.
+          </div>
+        </article>
+
+        <!-- Slide 25/53 -->
+        <article class="study-card p-6 border-l-4 border-l-emerald-500">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              Worked Exercise: Choose a Deployment Model for Each Case
+            </h3>
+            <span class="slide-badge">Slide 25/53</span>
+          </div>
+
+          <div class="space-y-2.5 text-sm mb-3">
+            <div class="p-3 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+              <span><strong>1.</strong> Hospitals storing patient records under KVKK, with steady use.</span>
+              <span class="hl-green shrink-0">1 ➔ Private</span>
+            </div>
+            <div class="p-3 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+              <span><strong>2.</strong> A small startup whose game may have 10 users or 500,000 next month.</span>
+              <span class="hl-green shrink-0">2 ➔ Public</span>
+            </div>
+            <div class="p-3 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+              <span><strong>3.</strong> A bank keeping its accounts in-house but its website outside.</span>
+              <span class="hl-green shrink-0">3 ➔ Hybrid</span>
+            </div>
+            <div class="p-3 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+              <span><strong>4.</strong> Five universities sharing one research system under the same rules.</span>
+              <span class="hl-green shrink-0">4 ➔ Community</span>
+            </div>
+            <div class="p-3 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+              <span><strong>5.</strong> A company using one provider for video and another for its data.</span>
+              <span class="hl-green shrink-0">5 ➔ Multi-cloud</span>
+            </div>
+          </div>
+
+          <p class="text-xs font-semibold text-center text-slate-500">
+            The reason matters more than the label.
+          </p>
+        </article>
+      </section>
+
+
+      <!-- ====================================================================
+           PART 4: CLOUD SERVICE MODELS (Slides 26/53 – 30/53)
+           ==================================================================== -->
+      <section id="part-4" class="space-y-6">
+        <div class="flex items-center gap-3 border-b-2 border-slate-700 dark:border-slate-700 pb-2">
+          <span class="px-3 py-1 rounded-md bg-slate-700 text-white font-display font-bold text-sm">PART 4</span>
+          <h2 class="font-display text-xl sm:text-2xl font-bold text-slate-900 dark:text-white">
+            Cloud Service Models & Shared Responsibility
+          </h2>
+          <span class="ml-auto text-xs font-mono text-slate-500">Slides 26/53 – 30/53</span>
+        </div>
+
+        <!-- Slide 26/53 -->
+        <article class="study-card p-6">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              The Three Service Models: IaaS, PaaS, SaaS
+            </h3>
+            <span class="slide-badge">Slide 26/53</span>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+            <div class="p-4 rounded-xl bg-amber-50/70 dark:bg-slate-800 border-2 border-amber-400">
+              <div class="font-display font-bold text-base mb-1"><span class="hl-yellow">IaaS (Infrastructure as a Service)</span></div>
+              <p class="text-xs sm:text-sm mb-2">
+                You rent virtual machines, disks, and networks, and <strong>install everything on them yourself, including the operating system</strong>.
+              </p>
+              <div class="text-xs font-mono mb-2">Examples: <span class="hl-blue">AWS EC2, Azure Virtual Machines, Google Compute Engine</span></div>
+              <div class="p-2 rounded bg-white dark:bg-slate-900 text-xs font-semibold">🍳 Analogy: Renting an empty kitchen</div>
+            </div>
+
+            <div class="p-4 rounded-xl bg-sky-50/70 dark:bg-slate-800 border-2 border-sky-400">
+              <div class="font-display font-bold text-base mb-1"><span class="hl-yellow">PaaS (Platform as a Service)</span></div>
+              <p class="text-xs sm:text-sm mb-2">
+                You upload your program and the provider runs it. <strong>You never manage the machine or its operating system.</strong>
+              </p>
+              <div class="text-xs font-mono mb-2">Examples: <span class="hl-blue">Azure App Service, Google App Engine, AWS Elastic Beanstalk</span></div>
+              <div class="p-2 rounded bg-white dark:bg-slate-900 text-xs font-semibold">🥘 Analogy: Kitchen with everything prepared</div>
+            </div>
+
+            <div class="p-4 rounded-xl bg-emerald-50/70 dark:bg-slate-800 border-2 border-emerald-400">
+              <div class="font-display font-bold text-base mb-1"><span class="hl-yellow">SaaS (Software as a Service)</span></div>
+              <p class="text-xs sm:text-sm mb-2">
+                You use the <strong>provider's finished program</strong>, usually in a browser.
+              </p>
+              <div class="text-xs font-mono mb-2">Examples: <span class="hl-blue">Microsoft 365, Google Workspace, Dropbox</span></div>
+              <div class="p-2 rounded bg-white dark:bg-slate-900 text-xs font-semibold">🍽️ Analogy: Ordering the meal</div>
+            </div>
+          </div>
+        </article>
+
+        <!-- Slides 27/53 & 28/53 -->
+        <article class="study-card p-6 border-2 border-amber-500">
+          <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              Who Is Responsible for What (Shared Responsibility Matrix)
+            </h3>
+            <div class="flex gap-2">
+              <span class="slide-badge">Slide 27/53</span>
+              <span class="slide-badge">Slide 28/53</span>
+            </div>
+          </div>
+
+          <div class="overflow-x-auto rounded-xl border border-slate-300 dark:border-slate-700 mb-4">
+            <table class="w-full text-left text-xs sm:text-sm">
+              <thead class="bg-slate-100 dark:bg-slate-800 font-display text-base">
+                <tr>
+                  <th class="py-3 px-4">Layer</th>
+                  <th class="py-3 px-4 text-center">Own building</th>
+                  <th class="py-3 px-4 text-center">IaaS</th>
+                  <th class="py-3 px-4 text-center">PaaS</th>
+                  <th class="py-3 px-4 text-center">SaaS</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-200 dark:divide-slate-800 font-medium">
+                <tr class="bg-rose-50/60 dark:bg-rose-950/30">
+                  <td class="py-2.5 px-4 font-bold">1. Data and access</td>
+                  <td class="py-2.5 px-4 text-center"><span class="hl-pink">You</span></td>
+                  <td class="py-2.5 px-4 text-center"><span class="hl-pink">You</span></td>
+                  <td class="py-2.5 px-4 text-center"><span class="hl-pink">You</span></td>
+                  <td class="py-2.5 px-4 text-center"><span class="hl-pink">You</span></td>
+                </tr>
+                <tr>
+                  <td class="py-2.5 px-4 font-bold">2. Application</td>
+                  <td class="py-2.5 px-4 text-center"><span class="hl-yellow">You</span></td>
+                  <td class="py-2.5 px-4 text-center"><span class="hl-yellow">You</span></td>
+                  <td class="py-2.5 px-4 text-center"><span class="hl-yellow">You</span></td>
+                  <td class="py-2.5 px-4 text-center"><span class="hl-blue">Provider</span></td>
+                </tr>
+                <tr>
+                  <td class="py-2.5 px-4 font-bold">3. Supporting software <span class="text-[11px] font-normal text-slate-500">(runtime, web server, DB engine)</span></td>
+                  <td class="py-2.5 px-4 text-center"><span class="hl-yellow">You</span></td>
+                  <td class="py-2.5 px-4 text-center"><span class="hl-yellow">You</span></td>
+                  <td class="py-2.5 px-4 text-center"><span class="hl-blue">Provider</span></td>
+                  <td class="py-2.5 px-4 text-center"><span class="hl-blue">Provider</span></td>
+                </tr>
+                <tr>
+                  <td class="py-2.5 px-4 font-bold">4. Operating system</td>
+                  <td class="py-2.5 px-4 text-center"><span class="hl-yellow">You</span></td>
+                  <td class="py-2.5 px-4 text-center"><span class="hl-yellow">You</span></td>
+                  <td class="py-2.5 px-4 text-center"><span class="hl-blue">Provider</span></td>
+                  <td class="py-2.5 px-4 text-center"><span class="hl-blue">Provider</span></td>
+                </tr>
+                <tr>
+                  <td class="py-2.5 px-4 font-bold">5. Virtualization</td>
+                  <td class="py-2.5 px-4 text-center"><span class="hl-yellow">You</span></td>
+                  <td class="py-2.5 px-4 text-center"><span class="hl-blue">Provider</span></td>
+                  <td class="py-2.5 px-4 text-center"><span class="hl-blue">Provider</span></td>
+                  <td class="py-2.5 px-4 text-center"><span class="hl-blue">Provider</span></td>
+                </tr>
+                <tr>
+                  <td class="py-2.5 px-4 font-bold">6. Servers and storage</td>
+                  <td class="py-2.5 px-4 text-center"><span class="hl-yellow">You</span></td>
+                  <td class="py-2.5 px-4 text-center"><span class="hl-blue">Provider</span></td>
+                  <td class="py-2.5 px-4 text-center"><span class="hl-blue">Provider</span></td>
+                  <td class="py-2.5 px-4 text-center"><span class="hl-blue">Provider</span></td>
+                </tr>
+                <tr>
+                  <td class="py-2.5 px-4 font-bold">7. Building and network</td>
+                  <td class="py-2.5 px-4 text-center"><span class="hl-yellow">You</span></td>
+                  <td class="py-2.5 px-4 text-center"><span class="hl-blue">Provider</span></td>
+                  <td class="py-2.5 px-4 text-center"><span class="hl-blue">Provider</span></td>
+                  <td class="py-2.5 px-4 text-center"><span class="hl-blue">Provider</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+            <div class="p-3.5 rounded-lg bg-amber-50 dark:bg-amber-950/30 border border-amber-300">
+              <strong>Top Row Rule (Slide 27/53):</strong> <span class="hl-yellow">The top row never changes: your data, and who can reach it, is always your responsibility.</span>
+            </div>
+            <div class="p-3.5 rounded-lg bg-rose-50 dark:bg-rose-950/30 border border-rose-300">
+              <strong>Shared Responsibility (Slide 28/53):</strong> The provider protects the cloud itself; the customer protects what it puts in the cloud. <span class="hl-pink">Almost every large cloud data leak came from a customer's setting (storage left open, permission too wide).</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- Slides 29/53 & 30/53 -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <!-- Slide 29/53 -->
+          <article class="study-card p-6">
+            <div class="flex items-center justify-between mb-3">
+              <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">Other "as a Service" Names</h3>
+              <span class="slide-badge">Slide 29/53</span>
+            </div>
+            <ul class="space-y-2 text-xs sm:text-sm list-disc list-inside">
+              <li><span class="hl-yellow">FaaS (Function as a Service), also called serverless</span> — you upload one small piece of code; the provider runs it each time something triggers it and charges per run. <em>There is still a server; you just never see or manage it.</em> Examples: <span class="hl-blue">AWS Lambda, Azure Functions</span>.</li>
+              <li><span class="hl-yellow">CaaS</span> — Containers as a Service (Part 10).</li>
+              <li><span class="hl-yellow">DBaaS</span> — a database run for you by the provider.</li>
+              <li><span class="hl-yellow">XaaS</span> — "anything as a service", the general name.</li>
+            </ul>
+          </article>
+
+          <!-- Slide 30/53 -->
+          <article class="study-card p-6 border-l-4 border-l-emerald-500">
+            <div class="flex items-center justify-between mb-3">
+              <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">Self-Check: Old Windows Program</h3>
+              <span class="slide-badge">Slide 30/53</span>
+            </div>
+            <p class="text-xs sm:text-sm mb-3">
+              <strong>Question:</strong> A team must run an old Windows program that needs one specific driver and one exact Windows version. Which service model fits?
+            </p>
+            <div class="p-3 rounded-lg bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-400 text-xs sm:text-sm">
+              <div class="font-bold mb-1">✅ Answer: <span class="hl-green">IaaS</span></div>
+              <ul class="space-y-1 list-disc list-inside">
+                <li><strong>PaaS</strong> lets you choose neither the driver nor the Windows version.</li>
+                <li><strong>SaaS</strong> is someone else's program; there is nothing to install into.</li>
+                <li><strong>IaaS</strong> gives you the whole machine — so <span class="hl-pink">its updates and backups are yours too</span>.</li>
+              </ul>
+            </div>
+          </article>
+        </div>
+      </section>
+
+
+      <!-- ====================================================================
+           PART 5: CLOUD SERVICE PROVIDERS (Slides 31/53 – 33/53)
+           ==================================================================== -->
+      <section id="part-5" class="space-y-6">
+        <div class="flex items-center gap-3 border-b-2 border-slate-700 dark:border-slate-700 pb-2">
+          <span class="px-3 py-1 rounded-md bg-slate-700 text-white font-display font-bold text-sm">PART 5</span>
+          <h2 class="font-display text-xl sm:text-2xl font-bold text-slate-900 dark:text-white">
+            Cloud Service Providers, Regions/AZs & Billing
+          </h2>
+          <span class="ml-auto text-xs font-mono text-slate-500">Slides 31/53 – 33/53</span>
+        </div>
+
+        <!-- Slide 31/53 -->
+        <article class="study-card p-6">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              The Main Providers, and Their Names for the Same Things
+            </h3>
+            <span class="slide-badge">Slide 31/53</span>
+          </div>
+
+          <div class="overflow-x-auto rounded-xl border border-slate-300 dark:border-slate-700 mb-3">
+            <table class="w-full text-left text-xs sm:text-sm">
+              <thead class="bg-slate-100 dark:bg-slate-800 font-display text-base">
+                <tr>
+                  <th class="py-3 px-4">What it is (Learn this column!)</th>
+                  <th class="py-3 px-4">AWS</th>
+                  <th class="py-3 px-4">Azure</th>
+                  <th class="py-3 px-4">GCP</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-200 dark:divide-slate-800 font-mono">
+                <tr>
+                  <td class="py-2.5 px-4 font-sans font-bold"><span class="hl-yellow">Virtual machine</span></td>
+                  <td class="py-2.5 px-4"><span class="hl-blue">EC2</span></td>
+                  <td class="py-2.5 px-4">Virtual Machines</td>
+                  <td class="py-2.5 px-4">Compute Engine</td>
+                </tr>
+                <tr>
+                  <td class="py-2.5 px-4 font-sans font-bold"><span class="hl-yellow">Storage for files</span></td>
+                  <td class="py-2.5 px-4"><span class="hl-blue">S3</span></td>
+                  <td class="py-2.5 px-4">Blob Storage</td>
+                  <td class="py-2.5 px-4">Cloud Storage</td>
+                </tr>
+                <tr>
+                  <td class="py-2.5 px-4 font-sans font-bold"><span class="hl-yellow">Managed SQL database</span></td>
+                  <td class="py-2.5 px-4"><span class="hl-blue">RDS</span></td>
+                  <td class="py-2.5 px-4">Azure SQL Database</td>
+                  <td class="py-2.5 px-4">Cloud SQL</td>
+                </tr>
+                <tr>
+                  <td class="py-2.5 px-4 font-sans font-bold"><span class="hl-yellow">Your own network</span></td>
+                  <td class="py-2.5 px-4"><span class="hl-blue">VPC</span></td>
+                  <td class="py-2.5 px-4">Virtual Network</td>
+                  <td class="py-2.5 px-4">VPC</td>
+                </tr>
+                <tr>
+                  <td class="py-2.5 px-4 font-sans font-bold"><span class="hl-yellow">Run one function</span></td>
+                  <td class="py-2.5 px-4"><span class="hl-blue">Lambda</span></td>
+                  <td class="py-2.5 px-4">Functions</td>
+                  <td class="py-2.5 px-4">Cloud Functions</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="text-xs text-slate-500">Learn the left column. The names can be looked up in seconds.</p>
+        </article>
+
+        <!-- Slides 32/53 & 33/53 -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <!-- Slide 32/53 -->
+          <article class="study-card p-6">
+            <div class="flex items-center justify-between mb-3">
+              <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">Regions and Availability Zones</h3>
+              <span class="slide-badge">Slide 32/53</span>
+            </div>
+
+            <!-- Visual Diagram of Region & AZs -->
+            <div class="p-3.5 rounded-xl bg-slate-100 dark:bg-slate-900 border-2 border-sky-500 mb-3 text-xs">
+              <div class="font-mono font-bold text-sky-800 dark:text-sky-300 mb-2">
+                🌍 REGION (Chosen for speed to users, price, & data laws)
+              </div>
+              <div class="grid grid-cols-2 gap-2 text-center">
+                <div class="p-2.5 rounded bg-white dark:bg-slate-800 border border-emerald-500">
+                  <div class="font-bold">🏢 Availability Zone A</div>
+                  <div class="text-[11px] text-slate-500">Own power & network</div>
+                </div>
+                <div class="p-2.5 rounded bg-white dark:bg-slate-800 border border-emerald-500">
+                  <div class="font-bold">🏢 Availability Zone B</div>
+                  <div class="text-[11px] text-slate-500">Own power & network</div>
+                </div>
+              </div>
+            </div>
+
+            <ul class="space-y-1.5 text-xs sm:text-sm list-disc list-inside mb-3">
+              <li><span class="hl-yellow">Region</span> — an area of the world where a provider has several data centers. Chosen for <strong>speed to users, price, and the country your data must stay in</strong>.</li>
+              <li><span class="hl-yellow">Availability zone</span> — one data center (or a few) inside a region, with its own power and network, so one can fail without stopping the others.</li>
+            </ul>
+            <div class="p-2.5 rounded bg-amber-50 dark:bg-amber-950/40 border border-amber-400 text-xs font-semibold">
+              📌 <strong>Design Rule:</strong> A system in one zone fails when that data center fails. <span class="hl-green">To keep it running, place it in at least two zones — and pay for both.</span>
+            </div>
+          </article>
+
+          <!-- Slide 33/53 -->
+          <article class="study-card p-6 border-l-4 border-l-rose-500">
+            <div class="flex items-center justify-between mb-3">
+              <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">How the Bill Is Calculated</h3>
+              <span class="slide-badge">Slide 33/53</span>
+            </div>
+            <ul class="space-y-2 text-xs sm:text-sm list-disc list-inside mb-4">
+              <li>You pay for the <strong>hours machines run</strong>, the <strong>data you store</strong>, and the <strong>data you send out</strong>.</li>
+              <li><span class="hl-green">Data coming in is usually free.</span> Data going out usually is not; this is called <span class="hl-pink">egress</span>. It makes leaving a provider expensive.</li>
+              <li><span class="hl-pink">A stopped machine still costs money for its disk.</span></li>
+              <li>Free accounts are limited in time, in amount, or both.</li>
+            </ul>
+            <div class="p-3 rounded-lg bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-400 text-xs sm:text-sm font-semibold">
+              🛡️ <strong>Before you use any provider:</strong> <span class="hl-green">Set a spending alert at a low amount, and delete everything as soon as you finish an exercise.</span>
+            </div>
+          </article>
+        </div>
+      </section>
+
+
+      <!-- ====================================================================
+           PART 6: TROUBLESHOOTING METHOD (Slides 34/53 – 35/53)
+           ==================================================================== -->
+      <section id="part-6" class="space-y-6">
+        <div class="flex items-center gap-3 border-b-2 border-slate-700 dark:border-slate-700 pb-2">
+          <span class="px-3 py-1 rounded-md bg-slate-700 text-white font-display font-bold text-sm">PART 6</span>
+          <h2 class="font-display text-xl sm:text-2xl font-bold text-slate-900 dark:text-white">
+            Troubleshooting Method
+          </h2>
+          <span class="ml-auto text-xs font-mono text-slate-500">Slides 34/53 – 35/53</span>
+        </div>
+
+        <!-- Slide 34/53 -->
+        <article class="study-card p-6">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              The Standard Six-Step Troubleshooting Method
+            </h3>
+            <span class="slide-badge">Slide 34/53</span>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-2.5 mb-4 text-xs">
+            <div class="p-3 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700">
+              <div class="font-bold text-sky-700 dark:text-sky-300 mb-1">1. Identify</div>
+              Collect info, ask users, find out <strong>what changed</strong>.
+            </div>
+            <div class="p-3 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700">
+              <div class="font-bold text-sky-700 dark:text-sky-300 mb-1">2. Probable cause</div>
+              Decide probable cause — <strong>start with the obvious</strong>.
+            </div>
+            <div class="p-3 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700">
+              <div class="font-bold text-sky-700 dark:text-sky-300 mb-1">3. Test that idea</div>
+              If wrong, form a new one or ask for help.
+            </div>
+            <div class="p-3 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700">
+              <div class="font-bold text-sky-700 dark:text-sky-300 mb-1">4. Plan & repair</div>
+              Plan the repair and carry it out (<strong>one change at a time</strong>).
+            </div>
+            <div class="p-3 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700">
+              <div class="font-bold text-sky-700 dark:text-sky-300 mb-1">5. Check</div>
+              Check that everything works, and prevent a repeat.
+            </div>
+            <div class="p-3 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700">
+              <div class="font-bold text-sky-700 dark:text-sky-300 mb-1">6. Write down</div>
+              Write down what you found and what you did.
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs sm:text-sm">
+            <div class="p-3 rounded-lg bg-rose-50 dark:bg-rose-950/30 border border-rose-300">
+              ❌ <strong>Two most common mistakes:</strong> <span class="hl-pink">Changing several things at once</span> (so you never learn which one fixed it) and <span class="hl-pink">skipping step 6</span>.
+            </div>
+            <div class="p-3 rounded-lg bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-300">
+              ☁️ <strong>Cloud First Check:</strong> <span class="hl-green">First check the provider's status page:</span> it tells you in seconds whether the problem is theirs or yours.
+            </div>
+          </div>
+        </article>
+
+        <!-- Slide 35/53 -->
+        <article class="study-card p-6 border-l-4 border-l-emerald-500">
+          <div class="flex items-center justify-between mb-3">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              Worked Example: Unreachable Website on a Cloud VM
+            </h3>
+            <span class="slide-badge">Slide 35/53</span>
+          </div>
+
+          <div class="p-3 rounded-lg bg-slate-100 dark:bg-slate-800 text-xs sm:text-sm mb-3">
+            <strong>Symptom:</strong> A website on a cloud virtual machine cannot be reached this morning. Yesterday it worked. Other systems in the same account are fine.
+          </div>
+
+          <ol class="space-y-1.5 text-xs sm:text-sm list-decimal list-inside mb-3">
+            <li><strong>Identify:</strong> Who cannot reach it? Since when? What changed last night?</li>
+            <li><strong>Probable cause:</strong> Other systems work, so the provider is fine. Something changed on this machine — <span class="hl-yellow">a firewall rule, its address, or the program</span>.</li>
+            <li><strong>Test:</strong> Is the machine running? Is the port open from outside? Is the program still running inside?</li>
+            <li><strong>Repair:</strong> <span class="hl-green">One change at a time.</span></li>
+            <li><strong>Check:</strong> Test from outside, and add an automatic alert.</li>
+            <li><strong>Write it down:</strong> What changed, and what fixed it.</li>
+          </ol>
+
+          <div class="text-xs font-medium text-slate-600 dark:text-slate-300">
+            📌 <span class="hl-yellow">Firewall rule:</span> a setting that says which ports can be reached, and from where.
+          </div>
+        </article>
+      </section>
+
+
+      <!-- ====================================================================
+           PART 7: HOW ONE COMPUTER BECOMES MANY (Slides 36/53 – 38/53)
+           ==================================================================== -->
+      <section id="part-7" class="space-y-6">
+        <div class="flex items-center gap-3 border-b-2 border-slate-700 dark:border-slate-700 pb-2">
+          <span class="px-3 py-1 rounded-md bg-slate-700 text-white font-display font-bold text-sm">PART 7</span>
+          <h2 class="font-display text-xl sm:text-2xl font-bold text-slate-900 dark:text-white">
+            How One Computer Becomes Many (Virtualization & Hypervisors)
+          </h2>
+          <span class="ml-auto text-xs font-mono text-slate-500">Slides 36/53 – 38/53</span>
+        </div>
+
+        <!-- Slides 36/53 & 37/53 -->
+        <article class="study-card p-6">
+          <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              Host, Hypervisor, Guest & Two Kinds of Hypervisor (Type 1 vs. Type 2)
+            </h3>
+            <div class="flex gap-2">
+              <span class="slide-badge">Slide 36/53</span>
+              <span class="slide-badge">Slide 37/53</span>
+            </div>
+          </div>
+
+          <ul class="space-y-1.5 text-sm list-disc list-inside mb-5">
+            <li><span class="hl-yellow">Host</span> — the physical computer: real processor, memory, and disks.</li>
+            <li><span class="hl-yellow">Hypervisor</span> — the software that divides the host into virtual machines and keeps them apart.</li>
+            <li><span class="hl-yellow">Guest, or virtual machine (VM)</span> — a complete computer made of software, with its own operating system. It behaves as though it owned real hardware.</li>
+          </ul>
+
+          <!-- Side-by-Side Stack Diagram: Type 1 vs Type 2 Hypervisor -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <div class="p-4 rounded-xl bg-emerald-50/60 dark:bg-slate-900 border-2 border-emerald-500 text-center text-xs font-mono space-y-1.5">
+              <div class="font-sans font-bold text-sm text-emerald-950 dark:text-emerald-300 mb-2">Type 1 Hypervisor (Bare Metal)</div>
+              <div class="grid grid-cols-2 gap-2">
+                <div class="p-2 rounded bg-white dark:bg-slate-800 border border-slate-300">Guest VM 1 (OS + App)</div>
+                <div class="p-2 rounded bg-white dark:bg-slate-800 border border-slate-300">Guest VM 2 (OS + App)</div>
+              </div>
+              <div class="p-2.5 rounded bg-emerald-600 text-white font-bold">Type 1 Hypervisor (ESXi, Hyper-V, KVM)</div>
+              <div class="p-2.5 rounded bg-slate-800 text-white">Physical Host Hardware</div>
+            </div>
+
+            <div class="p-4 rounded-xl bg-amber-50/60 dark:bg-slate-900 border-2 border-amber-500 text-center text-xs font-mono space-y-1.5">
+              <div class="font-sans font-bold text-sm text-amber-950 dark:text-amber-300 mb-2">Type 2 Hypervisor (Hosted)</div>
+              <div class="grid grid-cols-2 gap-2">
+                <div class="p-2 rounded bg-white dark:bg-slate-800 border border-slate-300">Guest VM 1 (OS + App)</div>
+                <div class="p-2 rounded bg-white dark:bg-slate-800 border border-slate-300">Guest VM 2 (OS + App)</div>
+              </div>
+              <div class="p-2 rounded bg-amber-500 text-slate-950 font-bold">Type 2 Hypervisor (VirtualBox, VMware Workstation)</div>
+              <div class="p-2 rounded bg-sky-200 dark:bg-sky-900 text-sky-950 dark:text-sky-200 font-bold">Host Operating System (Windows / macOS / Linux)</div>
+              <div class="p-2 rounded bg-slate-800 text-white">Physical Host Hardware</div>
+            </div>
+          </div>
+
+          <!-- Type 1 vs Type 2 Table (Slide 37/53) -->
+          <div class="overflow-x-auto rounded-xl border border-slate-300 dark:border-slate-700">
+            <table class="w-full text-left text-xs sm:text-sm">
+              <thead class="bg-slate-100 dark:bg-slate-800 font-display text-base">
+                <tr>
+                  <th class="py-3 px-4">Feature</th>
+                  <th class="py-3 px-4">Type 1 (bare metal)</th>
+                  <th class="py-3 px-4">Type 2 (hosted)</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-200 dark:divide-slate-800">
+                <tr>
+                  <td class="py-2.5 px-4 font-bold">Runs on</td>
+                  <td class="py-2.5 px-4"><span class="hl-green">Directly on the hardware.</span></td>
+                  <td class="py-2.5 px-4"><span class="hl-yellow">On top of a normal operating system</span>, like any program.</td>
+                </tr>
+                <tr>
+                  <td class="py-2.5 px-4 font-bold">Examples</td>
+                  <td class="py-2.5 px-4"><span class="hl-blue">VMware ESXi, Microsoft Hyper-V, KVM</span></td>
+                  <td class="py-2.5 px-4"><span class="hl-blue">VirtualBox, VMware Workstation</span></td>
+                </tr>
+                <tr>
+                  <td class="py-2.5 px-4 font-bold">Speed</td>
+                  <td class="py-2.5 px-4"><span class="hl-green">Faster: nothing in between.</span></td>
+                  <td class="py-2.5 px-4"><span class="hl-pink">Slower: the host system takes a share.</span></td>
+                </tr>
+                <tr>
+                  <td class="py-2.5 px-4 font-bold">Used for</td>
+                  <td class="py-2.5 px-4"><span class="hl-yellow">Data centers and all public clouds.</span></td>
+                  <td class="py-2.5 px-4">Laptops, testing, and learning.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </article>
+
+        <!-- Slide 38/53 -->
+        <article class="study-card p-6">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              A Virtual Machine Is Made of Files
+            </h3>
+            <span class="slide-badge">Slide 38/53</span>
+          </div>
+
+          <p class="text-sm mb-3">The hypervisor gives each virtual machine:</p>
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 mb-4 text-xs sm:text-sm">
+            <div class="p-3 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700">
+              ⚡ <span class="hl-yellow">vCPU</span> — a share of the real processor
+            </div>
+            <div class="p-3 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700">
+              🧠 <span class="hl-yellow">memory</span> — a slice of the host's RAM
+            </div>
+            <div class="p-3 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700">
+              💾 <span class="hl-yellow">virtual disk</span> — usually one large file on the host
+            </div>
+            <div class="p-3 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700">
+              🔌 <span class="hl-yellow">virtual network card</span> — connected to a <span class="hl-blue">virtual switch</span> inside the host
+            </div>
+          </div>
+
+          <div class="p-3.5 rounded-lg bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-400 text-xs sm:text-sm mb-2">
+            <strong>Why this is useful:</strong> <span class="hl-green">A whole machine is a few files plus settings. So it can be copied in a minute, moved to another host, and saved before a risky change so you can go back.</span>
+          </div>
+          <p class="text-xs text-slate-600 dark:text-slate-300">
+            Modern processors have built-in hardware support (<span class="hl-blue">Intel VT-x, AMD-V</span>), so a virtual machine runs almost as fast as the real one.
+          </p>
+        </article>
+      </section>
+
+
+      <!-- ====================================================================
+           PART 8: PROCESSORS AND MEMORY IN VIRTUAL MACHINES (Slides 39/53 – 40/53)
+           ==================================================================== -->
+      <section id="part-8" class="space-y-6">
+        <div class="flex items-center gap-3 border-b-2 border-slate-700 dark:border-slate-700 pb-2">
+          <span class="px-3 py-1 rounded-md bg-slate-700 text-white font-display font-bold text-sm">PART 8</span>
+          <h2 class="font-display text-xl sm:text-2xl font-bold text-slate-900 dark:text-white">
+            Processors and Memory in Virtual Machines
+          </h2>
+          <span class="ml-auto text-xs font-mono text-slate-500">Slides 39/53 – 40/53</span>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <!-- Slide 39/53 -->
+          <article class="study-card p-6">
+            <div class="flex items-center justify-between mb-3">
+              <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">Sharing the Processor (vCPU & Overcommitment)</h3>
+              <span class="slide-badge">Slide 39/53</span>
+            </div>
+            <ul class="space-y-2 text-xs sm:text-sm list-disc list-inside mb-4">
+              <li>A physical processor has several <strong>cores</strong>; each core runs one stream of work.</li>
+              <li><span class="hl-yellow">A vCPU is not a core you own. It is a turn on a real core</span>, given many times a second by the hypervisor.</li>
+              <li><span class="hl-yellow">Overcommitment:</span> giving the machines on a host more vCPUs in total than the host has cores.</li>
+            </ul>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+              <div class="p-3 rounded-lg bg-emerald-50 dark:bg-slate-800 border border-emerald-400">
+                <div class="font-bold text-emerald-900 dark:text-emerald-300 mb-1">✅ Usually fine</div>
+                Most machines are idle most of the time, so they rarely need their turns at once.
+              </div>
+              <div class="p-3 rounded-lg bg-rose-50 dark:bg-slate-800 border border-rose-400">
+                <div class="font-bold text-rose-900 dark:text-rose-300 mb-1">🐢 Sometimes slow</div>
+                When many get busy together, each waits for a free core. <span class="hl-pink">From inside, the machine looks healthy but is slow.</span>
+              </div>
+            </div>
+          </article>
+
+          <!-- Slide 40/53 -->
+          <article class="study-card p-6 border-l-4 border-l-amber-500">
+            <div class="flex items-center justify-between mb-3">
+              <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">Memory, and Choosing the Right Size</h3>
+              <span class="slide-badge">Slide 40/53</span>
+            </div>
+            <p class="text-xs sm:text-sm mb-3">
+              ⚠️ <span class="hl-pink">Memory is riskier to share than the processor.</span> Processor time can be given in turns; memory cannot. When a host runs out, <span class="hl-pink">it moves memory to disk, which is hundreds of times slower</span>.
+            </p>
+            <div class="p-3.5 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-xs sm:text-sm mb-3">
+              <div class="font-bold mb-1">📏 <span class="hl-yellow">Right-sizing</span> — choose the size of a machine from measurements, not guesses:</div>
+              <ol class="list-decimal list-inside space-y-1">
+                <li>Measure processor and memory use over a normal week;</li>
+                <li>Choose a size for normal use;</li>
+                <li><span class="hl-green">Handle busy times by adding machines, not by one huge machine.</span></li>
+              </ol>
+            </div>
+            <p class="text-xs text-slate-600 dark:text-slate-300">
+              Hypervisors also offer a <span class="hl-yellow">reservation</span> (a guaranteed minimum) and a <span class="hl-yellow">limit</span> (a maximum) for each machine.
+            </p>
+          </article>
+        </div>
+      </section>
+
+
+      <!-- ====================================================================
+           PART 9: VIRTUAL MACHINES IN THE CLOUD (Slides 41/53 – 44/53)
+           ==================================================================== -->
+      <section id="part-9" class="space-y-6">
+        <div class="flex items-center gap-3 border-b-2 border-slate-700 dark:border-slate-700 pb-2">
+          <span class="px-3 py-1 rounded-md bg-slate-700 text-white font-display font-bold text-sm">PART 9</span>
+          <h2 class="font-display text-xl sm:text-2xl font-bold text-slate-900 dark:text-white">
+            Virtual Machines in the Cloud
+          </h2>
+          <span class="ml-auto text-xs font-mono text-slate-500">Slides 41/53 – 44/53</span>
+        </div>
+
+        <!-- Slides 41/53 & 42/53 -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <!-- Slide 41/53 -->
+          <article class="study-card p-6">
+            <div class="flex items-center justify-between mb-3">
+              <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">Creating a Machine in the Cloud (4 Choices)</h3>
+              <span class="slide-badge">Slide 41/53</span>
+            </div>
+            <p class="text-xs sm:text-sm mb-3">Instead of installing from scratch, you make four choices, and the machine runs in about a minute:</p>
+            <div class="space-y-2 text-xs sm:text-sm">
+              <div class="p-2.5 rounded bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700">
+                <strong>1. <span class="hl-yellow">Image</span></strong> — a saved copy of a disk: OS plus software (from provider, vendor, or your own).
+              </div>
+              <div class="p-2.5 rounded bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700">
+                <strong>2. <span class="hl-yellow">Size</span></strong> — how much processor and memory. Families: <span class="hl-blue">general purpose, more processor, more memory, or GPU</span>.
+              </div>
+              <div class="p-2.5 rounded bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700">
+                <strong>3. <span class="hl-yellow">Network and firewall rules</span></strong> — which network it joins, and who may reach it.
+              </div>
+              <div class="p-2.5 rounded bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700">
+                <strong>4. <span class="hl-yellow">Storage and a login key</span></strong> — its disk, and how you sign in.
+              </div>
+            </div>
+          </article>
+
+          <!-- Slide 42/53 -->
+          <article class="study-card p-6 border-l-4 border-l-rose-500">
+            <div class="flex items-center justify-between mb-3">
+              <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">Disks, and Stop vs. Delete</h3>
+              <span class="slide-badge">Slide 42/53</span>
+            </div>
+            <ul class="space-y-1.5 text-xs sm:text-sm list-disc list-inside mb-3">
+              <li><span class="hl-yellow">Local disk</span> — inside the host. Fast, <span class="hl-pink">but erased when the machine stops</span>. Only for temporary files.</li>
+              <li><span class="hl-yellow">Network disk</span> — kept by the provider. <span class="hl-green">Survives stopping</span>, and can be moved to another machine. The normal choice.</li>
+              <li><span class="hl-yellow">Snapshot</span> — a copy of a disk at one moment. Used for backups and for making new images.</li>
+            </ul>
+            <div class="p-3 rounded-lg bg-rose-50 dark:bg-rose-950/30 border border-rose-300 text-xs sm:text-sm">
+              <div class="font-bold text-rose-950 dark:text-rose-300 mb-1">⚠️ Stop Is Not Delete:</div>
+              • <strong>Stopped:</strong> switched off. You stop paying for processor and memory, <span class="hl-pink">but still pay for the disk</span>.<br/>
+              • <strong>Deleted:</strong> gone. Local disks go with it; a network disk may or may not, depending on a setting you chose.
+            </div>
+          </article>
+        </div>
+
+        <!-- Slide 43/53 -->
+        <article class="study-card p-6">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              Paying for Machines: On Demand, Reserved, and Spot
+            </h3>
+            <span class="slide-badge">Slide 43/53</span>
+          </div>
+
+          <div class="overflow-x-auto rounded-xl border border-slate-300 dark:border-slate-700 mb-3">
+            <table class="w-full text-left text-xs sm:text-sm">
+              <thead class="bg-slate-100 dark:bg-slate-800 font-display text-base">
+                <tr>
+                  <th class="py-3 px-4">Way of paying</th>
+                  <th class="py-3 px-4">What it means</th>
+                  <th class="py-3 px-4">Use it for</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-200 dark:divide-slate-800">
+                <tr>
+                  <td class="py-2.5 px-4 font-bold"><span class="hl-yellow">On demand</span></td>
+                  <td class="py-2.5 px-4">Full price per hour. No commitment.</td>
+                  <td class="py-2.5 px-4">Unpredictable or short work.</td>
+                </tr>
+                <tr>
+                  <td class="py-2.5 px-4 font-bold"><span class="hl-yellow">Reserved</span></td>
+                  <td class="py-2.5 px-4"><span class="hl-green">Promise one to three years; pay much less.</span></td>
+                  <td class="py-2.5 px-4">Work that runs all year.</td>
+                </tr>
+                <tr>
+                  <td class="py-2.5 px-4 font-bold"><span class="hl-yellow">Spot</span></td>
+                  <td class="py-2.5 px-4">Spare machines, very cheap, <span class="hl-pink">but the provider can take them back with little warning</span>.</td>
+                  <td class="py-2.5 px-4">Work that can stop and restart, such as night-time batch jobs.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-300">
+            💡 <strong>Real systems mix them:</strong> <span class="hl-green">reserved</span> for the steady part, <span class="hl-blue">on demand</span> for busy periods, <span class="hl-purple">spot</span> for background work.
+          </p>
+        </article>
+
+        <!-- Slide 44/53 -->
+        <article class="study-card p-6 border-l-4 border-l-sky-600">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              Autoscaling (Elasticity in Practice)
+            </h3>
+            <span class="slide-badge">Slide 44/53</span>
+          </div>
+
+          <!-- Visual Diagram of Autoscaling -->
+          <div class="p-4 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 mb-4 text-xs sm:text-sm">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-3 items-center text-center">
+              <div class="p-3 rounded-lg bg-white dark:bg-slate-800 border-2 border-sky-500">
+                <div class="font-bold">⚖️ Load Balancer</div>
+                <div class="text-xs mt-1">Spreads incoming requests & skips machines that stop responding</div>
+              </div>
+              <div class="p-3 rounded-lg bg-emerald-50 dark:bg-slate-800 border-2 border-emerald-500">
+                <div class="font-bold">📈 Autoscaling Group (Min / Max)</div>
+                <div class="text-xs mt-1">Rule: CPU &gt; 70% ➔ Add VM<br/>CPU falls ➔ Remove VM</div>
+              </div>
+              <div class="p-3 rounded-lg bg-amber-50 dark:bg-slate-800 border-2 border-amber-500">
+                <div class="font-bold">🗄️ External Database / Shared Storage</div>
+                <div class="text-xs mt-1">Holds all important data (VMs can be deleted anytime!)</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="p-3.5 rounded-lg bg-rose-50 dark:bg-rose-950/30 border border-rose-300 text-xs sm:text-sm font-semibold">
+            ⚠️ <strong>What Autoscaling Requires:</strong> <span class="hl-pink">Any machine may be removed at any moment, so nothing important can be stored on the machine itself.</span> <span class="hl-green">Data belongs in a database or shared storage.</span>
+          </div>
+        </article>
+      </section>
+
+
+      <!-- ====================================================================
+           PART 10: ALTERNATIVES TO VIRTUAL MACHINES (Slides 45/53 – 48/53)
+           ==================================================================== -->
+      <section id="part-10" class="space-y-6">
+        <div class="flex items-center gap-3 border-b-2 border-slate-700 dark:border-slate-700 pb-2">
+          <span class="px-3 py-1 rounded-md bg-slate-700 text-white font-display font-bold text-sm">PART 10</span>
+          <h2 class="font-display text-xl sm:text-2xl font-bold text-slate-900 dark:text-white">
+            Alternatives to Virtual Machines (Containers, Kubernetes, Serverless, Bare Metal)
+          </h2>
+          <span class="ml-auto text-xs font-mono text-slate-500">Slides 45/53 – 48/53</span>
+        </div>
+
+        <!-- Slides 45/53 & 46/53 -->
+        <article class="study-card p-6">
+          <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              Containers vs. Virtual Machines
+            </h3>
+            <div class="flex gap-2">
+              <span class="slide-badge">Slide 45/53</span>
+              <span class="slide-badge">Slide 46/53</span>
+            </div>
+          </div>
+
+          <p class="text-sm mb-4">
+            Every virtual machine carries a full operating system. Ten machines running ten small programs means ten copies of the OS.<br/>
+            A <span class="hl-yellow">container</span> packs a program with the libraries it needs, <span class="hl-green">but shares the operating system's core (the kernel) of the machine it runs on</span>. <span class="hl-blue">Docker</span> is the common tool; a container image is built once, stored in a <strong>registry</strong>, and runs the same way everywhere.
+          </p>
+
+          <div class="overflow-x-auto rounded-xl border border-slate-300 dark:border-slate-700 mb-3">
+            <table class="w-full text-left text-xs sm:text-sm">
+              <thead class="bg-slate-100 dark:bg-slate-800 font-display text-base">
+                <tr>
+                  <th class="py-3 px-4">Feature</th>
+                  <th class="py-3 px-4">Virtual machine</th>
+                  <th class="py-3 px-4">Container</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-200 dark:divide-slate-800">
+                <tr>
+                  <td class="py-2.5 px-4 font-bold">Contains</td>
+                  <td class="py-2.5 px-4">Full operating system and program</td>
+                  <td class="py-2.5 px-4"><span class="hl-green">Program and its libraries</span></td>
+                </tr>
+                <tr>
+                  <td class="py-2.5 px-4 font-bold">Size</td>
+                  <td class="py-2.5 px-4"><span class="hl-pink">Gigabytes</span></td>
+                  <td class="py-2.5 px-4"><span class="hl-green">Megabytes</span></td>
+                </tr>
+                <tr>
+                  <td class="py-2.5 px-4 font-bold">Starts in</td>
+                  <td class="py-2.5 px-4">Tens of seconds or more</td>
+                  <td class="py-2.5 px-4"><span class="hl-green">Under a second</span></td>
+                </tr>
+                <tr>
+                  <td class="py-2.5 px-4 font-bold">Separation</td>
+                  <td class="py-2.5 px-4"><span class="hl-green">Strong: its own kernel</span></td>
+                  <td class="py-2.5 px-4"><span class="hl-pink">Thinner: shared kernel</span></td>
+                </tr>
+                <tr>
+                  <td class="py-2.5 px-4 font-bold">Best for</td>
+                  <td class="py-2.5 px-4">Old software, special drivers</td>
+                  <td class="py-2.5 px-4">Many small services, updated often</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p class="text-xs sm:text-sm font-semibold text-center p-2.5 rounded bg-sky-50 dark:bg-slate-800">
+            📌 <span class="hl-yellow">They are not rivals: in the cloud, containers usually run on virtual machines.</span>
+          </p>
+        </article>
+
+        <!-- Slides 47/53 & 48/53 -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <!-- Slide 47/53 -->
+          <article class="study-card p-6">
+            <div class="flex items-center justify-between mb-3">
+              <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">Other Forms You Will Meet</h3>
+              <span class="slide-badge">Slide 47/53</span>
+            </div>
+            <ul class="space-y-2 text-xs sm:text-sm list-disc list-inside">
+              <li><span class="hl-yellow">Kubernetes</span> — software that runs many containers across many machines: it places them, restarts failed ones, and adds more when needed. Every provider offers it as a service.</li>
+              <li><span class="hl-yellow">Serverless functions</span> — from Part 4: only your code, no machine or container to manage.</li>
+              <li><span class="hl-yellow">Bare metal</span> — a whole physical server rented to you, <span class="hl-green">with no hypervisor and no other customers</span>. For strict rules or licenses.</li>
+              <li><span class="hl-yellow">Virtual desktops</span> — your desktop runs in the data center; your device only shows the screen.</li>
+            </ul>
+          </article>
+
+          <!-- Slide 48/53 -->
+          <article class="study-card p-6 border-l-4 border-l-emerald-600">
+            <div class="flex items-center justify-between mb-3">
+              <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">Choosing the Right Form</h3>
+              <span class="slide-badge">Slide 48/53</span>
+            </div>
+            <div class="overflow-x-auto rounded-lg border border-slate-300 dark:border-slate-700 mb-3">
+              <table class="w-full text-left text-xs sm:text-sm">
+                <thead class="bg-slate-100 dark:bg-slate-800 font-display">
+                  <tr>
+                    <th class="py-2 px-3">If the work needs...</th>
+                    <th class="py-2 px-3">Use</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-200 dark:divide-slate-800">
+                  <tr>
+                    <td class="py-2 px-3">A specific OS version or driver</td>
+                    <td class="py-2 px-3 font-bold"><span class="hl-yellow">Virtual machine</span></td>
+                  </tr>
+                  <tr>
+                    <td class="py-2 px-3">Many small services, updated often</td>
+                    <td class="py-2 px-3 font-bold"><span class="hl-green">Containers (with Kubernetes)</span></td>
+                  </tr>
+                  <tr>
+                    <td class="py-2 px-3">Short tasks triggered at unpredictable times</td>
+                    <td class="py-2 px-3 font-bold"><span class="hl-blue">Serverless functions</span></td>
+                  </tr>
+                  <tr>
+                    <td class="py-2 px-3">No sharing of hardware at all</td>
+                    <td class="py-2 px-3 font-bold"><span class="hl-purple">Bare metal</span></td>
+                  </tr>
+                  <tr>
+                    <td class="py-2 px-3">The same controlled desktop on any device</td>
+                    <td class="py-2 px-3 font-bold"><span class="hl-yellow">Virtual desktops</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <p class="text-xs font-semibold text-center">
+              Do not ask "which one is newest". Ask <span class="hl-yellow">"what does this work require?"</span>
+            </p>
+          </article>
+        </div>
+      </section>
+
+
+      <!-- ====================================================================
+           PART 11: WRAP-UP, GLOSSARIES, SUMMARY & ASSIGNMENT (Slides 49/53 – 53/53)
+           ==================================================================== -->
+      <section id="part-11" class="space-y-6">
+        <div class="flex items-center gap-3 border-b-2 border-slate-700 dark:border-slate-700 pb-2">
+          <span class="px-3 py-1 rounded-md bg-slate-700 text-white font-display font-bold text-sm">PART 11</span>
+          <h2 class="font-display text-xl sm:text-2xl font-bold text-slate-900 dark:text-white">
+            Wrap-Up, Revision Glossaries, Master Summary & Assignment
+          </h2>
+          <span class="ml-auto text-xs font-mono text-slate-500">Slides 49/53 – 53/53</span>
+        </div>
+
+        <!-- Slide 49/53 & Slide 50/53 Glossaries -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <!-- Slide 49/53 -->
+          <article class="study-card p-6">
+            <div class="flex items-center justify-between mb-3">
+              <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">Words from the Cloud Computing Topic</h3>
+              <span class="slide-badge">Slide 49/53</span>
+            </div>
+            <div class="overflow-x-auto rounded-lg border border-slate-300 dark:border-slate-700">
+              <table class="w-full text-left text-xs">
+                <thead class="bg-slate-100 dark:bg-slate-800 font-display text-sm">
+                  <tr>
+                    <th class="py-2 px-3 w-1/3">Term</th>
+                    <th class="py-2 px-3">Meaning in one line</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-200 dark:divide-slate-800">
+                  <tr><td class="py-2 px-3 font-bold"><span class="hl-yellow">Multi-tenancy</span></td><td class="py-2 px-3">Several customers using the same physical computer, separated by software.</td></tr>
+                  <tr><td class="py-2 px-3 font-bold"><span class="hl-yellow">Elasticity</span></td><td class="py-2 px-3">Capacity that grows and shrinks by itself as demand changes.</td></tr>
+                  <tr><td class="py-2 px-3 font-bold"><span class="hl-green">Scaling out</span></td><td class="py-2 px-3">Adding more machines instead of using one bigger machine.</td></tr>
+                  <tr><td class="py-2 px-3 font-bold"><span class="hl-blue">CapEx / OpEx</span></td><td class="py-2 px-3">Paying once for something you own, versus paying regularly as you use it.</td></tr>
+                  <tr><td class="py-2 px-3 font-bold"><span class="hl-yellow">Deployment model</span></td><td class="py-2 px-3">Who owns the computers, and who may use them.</td></tr>
+                  <tr><td class="py-2 px-3 font-bold"><span class="hl-yellow">Service model</span></td><td class="py-2 px-3">How much of the system you run yourself.</td></tr>
+                  <tr><td class="py-2 px-3 font-bold"><span class="hl-blue">Cloud bursting</span></td><td class="py-2 px-3">Taking extra machines from a public cloud when a private cloud is full.</td></tr>
+                  <tr><td class="py-2 px-3 font-bold"><span class="hl-yellow">Shared responsibility</span></td><td class="py-2 px-3">The provider protects the cloud; the customer protects what it puts there.</td></tr>
+                  <tr><td class="py-2 px-3 font-bold"><span class="hl-blue">Region / AZ</span></td><td class="py-2 px-3">An area of the world / one separate data center inside it.</td></tr>
+                  <tr><td class="py-2 px-3 font-bold"><span class="hl-pink">Egress</span></td><td class="py-2 px-3">Data leaving the provider — the part you are charged for.</td></tr>
+                  <tr><td class="py-2 px-3 font-bold"><span class="hl-pink">Vendor lock-in</span></td><td class="py-2 px-3">How hard and expensive it is to move to another provider.</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </article>
+
+          <!-- Slide 50/53 -->
+          <article class="study-card p-6">
+            <div class="flex items-center justify-between mb-3">
+              <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">Words from the Virtual Hardware Topic</h3>
+              <span class="slide-badge">Slide 50/53</span>
+            </div>
+            <div class="overflow-x-auto rounded-lg border border-slate-300 dark:border-slate-700">
+              <table class="w-full text-left text-xs">
+                <thead class="bg-slate-100 dark:bg-slate-800 font-display text-sm">
+                  <tr>
+                    <th class="py-2 px-3 w-1/3">Term</th>
+                    <th class="py-2 px-3">Meaning in one line</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-200 dark:divide-slate-800">
+                  <tr><td class="py-2 px-3 font-bold"><span class="hl-yellow">Host / guest</span></td><td class="py-2 px-3">The physical computer / a virtual machine running on it.</td></tr>
+                  <tr><td class="py-2 px-3 font-bold"><span class="hl-yellow">Hypervisor</span></td><td class="py-2 px-3">Software that divides a host into virtual machines and keeps them apart.</td></tr>
+                  <tr><td class="py-2 px-3 font-bold"><span class="hl-blue">Type 1 / Type 2</span></td><td class="py-2 px-3">A hypervisor on the hardware itself / on top of a normal operating system.</td></tr>
+                  <tr><td class="py-2 px-3 font-bold"><span class="hl-yellow">vCPU</span></td><td class="py-2 px-3">A turn on a real processor core.</td></tr>
+                  <tr><td class="py-2 px-3 font-bold"><span class="hl-pink">Overcommitment</span></td><td class="py-2 px-3">Promising more processors or memory than the host actually has.</td></tr>
+                  <tr><td class="py-2 px-3 font-bold"><span class="hl-green">Right-sizing</span></td><td class="py-2 px-3">Choosing a machine's size from measurements.</td></tr>
+                  <tr><td class="py-2 px-3 font-bold"><span class="hl-yellow">Image</span></td><td class="py-2 px-3">A saved copy of a disk, used to start new machines.</td></tr>
+                  <tr><td class="py-2 px-3 font-bold"><span class="hl-yellow">Snapshot</span></td><td class="py-2 px-3">A copy of a disk at one moment.</td></tr>
+                  <tr><td class="py-2 px-3 font-bold"><span class="hl-purple">Spot machine</span></td><td class="py-2 px-3">A cheap spare machine that the provider may take back.</td></tr>
+                  <tr><td class="py-2 px-3 font-bold"><span class="hl-green">Autoscaling</span></td><td class="py-2 px-3">Adding and removing identical machines automatically.</td></tr>
+                  <tr><td class="py-2 px-3 font-bold"><span class="hl-green">Container</span></td><td class="py-2 px-3">A program and its libraries, sharing the host's operating system core.</td></tr>
+                  <tr><td class="py-2 px-3 font-bold"><span class="hl-blue">Kubernetes</span></td><td class="py-2 px-3">Software that runs many containers across many machines.</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </article>
+        </div>
+
+        <!-- Slide 51/53 -->
+        <article class="study-card p-6 border-2 border-sky-600">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              8-Point Lecture Summary
+            </h3>
+            <span class="slide-badge">Slide 51/53</span>
+          </div>
+          <ol class="space-y-2 text-sm sm:text-base list-decimal list-inside">
+            <li><span class="hl-yellow">Cloud computing:</span> using computers someone else owns, over a network, paying for what you use.</li>
+            <li>It has <span class="hl-purple">five essential characteristics</span>; <span class="hl-pink">if one is missing, it is usually not cloud</span>.</li>
+            <li><span class="hl-yellow">Deployment models:</span> who owns it and who may use it.</li>
+            <li><span class="hl-yellow">Service models:</span> how much you run yourself.</li>
+            <li><span class="hl-pink">Your data, and who can reach it, is always yours to protect.</span></li>
+            <li><span class="hl-yellow">Virtualization</span> lets one physical computer act as many.</li>
+            <li>A <span class="hl-blue">cloud machine</span> is an image, a size, storage, and network rules.</li>
+            <li><span class="hl-green">Containers share the operating system;</span> choose the form the work requires.</li>
+          </ol>
+        </article>
+
+        <!-- Slides 52/53 & 53/53 -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <article class="study-card p-6">
+            <div class="flex items-center justify-between mb-3">
+              <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">What to Do Next</h3>
+              <span class="slide-badge">Slide 52/53</span>
+            </div>
+            <ul class="space-y-2 text-xs sm:text-sm list-disc list-inside">
+              <li><strong>Reading:</strong> Modules 1 and 2 in full, including self-check questions. Look through Module 3, <em>Migration to the Cloud</em>.</li>
+              <li><strong>Practical task:</strong> Create a free account with AWS, Azure, or GCP, and <span class="hl-green">set a spending alert immediately</span>. Start one small VM, note its image and size, log in once, then <span class="hl-pink">delete it with its disk</span>.</li>
+              <li><strong>Think about:</strong> One system you use every day: which service model is it, and who is responsible for its data?</li>
+            </ul>
+          </article>
+
+          <article class="study-card p-6">
+            <div class="flex items-center justify-between mb-3">
+              <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">References</h3>
+              <span class="slide-badge">Slide 53/53</span>
+            </div>
+            <ul class="space-y-1.5 text-xs text-slate-600 dark:text-slate-300 list-disc list-inside">
+              <li>West, J. (2024). <em>CompTIA Cloud+ Guide to Cloud Computing</em>, 2nd ed. Cengage. ISBN 9780357883457, Modules 1 and 2.</li>
+              <li>Mell, P. and Grance, T. (2011). <em>The NIST Definition of Cloud Computing</em>. NIST Special Publication 800-145.</li>
+              <li>CompTIA. <em>Cloud+ (CV0-004) Exam Objectives</em>.</li>
+              <li>Provider documentation: AWS, Microsoft Azure, and Google Cloud.</li>
+            </ul>
+          </article>
+
+          <!-- HIGHLIGHT KEY & EXAM TAXONOMY -->
+          <article class="study-card p-6 border-t-2 border-slate-300 dark:border-slate-700">
+            <div class="flex items-center justify-between mb-3">
+              <h3 class="font-display font-bold text-base text-slate-900 dark:text-white flex items-center gap-2">
+                <span>🎨</span>
+                <span>Highlight Key & Study Legend</span>
+              </h3>
+              <span class="font-mono text-[11px] text-slate-400">Exam Marker System</span>
+            </div>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mb-3">
+              Color-coded highlighters used across this study guide:
+            </p>
+            <div class="flex flex-wrap items-center gap-2 text-xs">
+              <span class="hl-yellow">Key Definition</span>
+              <span class="hl-green">Solution / Advantage / Rule</span>
+              <span class="hl-blue">Tech Term / Provider / Arch</span>
+              <span class="hl-pink">Warning / Trap / Cost</span>
+              <span class="hl-purple">Law / Standard</span>
+            </div>
+          </article>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+</body>
+</html>

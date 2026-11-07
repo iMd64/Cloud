@@ -1,0 +1,2295 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SEN421 Module 5 Study Notes — Cloud Connectivity & Troubleshooting</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Navigation & Outline Engine -->
+  <script src="nav.js" defer></script>
+  <!-- Google Fonts: Inter, JetBrains Mono, Space Grotesk -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+
+  <!-- Theme Preference Script (Instant Anti-FOUC Execution) -->
+  <script>
+    (function() {
+      try {
+        const theme = localStorage.getItem('ca_theme');
+        if (theme === 'dark' || (!theme && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+          document.documentElement.classList.add('dark');
+        } else {
+          document.documentElement.classList.remove('dark');
+        }
+      } catch (_) {}
+    })();
+  </script>
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            display: ['Space Grotesk', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Warm Study Notebook Grid Background */
+    :root {
+      --bg-grid: rgba(148, 163, 184, 0.14);
+    }
+    .dark {
+      --bg-grid: rgba(51, 65, 85, 0.22);
+    }
+    body {
+      background-image: 
+        linear-gradient(to right, var(--bg-grid) 1px, transparent 1px),
+        linear-gradient(to bottom, var(--bg-grid) 1px, transparent 1px);
+      background-size: 28px 28px;
+    }
+
+    /* Realistic Highlighter Marker Styles */
+    .hl-yellow {
+      background: linear-gradient(104deg, rgba(253, 224, 71, 0) 0.9%, rgba(253, 224, 71, 0.85) 2.4%, rgba(253, 224, 71, 0.55) 5.8%, rgba(253, 224, 71, 0.75) 93%, rgba(253, 224, 71, 0.6) 96%, rgba(253, 224, 71, 0) 98%);
+      padding: 0.08rem 0.35rem;
+      border-radius: 0.25rem;
+      color: #0f172a;
+      font-weight: 600;
+      box-decoration-break: clone;
+      -webkit-box-decoration-break: clone;
+    }
+    .dark .hl-yellow {
+      background: rgba(234, 179, 8, 0.28);
+      border-bottom: 2px solid rgba(250, 204, 21, 0.8);
+      color: #fef08a;
+    }
+
+    .hl-green {
+      background: linear-gradient(104deg, rgba(110, 231, 183, 0) 0.9%, rgba(110, 231, 183, 0.75) 2.4%, rgba(110, 231, 183, 0.5) 93%, rgba(110, 231, 183, 0) 98%);
+      padding: 0.08rem 0.35rem;
+      border-radius: 0.25rem;
+      color: #064e3b;
+      font-weight: 600;
+      box-decoration-break: clone;
+      -webkit-box-decoration-break: clone;
+    }
+    .dark .hl-green {
+      background: rgba(16, 185, 129, 0.24);
+      border-bottom: 2px solid rgba(52, 211, 153, 0.75);
+      color: #a7f3d0;
+    }
+
+    .hl-red {
+      background: linear-gradient(104deg, rgba(253, 164, 175, 0) 0.9%, rgba(253, 164, 175, 0.75) 2.4%, rgba(253, 164, 175, 0.55) 93%, rgba(253, 164, 175, 0) 98%);
+      padding: 0.08rem 0.35rem;
+      border-radius: 0.25rem;
+      color: #881337;
+      font-weight: 600;
+      box-decoration-break: clone;
+      -webkit-box-decoration-break: clone;
+    }
+    .dark .hl-red {
+      background: rgba(244, 63, 94, 0.25);
+      border-bottom: 2px solid rgba(251, 113, 133, 0.8);
+      color: #fecdd3;
+    }
+
+    .hl-code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.86em;
+      background-color: #e0f2fe;
+      color: #0369a1;
+      border: 1px solid #bae6fd;
+      padding: 0.1rem 0.4rem;
+      border-radius: 0.3rem;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+    .dark .hl-code {
+      background-color: rgba(14, 165, 233, 0.18);
+      color: #7dd3fc;
+      border-color: rgba(56, 189, 248, 0.35);
+    }
+
+    /* Slide Reference Badge */
+    .slide-badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      padding: 0.25rem 0.65rem;
+      border-radius: 9999px;
+      background-color: #1e293b;
+      color: #f8fafc;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    }
+    .dark .slide-badge {
+      background-color: #38bdf8;
+      color: #0f172a;
+    }
+
+    /* Study Note Card */
+    .study-card {
+      background-color: rgba(255, 255, 255, 0.96);
+      border: 1px solid #cbd5e1;
+      border-radius: 0.85rem;
+      box-shadow: 0 4px 12px -2px rgba(15, 23, 42, 0.06);
+    }
+    .dark .study-card {
+      background-color: rgba(15, 23, 42, 0.92);
+      border-color: #334155;
+      box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.4);
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #94a3b8;
+      border-radius: 4px;
+    }
+    .dark ::-webkit-scrollbar-thumb {
+      background: #475569;
+    }
+  </style>
+</head>
+<body class="bg-[#fcfbf7] text-slate-800 dark:bg-slate-950 dark:text-slate-100 antialiased selection:bg-amber-300 selection:text-slate-900">
+
+  <!-- TOP STICKY BAR: COURSE HEADER & HIGHLIGHT KEY -->
+  <header class="sticky top-0 z-50 backdrop-blur-md bg-white/90 dark:bg-slate-900/90 border-b border-slate-200 dark:border-slate-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2.5 flex flex-wrap items-center justify-between gap-3">
+      <div class="flex items-center gap-3">
+        <span class="px-2.5 py-1 rounded-md bg-slate-700 text-white font-mono text-xs font-bold tracking-wider">SEN421</span>
+        <div>
+          <h1 class="font-display font-bold text-sm sm:text-base text-slate-900 dark:text-white leading-tight">
+            Module 5: Cloud Connectivity & Troubleshooting
+          </h1>
+          <p class="text-xs text-slate-500 dark:text-slate-400 hidden sm:block">
+            Complete Exam Study Notes • Slides 1/42 – 42/42 • Zero Hidden Content
+          </p>
+        </div>
+      </div>
+
+      <!-- Theme Toggle -->
+      <div class="flex items-center gap-2 text-xs">
+        <button id="themeToggle" onclick="window.toggleCaTheme ? window.toggleCaTheme() : (document.documentElement.classList.toggle('dark'), localStorage.setItem('ca_theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light'))" class="ml-1 px-3 py-1.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 font-medium hover:bg-slate-200 dark:hover:bg-slate-700 transition" title="Switch Paper / Dark Study Mode">
+          🌙 Dark
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN PAGE LAYOUT: SIDEBAR TOC + CONTINUOUS STUDY NOTE STREAM -->
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col lg:flex-row gap-8 items-start">
+
+    <!-- STICKY LEFT INDEX (DESKTOP) -->
+    <aside class="hidden lg:block w-64 shrink-0 sticky top-20 study-card p-4 text-xs">
+      <div class="font-display font-bold text-sm text-slate-900 dark:text-white mb-3 pb-2 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
+        <span>📑 Module 5 Outline</span>
+        <span class="font-mono text-[11px] text-indigo-600 dark:text-indigo-400">42 Slides</span>
+      </div>
+      <ul class="space-y-1.5 font-medium text-slate-600 dark:text-slate-300">
+        <li>
+          <a href="#overview" class="flex justify-between items-center py-1 px-2 rounded hover:bg-indigo-50 dark:hover:bg-slate-800 hover:text-indigo-600 dark:hover:text-indigo-400 transition">
+            <span>0. Title & Plan</span>
+            <span class="font-mono text-[10px] text-slate-400">1–2</span>
+          </a>
+        </li>
+        <li>
+          <a href="#part-1" class="flex justify-between items-center py-1 px-2 rounded hover:bg-indigo-50 dark:hover:bg-slate-800 hover:text-indigo-600 dark:hover:text-indigo-400 transition">
+            <span>1. What a Connection Needs</span>
+            <span class="font-mono text-[10px] text-slate-400">3–5</span>
+          </a>
+        </li>
+        <li>
+          <a href="#part-2" class="flex justify-between items-center py-1 px-2 rounded hover:bg-indigo-50 dark:hover:bg-slate-800 hover:text-indigo-600 dark:hover:text-indigo-400 transition">
+            <span>2. Office to Cloud (VPN/Link)</span>
+            <span class="font-mono text-[10px] text-slate-400">6–13</span>
+          </a>
+        </li>
+        <li>
+          <a href="#part-3" class="flex justify-between items-center py-1 px-2 rounded hover:bg-indigo-50 dark:hover:bg-slate-800 hover:text-indigo-600 dark:hover:text-indigo-400 transition">
+            <span>3. Peering, Hub, DNS, Endpoints</span>
+            <span class="font-mono text-[10px] text-slate-400">14–18</span>
+          </a>
+        </li>
+        <li>
+          <a href="#part-4" class="flex justify-between items-center py-1 px-2 rounded hover:bg-indigo-50 dark:hover:bg-slate-800 hover:text-indigo-600 dark:hover:text-indigo-400 transition">
+            <span>4. Routes & Redundancy</span>
+            <span class="font-mono text-[10px] text-slate-400">19–21</span>
+          </a>
+        </li>
+        <li>
+          <a href="#part-5" class="flex justify-between items-center py-1 px-2 rounded hover:bg-indigo-50 dark:hover:bg-slate-800 hover:text-indigo-600 dark:hover:text-indigo-400 transition">
+            <span>5. Troubleshooting Method</span>
+            <span class="font-mono text-[10px] text-slate-400">22–26</span>
+          </a>
+        </li>
+        <li>
+          <a href="#part-6" class="flex justify-between items-center py-1 px-2 rounded hover:bg-indigo-50 dark:hover:bg-slate-800 hover:text-indigo-600 dark:hover:text-indigo-400 transition">
+            <span>6. The Tools (CLI & Cloud)</span>
+            <span class="font-mono text-[10px] text-slate-400">27–31</span>
+          </a>
+        </li>
+        <li>
+          <a href="#part-7" class="flex justify-between items-center py-1 px-2 rounded hover:bg-indigo-50 dark:hover:bg-slate-800 hover:text-indigo-600 dark:hover:text-indigo-400 transition">
+            <span>7. Worked Example</span>
+            <span class="font-mono text-[10px] text-slate-400">32–34</span>
+          </a>
+        </li>
+        <li>
+          <a href="#part-8" class="flex justify-between items-center py-1 px-2 rounded hover:bg-indigo-50 dark:hover:bg-slate-800 hover:text-indigo-600 dark:hover:text-indigo-400 transition">
+            <span>8. Slow, Not Broken</span>
+            <span class="font-mono text-[10px] text-slate-400">35–37</span>
+          </a>
+        </li>
+        <li>
+          <a href="#part-9" class="flex justify-between items-center py-1 px-2 rounded hover:bg-indigo-50 dark:hover:bg-slate-800 hover:text-indigo-600 dark:hover:text-indigo-400 transition">
+            <span>9. Exercises, Glossary & Summary</span>
+            <span class="font-mono text-[10px] text-slate-400">38–42</span>
+          </a>
+        </li>
+      </ul>
+
+      <div class="mt-4 pt-3 border-t border-slate-200 dark:border-slate-800 text-[11px] text-slate-500 dark:text-slate-400 space-y-1">
+        <div class="font-semibold text-slate-700 dark:text-slate-300">Reference Network Quick-Spec:</div>
+        <div>• Office: <span class="hl-code">10.0.0.0/16</span></div>
+        <div>• App Subnet: <span class="hl-code">10.0.8.0/24</span></div>
+        <div>• App Host: <span class="hl-code">10.0.8.10</span></div>
+        <div>• Cloud: <span class="hl-code">10.20.0.0/16</span></div>
+        <div>• DB Subnet: <span class="hl-code">10.20.4.0/24</span></div>
+        <div>• DB Host: <span class="hl-code">10.20.4.15:5432</span></div>
+      </div>
+    </aside>
+
+    <!-- MAIN CONTENT STREAM -->
+    <main class="flex-1 min-w-0 space-y-10">
+
+      <!-- ====================================================================
+           COURSE BANNER & SLIDES 1/42 - 2/42
+           ==================================================================== -->
+      <section id="overview" class="study-card p-6 sm:p-8 border-t-4 border-t-indigo-600">
+        <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
+          <div class="flex items-center gap-2">
+            <span class="slide-badge">Slide 1/42</span>
+            <span class="slide-badge">Slide 2/42</span>
+          </div>
+          <span class="text-xs font-mono uppercase tracking-wider px-2.5 py-1 rounded bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 font-semibold">
+            Istanbul Aydın University • Dept. of Computer Engineering
+          </span>
+        </div>
+
+        <h2 class="font-display text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white mb-2">
+          SEN421 Cloud Architecture and Services: Cloud Connectivity and Troubleshooting
+        </h2>
+        <p class="text-sm text-slate-600 dark:text-slate-300 mb-6">
+          <strong>Instructor:</strong> Dr. Hazm Talab • <strong>Semester:</strong> Fall Semester • <strong>Reading:</strong> West, J. <em>CompTIA Cloud+ Guide to Cloud Computing</em>, 2nd ed., Cengage, 2024, <span class="hl-green">Module 5</span>.
+        </p>
+
+        <div class="bg-slate-100/80 dark:bg-slate-800/60 rounded-lg p-4 border border-slate-200 dark:border-slate-700">
+          <h3 class="text-xs font-mono uppercase tracking-wider text-slate-500 dark:text-slate-400 font-bold mb-2.5">
+            Today's Plan (9 Core Topics — Slide 2/42)
+          </h3>
+          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 text-xs sm:text-sm font-medium">
+            <div class="p-2 rounded bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">1. Starting simple: what a connection needs</div>
+            <div class="p-2 rounded bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">2. Connecting an office to the cloud: VPN & dedicated links</div>
+            <div class="p-2 rounded bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">3. Connecting cloud networks & provider services</div>
+            <div class="p-2 rounded bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">4. Routes and redundancy</div>
+            <div class="p-2 rounded bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">5. How to troubleshoot a network problem</div>
+            <div class="p-2 rounded bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">6. The tools</div>
+            <div class="p-2 rounded bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">7. A worked example</div>
+            <div class="p-2 rounded bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">8. Slow, not broken</div>
+            <div class="p-2 rounded bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">9. Wrap-up and assignment</div>
+          </div>
+        </div>
+      </section>
+
+
+      <!-- ====================================================================
+           PART 1: STARTING SIMPLE — WHAT A CONNECTION NEEDS (Slides 3/42 – 5/42)
+           ==================================================================== -->
+      <section id="part-1" class="space-y-6">
+        <div class="flex items-center gap-3 border-b-2 border-slate-700 dark:border-slate-700 pb-2">
+          <span class="px-3 py-1 rounded-md bg-slate-700 text-white font-display font-bold text-sm">PART 1</span>
+          <h2 class="font-display text-xl sm:text-2xl font-bold text-slate-900 dark:text-white">
+            Starting Simple: What a Connection Needs
+          </h2>
+          <span class="ml-auto text-xs font-mono text-slate-500">Slides 3/42 – 5/42</span>
+        </div>
+
+        <!-- Slide 3/42 -->
+        <article class="study-card p-6">
+          <div class="flex items-center justify-between mb-3">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              Where We Are & Core Networking Rules
+            </h3>
+            <span class="slide-badge">Slide 3/42</span>
+          </div>
+          <p class="text-xs font-mono uppercase text-slate-500 dark:text-slate-400 mb-3">Recap from the Cloud Networking Topic:</p>
+          <ul class="space-y-2 text-sm sm:text-base list-disc list-inside">
+            <li>A cloud network has an <span class="hl-green">address block</span>, cut into <span class="hl-green">subnets</span>.</li>
+            <li>Route tables decide where traffic goes; <span class="hl-yellow">the most specific route wins</span>.</li>
+            <li><span class="hl-green">Firewall rules</span> decide what is allowed; <span class="hl-green">DNS</span> turns names into addresses.</li>
+            <li><span class="hl-red">Address blocks must not overlap</span> if networks are to be joined.</li>
+          </ul>
+          <div class="mt-4 p-3.5 rounded-lg bg-amber-50/80 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800 text-sm">
+            <strong>Core Technical Question:</strong> When a database runs in the cloud, how do you connect an office network and a second cloud network to it privately, and how do you systematically find what broke when the office cannot connect?
+          </div>
+        </article>
+
+        <!-- Slide 4/42 -->
+        <article class="study-card p-6">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              Reference Network Architecture & Specifications
+            </h3>
+            <span class="slide-badge">Slide 4/42</span>
+          </div>
+
+          <!-- Visual Diagram for Slide 4/42 -->
+          <div class="my-4 p-4 sm:p-6 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-300 dark:border-slate-700">
+            <div class="grid grid-cols-1 md:grid-cols-11 gap-4 items-center">
+              <!-- Office Network Box -->
+              <div class="md:col-span-4 p-4 rounded-lg bg-white dark:bg-slate-800 border-2 border-blue-500 shadow-sm">
+                <div class="flex items-center justify-between mb-2">
+                  <span class="font-display font-bold text-blue-700 dark:text-blue-400">Office Network</span>
+                  <span class="hl-code">10.0.0.0/16</span>
+                </div>
+                <div class="p-3 rounded bg-blue-50 dark:bg-slate-900/90 border border-blue-200 dark:border-blue-800 space-y-2">
+                  <div class="flex items-center justify-between text-xs font-semibold text-slate-700 dark:text-slate-300">
+                    <span>Application subnet</span>
+                    <span class="hl-code">10.0.8.0/24</span>
+                  </div>
+                  <div class="p-2.5 rounded bg-white dark:bg-slate-800 border border-blue-300 dark:border-blue-700 flex items-center justify-between">
+                    <span class="text-xs font-bold">Application host</span>
+                    <span class="hl-code">10.0.8.10</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Connection Arrow -->
+              <div class="md:col-span-3 flex flex-col items-center justify-center py-2">
+                <span class="text-xs font-mono font-bold text-indigo-600 dark:text-indigo-400 uppercase tracking-wider mb-1">connection needed</span>
+                <div class="w-full flex items-center">
+                  <div class="w-3 h-3 rounded-full bg-indigo-600"></div>
+                  <div class="flex-1 border-t-2 border-dashed border-indigo-500"></div>
+                  <div class="w-3 h-3 rounded-full bg-emerald-600"></div>
+                </div>
+                <span class="text-[11px] font-mono text-slate-500 mt-1">TCP Port 5432</span>
+              </div>
+
+              <!-- Cloud Network Box -->
+              <div class="md:col-span-4 p-4 rounded-lg bg-white dark:bg-slate-800 border-2 border-emerald-500 shadow-sm">
+                <div class="flex items-center justify-between mb-2">
+                  <span class="font-display font-bold text-emerald-700 dark:text-emerald-400">Cloud Network</span>
+                  <span class="hl-code">10.20.0.0/16</span>
+                </div>
+                <div class="p-3 rounded bg-emerald-50 dark:bg-slate-900/90 border border-emerald-200 dark:border-emerald-800 space-y-2">
+                  <div class="flex items-center justify-between text-xs font-semibold text-slate-700 dark:text-slate-300">
+                    <span>Database subnet</span>
+                    <span class="hl-code">10.20.4.0/24</span>
+                  </div>
+                  <div class="p-2.5 rounded bg-white dark:bg-slate-800 border border-emerald-300 dark:border-emerald-700 flex items-center justify-between">
+                    <span class="text-xs font-bold">Database</span>
+                    <span class="hl-code">10.20.4.15</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <ul class="space-y-2 text-sm sm:text-base list-disc list-inside">
+            <li>The database is named <span class="hl-code">db.internal.example.com</span> and listens on <span class="hl-yellow">TCP port 5432 (PostgreSQL)</span>.</li>
+            <li>Both sides use <span class="hl-green">private addresses</span>, so <span class="hl-red">neither is reachable from the internet</span>.</li>
+            <li><span class="hl-yellow">Only the office application subnet, 10.0.8.0/24, needs the database</span> (narrowest source scope).</li>
+          </ul>
+        </article>
+
+        <!-- Slide 5/42 -->
+        <article class="study-card p-6">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              What a Connection Needs (The 5 Mandatory Checks)
+            </h3>
+            <span class="slide-badge">Slide 5/42</span>
+          </div>
+
+          <!-- 5-Box Horizontal Pipeline Diagram -->
+          <div class="grid grid-cols-1 sm:grid-cols-5 gap-3 my-4">
+            <div class="p-3.5 rounded-lg bg-indigo-50/70 dark:bg-slate-800 border-2 border-indigo-400 dark:border-indigo-500 flex flex-col">
+              <div class="text-xs font-mono font-bold text-indigo-600 dark:text-indigo-400 mb-1">STEP 1</div>
+              <div class="font-display font-bold text-base mb-1">1. Name</div>
+              <p class="text-xs text-slate-600 dark:text-slate-300">The name gives the right address, as seen from the client.</p>
+            </div>
+            <div class="p-3.5 rounded-lg bg-indigo-50/70 dark:bg-slate-800 border-2 border-indigo-400 dark:border-indigo-500 flex flex-col">
+              <div class="text-xs font-mono font-bold text-indigo-600 dark:text-indigo-400 mb-1">STEP 2</div>
+              <div class="font-display font-bold text-base mb-1">2. Route there</div>
+              <p class="text-xs text-slate-600 dark:text-slate-300">The client side has a route to the server's range.</p>
+            </div>
+            <div class="p-3.5 rounded-lg bg-indigo-50/70 dark:bg-slate-800 border-2 border-indigo-400 dark:border-indigo-500 flex flex-col">
+              <div class="text-xs font-mono font-bold text-indigo-600 dark:text-indigo-400 mb-1">STEP 3</div>
+              <div class="font-display font-bold text-base mb-1">3. Route back</div>
+              <p class="text-xs text-slate-600 dark:text-slate-300">The server side has a route to the client's range.</p>
+            </div>
+            <div class="p-3.5 rounded-lg bg-indigo-50/70 dark:bg-slate-800 border-2 border-indigo-400 dark:border-indigo-500 flex flex-col">
+              <div class="text-xs font-mono font-bold text-indigo-600 dark:text-indigo-400 mb-1">STEP 4</div>
+              <div class="font-display font-bold text-base mb-1">4. Firewalls</div>
+              <p class="text-xs text-slate-600 dark:text-slate-300">Every filter on the path allows the traffic.</p>
+            </div>
+            <div class="p-3.5 rounded-lg bg-indigo-50/70 dark:bg-slate-800 border-2 border-indigo-400 dark:border-indigo-500 flex flex-col">
+              <div class="text-xs font-mono font-bold text-indigo-600 dark:text-indigo-400 mb-1">STEP 5</div>
+              <div class="font-display font-bold text-base mb-1">5. Program</div>
+              <p class="text-xs text-slate-600 dark:text-slate-300">A program listens on the port and accepts the request.</p>
+            </div>
+          </div>
+
+          <!-- Forward & Return Port Flow Visual -->
+          <div class="p-3.5 mb-4 rounded-lg bg-slate-100 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-xs sm:text-sm font-mono flex flex-col sm:flex-row items-center justify-between gap-2">
+            <div><strong class="text-blue-600 dark:text-blue-400">Request:</strong> Client (<span class="hl-code">10.0.8.10:51000</span>) ➔ Server (<span class="hl-code">10.20.4.15:5432</span>)</div>
+            <div><strong class="text-emerald-600 dark:text-emerald-400">Reply:</strong> Server (<span class="hl-code">10.20.4.15:5432</span>) ➔ Client ephemeral port (<span class="hl-code">10.0.8.10:51000</span>)</div>
+          </div>
+
+          <ul class="space-y-2 text-sm sm:text-base list-disc list-inside">
+            <li>The request goes to <span class="hl-code">10.20.4.15:5432</span>. The reply comes back to the client's temporary port (<span class="hl-green">an ephemeral port</span>, for example <span class="hl-code">51000</span>). <span class="hl-yellow">Each direction is routed and filtered separately.</span></li>
+            <li><span class="hl-red">All five must hold at once; one failure breaks the connection.</span></li>
+            <li>Every connection type today supplies only some of them. <span class="hl-yellow">Troubleshooting checks them in this order (1 ➔ 5).</span></li>
+          </ul>
+        </article>
+      </section>
+
+
+      <!-- ====================================================================
+           PART 2: CONNECTING AN OFFICE TO THE CLOUD (Slides 6/42 – 13/42)
+           ==================================================================== -->
+      <section id="part-2" class="space-y-6">
+        <div class="flex items-center gap-3 border-b-2 border-slate-700 dark:border-slate-700 pb-2">
+          <span class="px-3 py-1 rounded-md bg-slate-700 text-white font-display font-bold text-sm">PART 2</span>
+          <h2 class="font-display text-xl sm:text-2xl font-bold text-slate-900 dark:text-white">
+            Connecting an Office to the Cloud: VPN & Dedicated Links
+          </h2>
+          <span class="ml-auto text-xs font-mono text-slate-500">Slides 6/42 – 13/42</span>
+        </div>
+
+        <!-- Slide 6/42 -->
+        <article class="study-card p-6">
+          <div class="flex items-center justify-between mb-3">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              Why Not Just Use the Internet?
+            </h3>
+            <span class="slide-badge">Slide 6/42</span>
+          </div>
+          <p class="text-sm sm:text-base mb-4">
+            The office could reach the database over the internet, <span class="hl-red">only if the database had a public address and an open port</span>.
+          </p>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <div class="p-4 rounded-lg bg-rose-50/70 dark:bg-rose-950/20 border border-rose-200 dark:border-rose-800">
+              <h4 class="font-display font-bold text-rose-800 dark:text-rose-300 mb-2">❌ What Goes Wrong (Public Internet)</h4>
+              <ul class="space-y-1.5 text-sm list-disc list-inside">
+                <li><span class="hl-red">The database is exposed on the internet</span>; source limits and TLS reduce the risk but do not remove it.</li>
+                <li>Traffic crosses the internet <span class="hl-red">readable</span> unless every program encrypts it.</li>
+                <li>Every new system needs another public address and rule.</li>
+              </ul>
+            </div>
+
+            <div class="p-4 rounded-lg bg-emerald-50/70 dark:bg-emerald-950/20 border border-emerald-200 dark:border-emerald-800">
+              <h4 class="font-display font-bold text-emerald-800 dark:text-emerald-300 mb-2">✅ What We Want Instead</h4>
+              <ul class="space-y-1.5 text-sm list-disc list-inside">
+                <li>The office and the cloud network <span class="hl-green">behave like one private network</span>.</li>
+                <li><span class="hl-yellow">Private addresses on both sides.</span></li>
+                <li><span class="hl-yellow">Traffic protected on the way.</span></li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="p-3 rounded-lg bg-indigo-50 dark:bg-slate-800 border border-indigo-200 dark:border-slate-700 text-sm font-medium">
+            <strong>Two Ways to Achieve This:</strong> (1) A <span class="hl-green">VPN over the internet</span>, or (2) A <span class="hl-green">dedicated connection</span>.
+          </div>
+        </article>
+
+        <!-- Slide 7/42 -->
+        <article class="study-card p-6">
+          <div class="flex items-center justify-between mb-3">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              VPN: A Private Tunnel Through the Internet
+            </h3>
+            <span class="slide-badge">Slide 7/42</span>
+          </div>
+          <p class="text-sm sm:text-base mb-4">
+            A <span class="hl-green">VPN (virtual private network)</span> creates an <span class="hl-yellow">encrypted tunnel across the internet</span>. Traffic inside it cannot be read or changed unnoticed on the way; with routes and rules in place, each side reaches the other's private addresses.
+          </p>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <div class="p-4 rounded-lg bg-slate-100 dark:bg-slate-800/80 border border-slate-300 dark:border-slate-700">
+              <div class="font-display font-bold text-indigo-700 dark:text-indigo-300 mb-1">Site-to-site VPN</div>
+              <p class="text-sm">Joins <span class="hl-yellow">two whole networks</span>, such as the office and the cloud network. It runs all the time between two devices; users notice nothing.</p>
+            </div>
+            <div class="p-4 rounded-lg bg-slate-100 dark:bg-slate-800/80 border border-slate-300 dark:border-slate-700">
+              <div class="font-display font-bold text-indigo-700 dark:text-indigo-300 mb-1">Remote-access VPN</div>
+              <p class="text-sm">Joins <span class="hl-yellow">one person's laptop</span> to a network, usually started by the user.</p>
+            </div>
+          </div>
+
+          <ul class="space-y-2 text-sm sm:text-base list-disc list-inside">
+            <li>Most site-to-site VPNs use <span class="hl-green">IPsec</span>, a standard set of protocols for encrypting and checking IP traffic.</li>
+            <li><span class="hl-red">Both ends must agree on its settings, or the tunnel does not come up.</span></li>
+            <li><strong>Comparison:</strong> An <em>armored truck on a public road</em>. The road is shared; what is inside the truck is not.</li>
+          </ul>
+        </article>
+
+        <!-- Slide 8/42 -->
+        <article class="study-card p-6">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              What Travels Inside the Tunnel (Encapsulation)
+            </h3>
+            <span class="slide-badge">Slide 8/42</span>
+          </div>
+
+          <!-- Tunnel Path Diagram + Encapsulated Packet Diagram -->
+          <div class="p-4 sm:p-5 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 space-y-5 mb-4">
+            <!-- Top Path -->
+            <div class="flex flex-col md:flex-row items-center justify-between gap-2 text-xs font-mono">
+              <div class="px-3 py-2 rounded bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 text-center w-full md:w-auto">
+                <div class="font-bold text-slate-800 dark:text-slate-200">Office app</div>
+                <div class="text-blue-600 dark:text-blue-400">10.0.8.10</div>
+              </div>
+              <span class="text-slate-400">➔</span>
+              <div class="px-3 py-2 rounded bg-indigo-100 dark:bg-indigo-950 border-2 border-indigo-500 text-center w-full md:w-auto">
+                <div class="font-bold text-indigo-900 dark:text-indigo-200">Office VPN device</div>
+              </div>
+              <div class="flex-1 px-3 py-1.5 rounded-full bg-amber-200/80 dark:bg-amber-900/50 border-2 border-amber-500 text-center font-bold text-amber-900 dark:text-amber-200 w-full md:w-auto">
+                🔒 encrypted tunnel (across public internet)
+              </div>
+              <div class="px-3 py-2 rounded bg-indigo-100 dark:bg-indigo-950 border-2 border-indigo-500 text-center w-full md:w-auto">
+                <div class="font-bold text-indigo-900 dark:text-indigo-200">Cloud VPN gateway</div>
+              </div>
+              <span class="text-slate-400">➔</span>
+              <div class="px-3 py-2 rounded bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 text-center w-full md:w-auto">
+                <div class="font-bold text-slate-800 dark:text-slate-200">Database</div>
+                <div class="text-emerald-600 dark:text-emerald-400">10.20.4.15</div>
+              </div>
+            </div>
+
+            <!-- Packet Encapsulation Box -->
+            <div class="max-w-2xl mx-auto p-3 rounded-lg bg-slate-200 dark:bg-slate-800 border-2 border-slate-400 dark:border-slate-600 flex flex-col sm:flex-row items-stretch gap-3">
+              <div class="sm:w-1/3 p-3 rounded bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 flex flex-col justify-center">
+                <div class="text-xs font-bold uppercase tracking-wider text-slate-500">Outer header</div>
+                <div class="text-sm font-semibold text-slate-800 dark:text-slate-200 mt-1">Addresses of the two VPN devices</div>
+              </div>
+              <div class="sm:w-2/3 p-3 rounded bg-amber-100 dark:bg-amber-950/70 border-2 border-amber-500 flex flex-col justify-center">
+                <div class="text-xs font-bold uppercase tracking-wider text-amber-800 dark:text-amber-300">🔒 Inner packet (encrypted)</div>
+                <div class="font-mono text-sm font-bold text-slate-900 dark:text-white mt-1">10.0.8.10 ➔ 10.20.4.15, TCP 5432</div>
+              </div>
+            </div>
+          </div>
+
+          <ul class="space-y-2 text-sm sm:text-base list-disc list-inside">
+            <li><span class="hl-green">Encapsulation</span>: The VPN device wraps each packet inside a new one. <span class="hl-yellow">The internet forwards it using the outer header only.</span></li>
+            <li>The cloud gateway removes the wrapper and routes the inner packet by its private destination.</li>
+            <li><span class="hl-red">Encryption covers only the part between the two VPN devices.</span></li>
+            <li><span class="hl-yellow">The wrapper also adds bytes</span>, which matters in Part 8 (packet size / MTU).</li>
+          </ul>
+        </article>
+
+        <!-- Slide 9/42 -->
+        <article class="study-card p-6">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              A Site-to-Site VPN, End to End (Route Tables on Both Sides)
+            </h3>
+            <span class="slide-badge">Slide 9/42</span>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
+            <!-- Office Router Route Table -->
+            <div class="rounded-lg overflow-hidden border border-slate-300 dark:border-slate-700">
+              <div class="bg-blue-600 text-white px-4 py-2 font-display font-bold text-sm flex justify-between items-center">
+                <span>Office router's route table</span>
+                <span class="font-mono text-xs bg-blue-800 px-2 py-0.5 rounded">Office 10.0.0.0/16</span>
+              </div>
+              <table class="w-full text-left text-xs sm:text-sm font-mono">
+                <thead class="bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-b border-slate-200 dark:border-slate-700">
+                  <tr>
+                    <th class="py-2 px-3">Destination</th>
+                    <th class="py-2 px-3">Target / Next Hop</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-200 dark:divide-slate-800">
+                  <tr>
+                    <td class="py-2 px-3">10.0.0.0/16</td>
+                    <td class="py-2 px-3">local</td>
+                  </tr>
+                  <tr class="bg-amber-50 dark:bg-amber-950/40 font-bold">
+                    <td class="py-2 px-3 text-amber-900 dark:text-amber-300">10.20.0.0/16</td>
+                    <td class="py-2 px-3"><span class="hl-yellow">VPN tunnel (new)</span></td>
+                  </tr>
+                  <tr>
+                    <td class="py-2 px-3">0.0.0.0/0</td>
+                    <td class="py-2 px-3">internet provider</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Cloud Database Subnet Route Table -->
+            <div class="rounded-lg overflow-hidden border border-slate-300 dark:border-slate-700">
+              <div class="bg-emerald-600 text-white px-4 py-2 font-display font-bold text-sm flex justify-between items-center">
+                <span>Database subnet's route table (AWS)</span>
+                <span class="font-mono text-xs bg-emerald-800 px-2 py-0.5 rounded">Cloud 10.20.0.0/16</span>
+              </div>
+              <table class="w-full text-left text-xs sm:text-sm font-mono">
+                <thead class="bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-b border-slate-200 dark:border-slate-700">
+                  <tr>
+                    <th class="py-2 px-3">Destination</th>
+                    <th class="py-2 px-3">Target / Next Hop</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-200 dark:divide-slate-800">
+                  <tr>
+                    <td class="py-2 px-3">10.20.0.0/16</td>
+                    <td class="py-2 px-3">local</td>
+                  </tr>
+                  <tr class="bg-amber-50 dark:bg-amber-950/40 font-bold">
+                    <td class="py-2 px-3 text-amber-900 dark:text-amber-300">10.0.0.0/16</td>
+                    <td class="py-2 px-3"><span class="hl-yellow">VPN gateway (new)</span></td>
+                  </tr>
+                  <tr>
+                    <td class="py-2 px-3">0.0.0.0/0</td>
+                    <td class="py-2 px-3">NAT gateway</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="p-3.5 rounded-lg bg-rose-50 dark:bg-rose-950/30 border border-rose-200 dark:border-rose-800 text-sm">
+            <strong>Critical Routing Rule:</strong> <span class="hl-yellow">Routes are needed on both sides.</span> <span class="hl-red">Without the cloud route back, requests arrive but replies leave through the NAT gateway and are lost.</span> The database's firewall must also allow <span class="hl-code">TCP 5432</span> from <span class="hl-code">10.0.8.0/24</span>.
+          </div>
+        </article>
+
+        <!-- Slide 10/42 -->
+        <article class="study-card p-6">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              What a Site-to-Site VPN Needs (6 Checklist Items)
+            </h3>
+            <span class="slide-badge">Slide 10/42</span>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4 text-sm">
+            <div class="p-3 rounded-lg bg-slate-100 dark:bg-slate-800 border-l-4 border-indigo-500">
+              <strong>1. VPN gateway on the cloud side:</strong> Created by you, run by the provider.
+            </div>
+            <div class="p-3 rounded-lg bg-slate-100 dark:bg-slate-800 border-l-4 border-indigo-500">
+              <strong>2. VPN device in the office:</strong> A router or firewall, usually with a <span class="hl-yellow">fixed public address</span>.
+            </div>
+            <div class="p-3 rounded-lg bg-slate-100 dark:bg-slate-800 border-l-4 border-indigo-500">
+              <strong>3. Compatible settings on both ends:</strong> The same <span class="hl-green">pre-shared key</span> or <span class="hl-green">trusted certificates</span>, and the same encryption options.
+            </div>
+            <div class="p-3 rounded-lg bg-slate-100 dark:bg-slate-800 border-l-4 border-emerald-500">
+              <strong>4. Routes on both sides:</strong> For the other side's address block.
+            </div>
+            <div class="p-3 rounded-lg bg-slate-100 dark:bg-slate-800 border-l-4 border-emerald-500">
+              <strong>5. Firewall rules on both sides:</strong> That allow the needed traffic.
+            </div>
+            <div class="p-3 rounded-lg bg-slate-100 dark:bg-slate-800 border-l-4 border-emerald-500">
+              <strong>6. Address blocks:</strong> That <span class="hl-red">do not overlap</span>.
+            </div>
+          </div>
+
+          <div class="p-4 rounded-lg bg-amber-50 dark:bg-amber-950/30 border-2 border-amber-400 dark:border-amber-700 text-sm">
+            <div class="font-display font-bold text-amber-900 dark:text-amber-300 mb-1">
+              ⚠️ Exam Trap: "A tunnel can be up while the application is down"
+            </div>
+            <p>
+              <span class="hl-yellow">Items 1–3 bring the tunnel up.</span> <span class="hl-green">Items 4–6, together with DNS and a listening program, decide whether the application works.</span> Some providers (AWS, for example) also build each VPN connection as <span class="hl-yellow">two tunnels; configure both</span>.
+            </p>
+          </div>
+        </article>
+
+        <!-- Slide 11/42 -->
+        <article class="study-card p-6">
+          <div class="flex items-center justify-between mb-3">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              Dedicated Private Connections
+            </h3>
+            <span class="slide-badge">Slide 11/42</span>
+          </div>
+          <p class="text-sm sm:text-base mb-4">
+            A <span class="hl-green">dedicated connection</span> is a physical link from your network to the provider, joined at a meeting point (a <span class="hl-green">colocation data center</span>) where both have equipment. <span class="hl-yellow">It does not cross the public internet.</span>
+          </p>
+
+          <ul class="space-y-2 text-sm sm:text-base list-disc list-inside mb-4">
+            <li><strong>More predictable:</strong> No internet traffic shares the link, so delay and throughput vary less.</li>
+            <li><strong>Higher capacity:</strong> Ports of <span class="hl-code">1</span>, <span class="hl-code">10</span> or <span class="hl-code">100 Gbps</span>; smaller shares are sold through partner companies.</li>
+            <li><strong>Slower to set up:</strong> Often <span class="hl-red">weeks</span>, because a physical circuit must be ordered and connected.</li>
+            <li><span class="hl-red">Not encrypted by default:</span> <em>Private is not the same as secret.</em> Encryption must be added if the data needs it.</li>
+          </ul>
+
+          <div class="flex flex-wrap items-center gap-2 text-xs sm:text-sm">
+            <span class="font-bold text-slate-600 dark:text-slate-300">Provider Service Names:</span>
+            <span class="hl-green">AWS Direct Connect</span>
+            <span class="hl-green">Azure ExpressRoute</span>
+            <span class="hl-green">Google Cloud Interconnect</span>
+          </div>
+        </article>
+
+        <!-- Slide 12/42 -->
+        <article class="study-card p-6">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              Comparison: Site-to-Site VPN vs. Dedicated Connection
+            </h3>
+            <span class="slide-badge">Slide 12/42</span>
+          </div>
+
+          <div class="overflow-x-auto rounded-lg border border-slate-300 dark:border-slate-700 mb-4">
+            <table class="w-full text-left text-xs sm:text-sm">
+              <thead class="bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 font-display">
+                <tr>
+                  <th class="py-3 px-4 border-b border-slate-300 dark:border-slate-700">Feature</th>
+                  <th class="py-3 px-4 border-b border-slate-300 dark:border-slate-700">Site-to-site VPN</th>
+                  <th class="py-3 px-4 border-b border-slate-300 dark:border-slate-700">Dedicated connection</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-200 dark:divide-slate-800">
+                <tr>
+                  <td class="py-2.5 px-4 font-semibold">Travels over</td>
+                  <td class="py-2.5 px-4">The public internet, encrypted</td>
+                  <td class="py-2.5 px-4">A private physical link</td>
+                </tr>
+                <tr>
+                  <td class="py-2.5 px-4 font-semibold">Ready in</td>
+                  <td class="py-2.5 px-4"><span class="hl-green">Minutes to hours</span></td>
+                  <td class="py-2.5 px-4"><span class="hl-red">Weeks to months</span></td>
+                </tr>
+                <tr>
+                  <td class="py-2.5 px-4 font-semibold">Speed and delay</td>
+                  <td class="py-2.5 px-4">Change with internet traffic</td>
+                  <td class="py-2.5 px-4"><span class="hl-yellow">More predictable</span></td>
+                </tr>
+                <tr>
+                  <td class="py-2.5 px-4 font-semibold">Capacity</td>
+                  <td class="py-2.5 px-4">Limited per tunnel; check the product</td>
+                  <td class="py-2.5 px-4">Ports of <span class="hl-code">1</span>, <span class="hl-code">10</span>, <span class="hl-code">100 Gbps</span></td>
+                </tr>
+                <tr>
+                  <td class="py-2.5 px-4 font-semibold">Encryption</td>
+                  <td class="py-2.5 px-4"><span class="hl-green">Built in</span></td>
+                  <td class="py-2.5 px-4"><span class="hl-red">Not by default; must be added</span></td>
+                </tr>
+                <tr>
+                  <td class="py-2.5 px-4 font-semibold">Cost</td>
+                  <td class="py-2.5 px-4">Low: gateway hours plus data</td>
+                  <td class="py-2.5 px-4">High: port, circuit and partner fees</td>
+                </tr>
+                <tr>
+                  <td class="py-2.5 px-4 font-semibold">Typical use</td>
+                  <td class="py-2.5 px-4">Small offices, getting started, backup of a dedicated link</td>
+                  <td class="py-2.5 px-4">Large, steady traffic; strict delay needs</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p class="text-sm font-medium">
+            💡 <strong>Hybrid Design Rule:</strong> <span class="hl-yellow">A common design uses both: the dedicated link carries the traffic and a VPN waits as the backup.</span>
+          </p>
+        </article>
+
+        <!-- Slide 13/42 -->
+        <article class="study-card p-6 border-l-4 border-l-amber-500">
+          <div class="flex items-center justify-between mb-3">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              Worked Calculation Exercise: Will It Fit?
+            </h3>
+            <span class="slide-badge">Slide 13/42</span>
+          </div>
+          <p class="text-sm sm:text-base mb-4">
+            <strong>Problem:</strong> A hospital copies <span class="hl-code">2 TB</span> of new data to the cloud every night between <span class="hl-code">23:00</span> and <span class="hl-code">07:00</span> (<span class="hl-yellow">8 hours</span>). Assume <span class="hl-code">1 TB = 10^12 bytes</span> and <span class="hl-code">70%</span> effective throughput. Which is enough: a <span class="hl-code">100 Mbps</span> VPN, a <span class="hl-code">1 Gbps</span> VPN, or a <span class="hl-code">10 Gbps</span> dedicated link?
+          </p>
+
+          <!-- Formula Box -->
+          <div class="p-4 rounded-lg bg-slate-900 text-slate-100 font-mono text-center text-sm sm:text-base mb-4">
+            time (s) = [ data (bytes) × 8 ] ÷ [ 0.7 × line rate (bits/s) ]
+          </div>
+
+          <!-- Worked Math -->
+          <div class="p-3.5 rounded-lg bg-amber-50 dark:bg-slate-800 border border-amber-200 dark:border-slate-700 text-xs sm:text-sm font-mono mb-4 space-y-1">
+            <div><strong>Calculation for 1 Gbps (10^9 bits/s):</strong></div>
+            <div>time = (2 × 10^12 × 8) ÷ (0.7 × 10^9) ≈ <strong>22,857 seconds</strong> (≈ 6.35 hours)</div>
+            <div><strong>Minimum required line rate for 8 hours (28,800 s):</strong> about <span class="hl-yellow">794 Mbps</span></div>
+          </div>
+
+          <div class="overflow-x-auto rounded-lg border border-slate-300 dark:border-slate-700 mb-3">
+            <table class="w-full text-left text-xs sm:text-sm">
+              <thead class="bg-slate-100 dark:bg-slate-800">
+                <tr>
+                  <th class="py-2.5 px-4">Line</th>
+                  <th class="py-2.5 px-4">Time for 2 TB</th>
+                  <th class="py-2.5 px-4">Fits in 8 hours?</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-200 dark:divide-slate-800">
+                <tr>
+                  <td class="py-2 px-4 font-mono">100 Mbps</td>
+                  <td class="py-2 px-4">about 63.5 hours</td>
+                  <td class="py-2 px-4"><span class="hl-red">No</span></td>
+                </tr>
+                <tr>
+                  <td class="py-2 px-4 font-mono">1 Gbps</td>
+                  <td class="py-2 px-4">about 6.35 hours</td>
+                  <td class="py-2 px-4"><span class="hl-yellow">Yes, with little room to grow</span></td>
+                </tr>
+                <tr>
+                  <td class="py-2 px-4 font-mono">10 Gbps</td>
+                  <td class="py-2 px-4">about 38 minutes</td>
+                  <td class="py-2 px-4"><span class="hl-green">Yes, easily</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-300">
+            <strong>Additional factors to check:</strong> The provider's <span class="hl-yellow">per-tunnel limit</span>, data growth, time to retry a failed copy, and <span class="hl-red">encryption for patient data</span>.
+          </p>
+        </article>
+      </section>
+
+
+      <!-- ====================================================================
+           PART 3: CONNECTING CLOUD NETWORKS AND PROVIDER SERVICES (Slides 14/42 – 18/42)
+           ==================================================================== -->
+      <section id="part-3" class="space-y-6">
+        <div class="flex items-center gap-3 border-b-2 border-slate-700 dark:border-slate-700 pb-2">
+          <span class="px-3 py-1 rounded-md bg-slate-700 text-white font-display font-bold text-sm">PART 3</span>
+          <h2 class="font-display text-xl sm:text-2xl font-bold text-slate-900 dark:text-white">
+            Connecting Cloud Networks & Provider Services
+          </h2>
+          <span class="ml-auto text-xs font-mono text-slate-500">Slides 14/42 – 18/42</span>
+        </div>
+
+        <!-- Slide 14/42 -->
+        <article class="study-card p-6">
+          <div class="flex items-center justify-between mb-3">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              Peering
+            </h3>
+            <span class="slide-badge">Slide 14/42</span>
+          </div>
+          <p class="text-sm sm:text-base mb-3">
+            Organizations rarely have one cloud network. They separate test from production, and one application from another.
+          </p>
+          <p class="text-sm sm:text-base mb-4">
+            <span class="hl-green">Peering</span> joins two cloud networks so they reach each other on <span class="hl-yellow">private addresses, over the provider's own network. No VPN, no internet.</span>
+          </p>
+
+          <ul class="space-y-2 text-sm sm:text-base list-disc list-inside mb-4">
+            <li>Both networks' address blocks <span class="hl-red">must not overlap</span>.</li>
+            <li>Each side needs routes to the other (some providers add them automatically; <span class="hl-red">AWS does not</span>).</li>
+            <li>Firewall rules must allow the traffic; <span class="hl-red">peering itself opens nothing</span>.</li>
+            <li>Peering can often join networks in different regions or accounts.</li>
+          </ul>
+
+          <div class="flex flex-wrap items-center gap-2 text-xs sm:text-sm">
+            <span class="font-bold text-slate-600 dark:text-slate-300">Provider Names:</span>
+            <span class="hl-green">VPC peering (AWS)</span>
+            <span class="hl-green">VNet peering (Azure)</span>
+            <span class="hl-green">VPC Network Peering (Google Cloud)</span>
+          </div>
+        </article>
+
+        <!-- Slide 15/42 -->
+        <article class="study-card p-6">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              Peering is NOT Transitive
+            </h3>
+            <span class="slide-badge">Slide 15/42</span>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
+            <!-- SVG Diagram replicating Slide 15/42 -->
+            <div class="md:col-span-5 p-4 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 flex justify-center">
+              <svg viewBox="0 0 280 180" class="w-full max-w-[260px]">
+                <!-- Peered Lines -->
+                <line x1="60" y1="135" x2="140" y2="40" stroke="#16a34a" stroke-width="3.5" />
+                <line x1="140" y1="40" x2="220" y2="135" stroke="#16a34a" stroke-width="3.5" />
+                <!-- No Connection Dashed Line -->
+                <line x1="60" y1="135" x2="220" y2="135" stroke="#e11d48" stroke-width="3" stroke-dasharray="6,6" />
+                <!-- Labels -->
+                <text x="82" y="78" fill="#16a34a" font-size="13" font-weight="bold" text-anchor="end">peered</text>
+                <text x="198" y="78" fill="#16a34a" font-size="13" font-weight="bold" text-anchor="start">peered</text>
+                <text x="140" y="160" fill="#e11d48" font-size="13" font-weight="bold" text-anchor="middle">no connection</text>
+                <!-- Nodes -->
+                <circle cx="140" cy="40" r="24" fill="#e2e8f0" stroke="#334155" stroke-width="2" />
+                <text x="140" y="46" fill="#0f172a" font-size="18" font-weight="bold" text-anchor="middle">B</text>
+
+                <circle cx="55" cy="135" r="24" fill="#e2e8f0" stroke="#334155" stroke-width="2" />
+                <text x="55" y="141" fill="#0f172a" font-size="18" font-weight="bold" text-anchor="middle">A</text>
+
+                <circle cx="225" cy="135" r="24" fill="#e2e8f0" stroke="#334155" stroke-width="2" />
+                <text x="225" y="141" fill="#0f172a" font-size="18" font-weight="bold" text-anchor="middle">C</text>
+              </svg>
+            </div>
+
+            <div class="md:col-span-7 space-y-3 text-sm sm:text-base">
+              <p>
+                <strong>A</strong> is peered with <strong>B</strong>, and <strong>B</strong> with <strong>C</strong>. <span class="hl-red">A still cannot reach C.</span>
+              </p>
+              <p>
+                Peering carries traffic <span class="hl-yellow">only between its own two networks</span>, never through one of them to a third. Each pair that must talk needs its own peering, or a hub.
+              </p>
+              <div class="p-3.5 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700">
+                <div class="font-display font-bold text-slate-900 dark:text-white mb-1">
+                  The Cost of That Rule (Full Mesh Formula):
+                </div>
+                <p class="text-sm">
+                  Connecting every network to every other takes <span class="hl-yellow font-mono">n(n - 1) / 2</span> peerings:
+                </p>
+                <div class="grid grid-cols-3 gap-2 mt-2 text-center font-mono text-xs">
+                  <div class="p-2 rounded bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700"><strong>5</strong> networks ➔ <strong>10</strong> peerings</div>
+                  <div class="p-2 rounded bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700"><strong>10</strong> networks ➔ <strong>45</strong> peerings</div>
+                  <div class="p-2 rounded bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700"><strong>20</strong> networks ➔ <strong>190</strong> peerings</div>
+                </div>
+                <p class="text-xs text-slate-500 mt-1.5">Each with its own routes to keep correct.</p>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- Slide 16/42 -->
+        <article class="study-card p-6">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              Hub and Spoke (Transit Gateway)
+            </h3>
+            <span class="slide-badge">Slide 16/42</span>
+          </div>
+
+          <!-- Side-by-Side SVG Topologies replicating Slide 16/42 -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-5">
+            <!-- Left: Full Mesh -->
+            <div class="p-4 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 flex flex-col items-center">
+              <div class="text-xs font-mono font-bold text-slate-700 dark:text-slate-300 mb-2">
+                Full mesh: 5 networks, 10 peerings
+              </div>
+              <svg viewBox="0 0 220 200" class="w-44 h-40">
+                <!-- 10 Mesh Lines between pentagon vertices: (110,28), (185,82), (156,168), (64,168), (35,82) -->
+                <g stroke="#64748b" stroke-width="1.8">
+                  <line x1="110" y1="28" x2="185" y2="82"/><line x1="110" y1="28" x2="156" y2="168"/>
+                  <line x1="110" y1="28" x2="64" y2="168"/><line x1="110" y1="28" x2="35" y2="82"/>
+                  <line x1="185" y1="82" x2="156" y2="168"/><line x1="185" y1="82" x2="64" y2="168"/>
+                  <line x1="185" y1="82" x2="35" y2="82"/><line x1="156" y1="168" x2="64" y2="168"/>
+                  <line x1="156" y1="168" x2="35" y2="82"/><line x1="64" y1="168" x2="35" y2="82"/>
+                </g>
+                <!-- Nodes 1..5 -->
+                <g fill="#ffffff" stroke="#1e293b" stroke-width="2" font-size="14" font-weight="bold" text-anchor="middle">
+                  <circle cx="110" cy="28" r="18"/><text x="110" y="33" fill="#0f172a" stroke="none">5</text>
+                  <circle cx="35" cy="82" r="18"/><text x="35" y="87" fill="#0f172a" stroke="none">1</text>
+                  <circle cx="185" cy="82" r="18"/><text x="185" y="87" fill="#0f172a" stroke="none">4</text>
+                  <circle cx="64" cy="168" r="18"/><text x="64" y="173" fill="#0f172a" stroke="none">2</text>
+                  <circle cx="156" cy="168" r="18"/><text x="156" y="173" fill="#0f172a" stroke="none">3</text>
+                </g>
+              </svg>
+            </div>
+
+            <!-- Right: Hub and Spoke -->
+            <div class="p-4 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 flex flex-col items-center">
+              <div class="text-xs font-mono font-bold text-emerald-700 dark:text-emerald-400 mb-2">
+                Hub: 5 networks, 5 attachments
+              </div>
+              <svg viewBox="0 0 220 200" class="w-44 h-40">
+                <!-- 5 Spoke Lines to center (110,103) -->
+                <g stroke="#059669" stroke-width="2.5">
+                  <line x1="110" y1="103" x2="110" y2="28"/>
+                  <line x1="110" y1="103" x2="35" y2="82"/>
+                  <line x1="110" y1="103" x2="185" y2="82"/>
+                  <line x1="110" y1="103" x2="64" y2="168"/>
+                  <line x1="110" y1="103" x2="156" y2="168"/>
+                </g>
+                <!-- Central Hub -->
+                <circle cx="110" cy="103" r="30" fill="#d1fae5" stroke="#059669" stroke-width="2.5"/>
+                <text x="110" y="108" fill="#065f46" font-size="15" font-weight="bold" text-anchor="middle">Hub</text>
+                <!-- Nodes 1..5 -->
+                <g fill="#ffffff" stroke="#1e293b" stroke-width="2" font-size="14" font-weight="bold" text-anchor="middle">
+                  <circle cx="110" cy="28" r="18"/><text x="110" y="33" fill="#0f172a" stroke="none">5</text>
+                  <circle cx="35" cy="82" r="18"/><text x="35" y="87" fill="#0f172a" stroke="none">1</text>
+                  <circle cx="185" cy="82" r="18"/><text x="185" y="87" fill="#0f172a" stroke="none">4</text>
+                  <circle cx="64" cy="168" r="18"/><text x="64" y="173" fill="#0f172a" stroke="none">2</text>
+                  <circle cx="156" cy="168" r="18"/><text x="156" y="173" fill="#0f172a" stroke="none">3</text>
+                </g>
+              </svg>
+            </div>
+          </div>
+
+          <ul class="space-y-2 text-sm sm:text-base list-disc list-inside mb-4">
+            <li>A <span class="hl-green">hub (transit gateway)</span> is a <span class="hl-yellow">central router that each network connects to once</span>. Its routes decide which networks may talk.</li>
+            <li>The VPN or dedicated link to the office also attaches to the hub once.</li>
+            <li>Managed hubs are charged <span class="hl-yellow">per attachment and per GB</span>.</li>
+          </ul>
+
+          <div class="flex flex-wrap items-center gap-2 text-xs sm:text-sm">
+            <span class="font-bold text-slate-600 dark:text-slate-300">Provider Names:</span>
+            <span class="hl-green">AWS Transit Gateway</span>
+            <span class="hl-green">Azure Virtual WAN</span>
+            <span class="hl-green">Google Cloud Network Connectivity Center</span>
+          </div>
+        </article>
+
+        <!-- Slide 17/42 -->
+        <article class="study-card p-6">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              Private DNS Across Networks (Conditional Forwarding)
+            </h3>
+            <span class="slide-badge">Slide 17/42</span>
+          </div>
+
+          <!-- Flow Diagram from Slide 17/42 -->
+          <div class="p-4 sm:p-5 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 mb-4">
+            <div class="grid grid-cols-1 md:grid-cols-7 gap-2 items-center text-center text-xs font-mono">
+              <div class="p-3 rounded-lg bg-white dark:bg-slate-800 border-2 border-slate-300 dark:border-slate-600">
+                <div class="font-bold text-slate-900 dark:text-white">Office app</div>
+                <div class="text-blue-600 dark:text-blue-400 mt-0.5">10.0.8.10</div>
+              </div>
+              <div class="flex flex-col items-center justify-center py-1">
+                <span class="text-blue-600 dark:text-blue-400">───►</span>
+                <span class="text-emerald-600 dark:text-emerald-400">◄───</span>
+                <span class="text-[10px] text-emerald-700 dark:text-emerald-400 font-bold">answer 10.20.4.15</span>
+              </div>
+              <div class="p-3 rounded-lg bg-white dark:bg-slate-800 border-2 border-blue-500">
+                <div class="font-bold text-slate-900 dark:text-white">Office DNS resolver</div>
+              </div>
+              <div class="flex flex-col items-center justify-center py-1">
+                <span class="text-[10px] text-blue-700 dark:text-blue-300 font-bold">query forwarded</span>
+                <span class="text-blue-600 dark:text-blue-400">───►</span>
+                <span class="text-emerald-600 dark:text-emerald-400">◄───</span>
+              </div>
+              <div class="p-3 rounded-lg bg-white dark:bg-slate-800 border-2 border-indigo-500">
+                <div class="font-bold text-slate-900 dark:text-white">Cloud inbound resolver endpoint</div>
+                <div class="text-indigo-600 dark:text-indigo-400 mt-0.5">10.20.2.53</div>
+              </div>
+              <div class="flex flex-col items-center justify-center py-1">
+                <span class="text-blue-600 dark:text-blue-400">───►</span>
+                <span class="text-emerald-600 dark:text-emerald-400">◄───</span>
+              </div>
+              <div class="p-3 rounded-lg bg-white dark:bg-slate-800 border-2 border-emerald-500">
+                <div class="font-bold text-slate-900 dark:text-white">Private zone</div>
+                <div class="text-emerald-600 dark:text-emerald-400 mt-0.5">internal.example.com</div>
+              </div>
+            </div>
+          </div>
+
+          <ul class="space-y-2 text-sm sm:text-base list-disc list-inside mb-3">
+            <li>A <span class="hl-green">private zone</span> answers only inside the cloud network. The office resolver cannot see it; <span class="hl-red">public DNS says the name does not exist</span>.</li>
+            <li><span class="hl-green">Conditional forwarding</span>: The office resolver sends queries for <span class="hl-code">internal.example.com</span>, and only those, to the cloud's inbound resolver endpoint (<span class="hl-code">10.20.2.53</span>).</li>
+            <li>That traffic needs its own route and firewall rule: <span class="hl-yellow">UDP and TCP port 53</span>.</li>
+          </ul>
+
+          <div class="p-3 rounded-lg bg-amber-50 dark:bg-amber-950/30 border border-amber-300 dark:border-amber-800 text-sm font-semibold">
+            🔑 Key Rule: <span class="hl-yellow">The VPN supplies a path, not names. Name resolution needs its own configuration.</span>
+          </div>
+        </article>
+
+        <!-- Slide 18/42 -->
+        <article class="study-card p-6">
+          <div class="flex items-center justify-between mb-3">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              Reaching the Provider's Services Privately (Endpoints)
+            </h3>
+            <span class="slide-badge">Slide 18/42</span>
+          </div>
+          <p class="text-sm sm:text-base mb-4">
+            Machines in a private subnet saving files to cloud storage normally go out through the <span class="hl-red">NAT gateway to the service's public endpoint, and pay NAT's per-GB charge</span>.
+          </p>
+
+          <div class="overflow-x-auto rounded-lg border border-slate-300 dark:border-slate-700 mb-3">
+            <table class="w-full text-left text-xs sm:text-sm">
+              <thead class="bg-slate-100 dark:bg-slate-800 font-display">
+                <tr>
+                  <th class="py-3 px-4 border-b border-slate-300 dark:border-slate-700">Feature</th>
+                  <th class="py-3 px-4 border-b border-slate-300 dark:border-slate-700">Interface (private) endpoint</th>
+                  <th class="py-3 px-4 border-b border-slate-300 dark:border-slate-700">Gateway endpoint (AWS)</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-200 dark:divide-slate-800">
+                <tr>
+                  <td class="py-2.5 px-4 font-semibold">How it works</td>
+                  <td class="py-2.5 px-4">Places an <span class="hl-green">address for the service inside your subnet</span></td>
+                  <td class="py-2.5 px-4">A <span class="hl-green">route-table entry</span> sends traffic for the service's address list to the endpoint</td>
+                </tr>
+                <tr>
+                  <td class="py-2.5 px-4 font-semibold">DNS</td>
+                  <td class="py-2.5 px-4">The service's name must resolve to that address</td>
+                  <td class="py-2.5 px-4">Normal service names keep working</td>
+                </tr>
+                <tr>
+                  <td class="py-2.5 px-4 font-semibold">Services</td>
+                  <td class="py-2.5 px-4">Many provider and partner services</td>
+                  <td class="py-2.5 px-4"><span class="hl-yellow">Amazon S3 and DynamoDB only</span></td>
+                </tr>
+                <tr>
+                  <td class="py-2.5 px-4 font-semibold">From the office</td>
+                  <td class="py-2.5 px-4"><span class="hl-green">Usable over a VPN</span>, with routes and DNS</td>
+                  <td class="py-2.5 px-4"><span class="hl-red">Not usable</span></td>
+                </tr>
+                <tr>
+                  <td class="py-2.5 px-4 font-semibold">Charges</td>
+                  <td class="py-2.5 px-4">Per hour and per GB</td>
+                  <td class="py-2.5 px-4"><span class="hl-green">No extra charge</span></td>
+                </tr>
+                <tr>
+                  <td class="py-2.5 px-4 font-semibold">Names</td>
+                  <td class="py-2.5 px-4"><span class="hl-green">AWS PrivateLink</span>, <span class="hl-green">Azure Private Endpoint</span>, <span class="hl-green">Google Private Service Connect</span></td>
+                  <td class="py-2.5 px-4"><span class="hl-green">AWS gateway endpoint</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p class="text-sm">
+            Either way, <span class="hl-yellow">traffic stays on the provider's network</span>, and the service still checks permissions.
+          </p>
+        </article>
+      </section>
+
+
+      <!-- ====================================================================
+           PART 4: ROUTES AND REDUNDANCY (Slides 19/42 – 21/42)
+           ==================================================================== -->
+      <section id="part-4" class="space-y-6">
+        <div class="flex items-center gap-3 border-b-2 border-slate-700 dark:border-slate-700 pb-2">
+          <span class="px-3 py-1 rounded-md bg-slate-700 text-white font-display font-bold text-sm">PART 4</span>
+          <h2 class="font-display text-xl sm:text-2xl font-bold text-slate-900 dark:text-white">
+            Routes and Redundancy
+          </h2>
+          <span class="ml-auto text-xs font-mono text-slate-500">Slides 19/42 – 21/42</span>
+        </div>
+
+        <!-- Slide 19/42 -->
+        <article class="study-card p-6">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              Static and Dynamic Routes (BGP)
+            </h3>
+            <span class="slide-badge">Slide 19/42</span>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <div class="p-4 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700">
+              <h4 class="font-display font-bold text-base mb-1"><span class="hl-green">Static route</span></h4>
+              <p class="text-xs font-mono text-slate-500 dark:text-slate-400 mb-2">Written by hand: "send 10.0.0.0/16 to the VPN".</p>
+              <ul class="space-y-1.5 text-sm list-disc list-inside">
+                <li>Simple, easy to read</li>
+                <li><span class="hl-red">Does not react to a failure by itself</span></li>
+                <li>Must be edited by hand when a range is added</li>
+              </ul>
+            </div>
+
+            <div class="p-4 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700">
+              <h4 class="font-display font-bold text-base mb-1"><span class="hl-green">Dynamic route</span></h4>
+              <p class="text-xs font-mono text-slate-500 dark:text-slate-400 mb-2">Learned automatically: routers tell each other which ranges they can reach.</p>
+              <ul class="space-y-1.5 text-sm list-disc list-inside">
+                <li><span class="hl-yellow">Withdraws a failed path and moves traffic to a backup</span> after a short <span class="hl-green">convergence time</span></li>
+                <li>New ranges appear without editing</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="p-4 rounded-lg bg-indigo-50/70 dark:bg-slate-800/90 border border-indigo-200 dark:border-slate-700 text-sm space-y-1.5">
+            <div class="font-display font-bold text-indigo-900 dark:text-indigo-300">BGP (Border Gateway Protocol)</div>
+            <p>
+              The protocol used between the office and the cloud is <span class="hl-green">BGP (Border Gateway Protocol)</span>, the same protocol that joins the networks of the whole internet. <span class="hl-yellow">Dedicated links use it; VPNs can use it or static routes.</span>
+            </p>
+            <p>
+              ⚠️ <strong>Exam Limitation:</strong> <span class="hl-red">BGP tells each side which ranges are reachable; it does not test whether the database answers.</span>
+            </p>
+          </div>
+        </article>
+
+        <!-- Slide 20/42 -->
+        <article class="study-card p-6">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              Two Links Are Better Than One, If They Fail Separately
+            </h3>
+            <span class="slide-badge">Slide 20/42</span>
+          </div>
+
+          <!-- Diagram from Slide 20/42 -->
+          <div class="p-4 sm:p-5 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 mb-4">
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-3 text-xs font-mono">
+              <div class="px-4 py-3 rounded-lg bg-rose-100 dark:bg-rose-950/60 border-2 border-rose-500 font-bold text-center">
+                One office router<br/><span class="text-[10px] text-rose-700 dark:text-rose-300">(Single Point of Failure)</span>
+              </div>
+              <span class="text-lg font-bold">───►</span>
+              <div class="px-4 py-3 rounded-lg bg-rose-100 dark:bg-rose-950/60 border-2 border-rose-500 font-bold text-center">
+                One internet line<br/><span class="text-[10px] text-rose-700 dark:text-rose-300">(Single Point of Failure)</span>
+              </div>
+              <div class="flex flex-col gap-3 items-center">
+                <div class="flex items-center gap-2">
+                  <span class="text-indigo-600 dark:text-indigo-400 font-bold">── tunnel 1 ──►</span>
+                  <div class="px-3 py-2 rounded bg-white dark:bg-slate-800 border border-slate-400 font-bold">Cloud gateway A</div>
+                </div>
+                <div class="flex items-center gap-2">
+                  <span class="text-indigo-600 dark:text-indigo-400 font-bold">── tunnel 2 ──►</span>
+                  <div class="px-3 py-2 rounded bg-white dark:bg-slate-800 border border-slate-400 font-bold">Cloud gateway B</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4 text-sm">
+            <div class="p-3.5 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700">
+              <div class="font-bold mb-1">Availability Math (Suppose each link is available <span class="hl-code">99.9%</span> of the time):</div>
+              <ul class="space-y-1 list-disc list-inside font-mono text-xs sm:text-sm">
+                <li><strong>One link:</strong> down <span class="hl-code">0.001 × 8760 h ≈ 8.76 hours a year</span>.</li>
+                <li><strong>Two independent links:</strong> both down with probability <span class="hl-code">0.001² = 10^-6</span>, about <span class="hl-green">32 seconds a year</span>.</li>
+              </ul>
+            </div>
+
+            <div class="p-3.5 rounded-lg bg-rose-50 dark:bg-rose-950/30 border border-rose-200 dark:border-rose-800">
+              <div class="font-bold text-rose-900 dark:text-rose-300 mb-1">"Independent" is the hard part:</div>
+              <p>
+                The two tunnels above <span class="hl-red">share one router and one internet line, so one failure there stops both</span>. Real redundancy needs <span class="hl-yellow">different equipment, paths and providers, and the surviving link must carry the whole load</span>.
+              </p>
+            </div>
+          </div>
+        </article>
+
+        <!-- Slide 21/42 -->
+        <article class="study-card p-6">
+          <div class="flex items-center justify-between mb-3">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              Overlapping Ranges: The Problem That Returns
+            </h3>
+            <span class="slide-badge">Slide 21/42</span>
+          </div>
+
+          <div class="p-3.5 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-sm mb-4">
+            <strong>Situation:</strong> The office uses <span class="hl-code">10.0.0.0/16</span>. A newly acquired company's cloud network also uses <span class="hl-code">10.0.0.0/16</span>. Now the two must be joined.
+          </div>
+
+          <ul class="space-y-2.5 text-sm sm:text-base list-disc list-inside mb-4">
+            <li><span class="hl-red">Direct routing cannot work:</span> <span class="hl-code">10.0.4.20</span> exists on both sides.</li>
+            <li><span class="hl-green">Proper fix:</span> <strong>Renumber one network.</strong> Slow and disruptive, but permanent.</li>
+            <li><span class="hl-yellow">Workaround:</span> <strong>NAT between them</strong>, so one side appears under a different range. It works, <span class="hl-red">but DNS, logs and rules must all use the translated addresses</span>.</li>
+            <li><strong>Single-service alternative:</strong> If only one service is needed, a <span class="hl-green">private endpoint or a proxy</span> for that service can avoid joining the networks at all.</li>
+          </ul>
+
+          <div class="p-3 rounded-lg bg-indigo-50 dark:bg-slate-800 border border-indigo-200 dark:border-slate-700 text-sm font-medium">
+            📋 <strong>Prevention Rule:</strong> Choose non-overlapping ranges on day one, and keep a written list of every range the organization uses (an <span class="hl-green">IP address management plan</span>).
+          </div>
+        </article>
+      </section>
+
+
+      <!-- ====================================================================
+           PART 5: HOW TO TROUBLESHOOT A NETWORK PROBLEM (Slides 22/42 – 26/42)
+           ==================================================================== -->
+      <section id="part-5" class="space-y-6">
+        <div class="flex items-center gap-3 border-b-2 border-slate-700 dark:border-slate-700 pb-2">
+          <span class="px-3 py-1 rounded-md bg-slate-700 text-white font-display font-bold text-sm">PART 5</span>
+          <h2 class="font-display text-xl sm:text-2xl font-bold text-slate-900 dark:text-white">
+            How to Troubleshoot a Network Problem
+          </h2>
+          <span class="ml-auto text-xs font-mono text-slate-500">Slides 22/42 – 26/42</span>
+        </div>
+
+        <!-- Slide 22/42 -->
+        <article class="study-card p-6">
+          <div class="flex items-center justify-between mb-3">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              The 6-Step Troubleshooting Method
+            </h3>
+            <span class="slide-badge">Slide 22/42</span>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 mb-4 text-sm">
+            <div class="p-3 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700">
+              <span class="font-mono font-bold text-indigo-600 dark:text-indigo-400">Step 1:</span> <strong>Identify the problem:</strong> who, what, since when, what changed?
+            </div>
+            <div class="p-3 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700">
+              <span class="font-mono font-bold text-indigo-600 dark:text-indigo-400">Step 2:</span> <strong>Decide the probable cause:</strong> start with the obvious.
+            </div>
+            <div class="p-3 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700">
+              <span class="font-mono font-bold text-indigo-600 dark:text-indigo-400">Step 3:</span> <strong>Test that idea.</strong>
+            </div>
+            <div class="p-3 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700">
+              <span class="font-mono font-bold text-indigo-600 dark:text-indigo-400">Step 4:</span> <strong>Plan the repair</strong>, with a way to roll it back, and carry it out.
+            </div>
+            <div class="p-3 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700">
+              <span class="font-mono font-bold text-indigo-600 dark:text-indigo-400">Step 5:</span> <strong>Check that everything works</strong>, and prevent a repeat.
+            </div>
+            <div class="p-3 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700">
+              <span class="font-mono font-bold text-indigo-600 dark:text-indigo-400">Step 6:</span> <strong>Write down</strong> what you found and what you did.
+            </div>
+          </div>
+
+          <div class="p-3.5 rounded-lg bg-amber-50 dark:bg-amber-950/30 border border-amber-300 dark:border-amber-800 text-sm">
+            <strong>What is different for networks:</strong> <span class="hl-yellow">The problem is often between two machines, not on either one.</span> So Step 3 means testing each part of the path in turn.
+          </div>
+        </article>
+
+        <!-- Slide 23/42 -->
+        <article class="study-card p-6">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              Step 1: State the Problem Exactly
+            </h3>
+            <span class="slide-badge">Slide 23/42</span>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <div class="p-4 rounded-lg bg-rose-50/70 dark:bg-rose-950/20 border border-rose-200 dark:border-rose-800">
+              <div class="font-display font-bold text-rose-800 dark:text-rose-300 mb-1">❌ Weak report</div>
+              <p class="font-mono text-sm mb-1">"The cloud is down."</p>
+              <p class="text-xs text-slate-600 dark:text-slate-400">No source, no destination, no port, no time. Nothing to test.</p>
+            </div>
+
+            <div class="p-4 rounded-lg bg-emerald-50/70 dark:bg-emerald-950/20 border border-emerald-200 dark:border-emerald-800">
+              <div class="font-display font-bold text-emerald-800 dark:text-emerald-300 mb-1">✅ Useful report</div>
+              <p class="text-sm">
+                From the office application <span class="hl-code">10.0.8.10</span>, TCP connections to <span class="hl-code">db.internal.example.com:5432</span> fail since <span class="hl-code">09:00</span>. Cloud applications still connect. Last night's changes touched DNS and the database firewall.
+              </p>
+            </div>
+          </div>
+
+          <div class="overflow-x-auto rounded-lg border border-slate-300 dark:border-slate-700 mb-3">
+            <table class="w-full text-left text-xs sm:text-sm font-mono">
+              <thead class="bg-slate-100 dark:bg-slate-800 font-sans">
+                <tr>
+                  <th class="py-2 px-3">Source</th>
+                  <th class="py-2 px-3">Destination</th>
+                  <th class="py-2 px-3">Protocol</th>
+                  <th class="py-2 px-3">Port</th>
+                  <th class="py-2 px-3">Since</th>
+                  <th class="py-2 px-3">Scope</th>
+                  <th class="py-2 px-3">Recent changes</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="divide-x divide-slate-200 dark:divide-slate-800">
+                  <td class="py-2 px-3">10.0.8.10</td>
+                  <td class="py-2 px-3">db.internal.example.com</td>
+                  <td class="py-2 px-3">TCP</td>
+                  <td class="py-2 px-3">5432</td>
+                  <td class="py-2 px-3">09:00</td>
+                  <td class="py-2 px-3 font-sans">office only</td>
+                  <td class="py-2 px-3 font-sans">DNS, firewall</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p class="text-sm font-semibold">
+            🎯 <span class="hl-yellow">Test from the affected machine. A test from another machine may give a different answer.</span>
+          </p>
+        </article>
+
+        <!-- Slide 24/42 -->
+        <article class="study-card p-6">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              Check in Order: From Name to Program
+            </h3>
+            <span class="slide-badge">Slide 24/42</span>
+          </div>
+
+          <div class="overflow-x-auto rounded-lg border border-slate-300 dark:border-slate-700 mb-4">
+            <table class="w-full text-left text-xs sm:text-sm">
+              <thead class="bg-slate-100 dark:bg-slate-800 font-display">
+                <tr>
+                  <th class="py-2.5 px-3">#</th>
+                  <th class="py-2.5 px-4">Check</th>
+                  <th class="py-2.5 px-4">Question</th>
+                  <th class="py-2.5 px-4">Typical test</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-200 dark:divide-slate-800">
+                <tr>
+                  <td class="py-2.5 px-3 font-mono font-bold">1</td>
+                  <td class="py-2.5 px-4 font-semibold">Name</td>
+                  <td class="py-2.5 px-4">Does the name give the right address, as seen from the client?</td>
+                  <td class="py-2.5 px-4"><span class="hl-code">dig</span>, <span class="hl-code">nslookup</span></td>
+                </tr>
+                <tr>
+                  <td class="py-2.5 px-3 font-mono font-bold">2</td>
+                  <td class="py-2.5 px-4 font-semibold">Route there</td>
+                  <td class="py-2.5 px-4">Does the client side have a route to the server's range?</td>
+                  <td class="py-2.5 px-4">Route tables</td>
+                </tr>
+                <tr class="bg-amber-50/60 dark:bg-amber-950/20">
+                  <td class="py-2.5 px-3 font-mono font-bold">3</td>
+                  <td class="py-2.5 px-4 font-semibold">Route back</td>
+                  <td class="py-2.5 px-4">Does the server side have a route back to the client's range?</td>
+                  <td class="py-2.5 px-4">Cloud route table</td>
+                </tr>
+                <tr>
+                  <td class="py-2.5 px-3 font-mono font-bold">4</td>
+                  <td class="py-2.5 px-4 font-semibold">Firewalls</td>
+                  <td class="py-2.5 px-4">Do all filters on the path allow it, both ways?</td>
+                  <td class="py-2.5 px-4">Rules, flow logs</td>
+                </tr>
+                <tr>
+                  <td class="py-2.5 px-3 font-mono font-bold">5</td>
+                  <td class="py-2.5 px-4 font-semibold">Program</td>
+                  <td class="py-2.5 px-4">Is the server listening on that address and port, and does it accept the request?</td>
+                  <td class="py-2.5 px-4"><span class="hl-code">nc</span>, <span class="hl-code">ss</span>, the real client</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <ul class="space-y-2 text-sm sm:text-base list-disc list-inside">
+            <li>This is the default order; a later step can be tested directly, for example <span class="hl-yellow">by IP address when DNS fails</span>.</li>
+            <li><span class="hl-yellow">Change one thing at a time and test again after each change.</span></li>
+            <li><span class="hl-red">Step 3 (Route back) is the one most often forgotten: the request arrives, the reply is lost, and it looks like a firewall problem.</span></li>
+          </ul>
+        </article>
+
+        <!-- Slide 25/42 -->
+        <article class="study-card p-6">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              Stateful and Stateless Filters
+            </h3>
+            <span class="slide-badge">Slide 25/42</span>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <div class="p-4 rounded-lg bg-emerald-50/70 dark:bg-emerald-950/20 border border-emerald-300 dark:border-emerald-800">
+              <div class="font-display font-bold text-emerald-900 dark:text-emerald-300 mb-1">
+                Stateful filter (<span class="hl-green">AWS: security group</span>)
+              </div>
+              <p class="text-sm">
+                <span class="hl-yellow">Remembers each allowed connection and lets its replies back automatically.</span> A rule for the request is enough.
+              </p>
+            </div>
+
+            <div class="p-4 rounded-lg bg-amber-50/70 dark:bg-amber-950/20 border border-amber-300 dark:border-amber-800">
+              <div class="font-display font-bold text-amber-900 dark:text-amber-300 mb-1">
+                Stateless filter (<span class="hl-green">AWS: network ACL</span>)
+              </div>
+              <p class="text-sm">
+                <span class="hl-yellow">Checks every packet on its own, in each direction.</span> The request and the reply each need a rule.
+              </p>
+            </div>
+          </div>
+
+          <div class="p-4 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-sm space-y-2">
+            <div>
+              <strong>The reply in our example:</strong> The database replies to the client's <span class="hl-green">ephemeral port</span>, not to <span class="hl-code">5432</span>. A stateless filter on the database subnet must allow outbound traffic to <span class="hl-code">10.0.8.0/24</span> on the ephemeral range, commonly <span class="hl-code">1024–65535</span>.
+            </div>
+            <div>
+              ⚠️ <strong>Exam Trap:</strong> <span class="hl-red">A stateful filter is not open in both directions: a connection started from the other side still needs its own rule.</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- Slide 26/42 -->
+        <article class="study-card p-6">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              What Each Result Tells You (Connection Handshake & Error Clues)
+            </h3>
+            <span class="slide-badge">Slide 26/42</span>
+          </div>
+
+          <!-- Visual Sequence Diagram from Slide 26/42 -->
+          <div class="p-4 sm:p-5 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 mb-4 font-mono text-xs">
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-4 items-center">
+              <!-- Handshake Column -->
+              <div class="md:col-span-7 space-y-2.5 bg-white dark:bg-slate-800 p-4 rounded-lg border border-slate-300 dark:border-slate-700">
+                <div class="flex justify-between font-bold text-sm text-indigo-600 dark:text-indigo-400 border-b border-slate-200 dark:border-slate-700 pb-1.5">
+                  <span>Client</span>
+                  <span>Server</span>
+                </div>
+                <div class="flex items-center justify-between">
+                  <span>SYN: may I connect?</span>
+                  <span class="text-blue-600 dark:text-blue-400 font-bold">───────────►</span>
+                </div>
+                <div class="flex items-center justify-between">
+                  <span class="text-emerald-600 dark:text-emerald-400 font-bold">◄───────────</span>
+                  <span>SYN-ACK: yes</span>
+                </div>
+                <div class="flex items-center justify-between">
+                  <span>ACK: connected</span>
+                  <span class="text-blue-600 dark:text-blue-400 font-bold">───────────►</span>
+                </div>
+                <div class="flex items-center justify-between pt-1 border-t border-dashed border-slate-300 dark:border-slate-700">
+                  <span class="text-purple-600 dark:text-purple-400 font-bold">◄──────────►</span>
+                  <span>TLS negotiation (if used)</span>
+                </div>
+                <div class="flex items-center justify-between pt-1 border-t border-dashed border-slate-300 dark:border-slate-700">
+                  <span class="text-amber-600 dark:text-amber-400 font-bold">◄──────────►</span>
+                  <span>application answer (login, query)</span>
+                </div>
+              </div>
+
+              <!-- Failure Outcomes Column -->
+              <div class="md:col-span-5 space-y-2">
+                <div class="p-2.5 rounded bg-rose-50 dark:bg-rose-950/40 border border-rose-300 dark:border-rose-800">
+                  No answer at all ➔ <span class="hl-red">timeout</span>
+                </div>
+                <div class="p-2.5 rounded bg-amber-50 dark:bg-amber-950/40 border border-amber-300 dark:border-amber-800">
+                  A reset instead ➔ <span class="hl-yellow">connection refused</span>
+                </div>
+                <div class="p-2.5 rounded bg-purple-50 dark:bg-purple-950/40 border border-purple-300 dark:border-purple-800">
+                  Name or trust check fails ➔ <span class="hl-red">certificate error</span>
+                </div>
+                <div class="p-2.5 rounded bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-300 dark:border-emerald-800">
+                  Request rejected ➔ <span class="hl-green">login or application error</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <ul class="space-y-2 text-sm sm:text-base list-disc list-inside">
+            <li><span class="hl-red">Name not found</span>: DNS problem, as seen from this client (<strong>check 1</strong>).</li>
+            <li><span class="hl-red">Timeout</span>: A route or filter dropped the request or the reply, or the program never answered (<strong>checks 2–5</strong>).</li>
+            <li><span class="hl-yellow">Refused</span>: Some device answered; often nothing listens on the port, or a filter rejects (<strong>check 5, then 4</strong>).</li>
+            <li><span class="hl-green">Login error</span>: <span class="hl-yellow">The network path works</span>; check credentials.</li>
+          </ul>
+        </article>
+      </section>
+
+
+      <!-- ====================================================================
+           PART 6: THE TOOLS (Slides 27/42 – 31/42)
+           ==================================================================== -->
+      <section id="part-6" class="space-y-6">
+        <div class="flex items-center gap-3 border-b-2 border-slate-700 dark:border-slate-700 pb-2">
+          <span class="px-3 py-1 rounded-md bg-slate-700 text-white font-display font-bold text-sm">PART 6</span>
+          <h2 class="font-display text-xl sm:text-2xl font-bold text-slate-900 dark:text-white">
+            The Tools (CLI & Cloud Provider Tools)
+          </h2>
+          <span class="ml-auto text-xs font-mono text-slate-500">Slides 27/42 – 31/42</span>
+        </div>
+
+        <!-- Slide 27/42 -->
+        <article class="study-card p-6">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              Command-Line Tools Across Operating Systems
+            </h3>
+            <span class="slide-badge">Slide 27/42</span>
+          </div>
+
+          <div class="overflow-x-auto rounded-lg border border-slate-300 dark:border-slate-700 mb-4">
+            <table class="w-full text-left text-xs sm:text-sm">
+              <thead class="bg-slate-100 dark:bg-slate-800 font-display">
+                <tr>
+                  <th class="py-2.5 px-3">Linux</th>
+                  <th class="py-2.5 px-3">macOS</th>
+                  <th class="py-2.5 px-3">Windows (PowerShell)</th>
+                  <th class="py-2.5 px-3">Answers the question</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-200 dark:divide-slate-800 font-mono text-xs">
+                <tr>
+                  <td class="py-2.5 px-3">ip addr<br/>ip route get IP</td>
+                  <td class="py-2.5 px-3">ifconfig<br/>route -n get IP</td>
+                  <td class="py-2.5 px-3">ipconfig<br/>Find-NetRoute -RemoteIPAddress IP</td>
+                  <td class="py-2.5 px-3 font-sans">My own address?<br/>Where will this traffic go?</td>
+                </tr>
+                <tr>
+                  <td class="py-2.5 px-3">dig, nslookup</td>
+                  <td class="py-2.5 px-3">dig, nslookup</td>
+                  <td class="py-2.5 px-3">Resolve-DnsName, nslookup</td>
+                  <td class="py-2.5 px-3 font-sans">What address does this name give? (<strong>Check 1</strong>)</td>
+                </tr>
+                <tr>
+                  <td class="py-2.5 px-3">ping</td>
+                  <td class="py-2.5 px-3">ping</td>
+                  <td class="py-2.5 px-3">ping</td>
+                  <td class="py-2.5 px-3 font-sans">Does it answer ICMP at all?</td>
+                </tr>
+                <tr>
+                  <td class="py-2.5 px-3">traceroute</td>
+                  <td class="py-2.5 px-3">traceroute</td>
+                  <td class="py-2.5 px-3">tracert</td>
+                  <td class="py-2.5 px-3 font-sans">Which routers answer on the way?</td>
+                </tr>
+                <tr class="bg-amber-50/50 dark:bg-amber-950/20">
+                  <td class="py-2.5 px-3">nc -vz IP 5432</td>
+                  <td class="py-2.5 px-3">nc -vz IP 5432</td>
+                  <td class="py-2.5 px-3">Test-NetConnection host -Port 5432</td>
+                  <td class="py-2.5 px-3 font-sans">Can a TCP connection be set up? (<strong>Checks 2–5</strong>)</td>
+                </tr>
+                <tr>
+                  <td class="py-2.5 px-3">curl -v URL</td>
+                  <td class="py-2.5 px-3">curl -v URL</td>
+                  <td class="py-2.5 px-3">curl.exe -v URL</td>
+                  <td class="py-2.5 px-3 font-sans">Does the web service answer, and what?</td>
+                </tr>
+                <tr>
+                  <td class="py-2.5 px-3">ss -tlnp</td>
+                  <td class="py-2.5 px-3">lsof -nP -iTCP -sTCP:LISTEN</td>
+                  <td class="py-2.5 px-3">netstat -ano</td>
+                  <td class="py-2.5 px-3 font-sans">What is listening, on which port? (<strong>Check 5</strong>)</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p class="text-sm">
+            <span class="hl-code">dig</span> tests <strong>check 1</strong>. A port test with <span class="hl-code">nc</span> tests <span class="hl-yellow">checks 2–5 together; when it fails, it does not say which one failed</span>. Listening sockets show <strong>check 5</strong> on the server.
+          </p>
+        </article>
+
+        <!-- Slide 28/42 -->
+        <article class="study-card p-6">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              Testing the Port and the Listener
+            </h3>
+            <span class="slide-badge">Slide 28/42</span>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <!-- Terminal 1 -->
+            <div class="rounded-lg overflow-hidden border border-slate-700 bg-slate-900 text-slate-100">
+              <div class="bg-slate-800 px-3 py-1.5 text-xs font-mono text-slate-300 border-b border-slate-700">
+                On the office application host
+              </div>
+              <div class="p-3.5 font-mono text-xs sm:text-sm space-y-1">
+                <div class="text-emerald-400">$ nc -vz -w 3 10.20.4.15 5432</div>
+                <div class="text-slate-200">Connection to 10.20.4.15 5432 port [tcp/postgresql] succeeded!</div>
+              </div>
+              <div class="p-3 bg-slate-800/70 text-xs text-slate-300 border-t border-slate-700">
+                <span class="hl-code">-v</span> verbose, <span class="hl-code">-z</span> test only, <span class="hl-code">-w 3</span> wait at most 3 s. Success means a TCP connection was set up.
+              </div>
+            </div>
+
+            <!-- Terminal 2 -->
+            <div class="rounded-lg overflow-hidden border border-slate-700 bg-slate-900 text-slate-100">
+              <div class="bg-slate-800 px-3 py-1.5 text-xs font-mono text-slate-300 border-b border-slate-700">
+                On the database host
+              </div>
+              <div class="p-3.5 font-mono text-xs sm:text-sm space-y-1">
+                <div class="text-emerald-400">$ ss -tln</div>
+                <div class="text-rose-300">LISTEN  0  128  127.0.0.1:5432  0.0.0.0:*</div>
+              </div>
+              <div class="p-3 bg-slate-800/70 text-xs text-slate-300 border-t border-slate-700">
+                <span class="hl-code">-t</span> TCP, <span class="hl-code">-l</span> listening, <span class="hl-code">-n</span> numeric. This program listens only on <span class="hl-code">127.0.0.1</span>, the <strong>loopback address</strong>: only programs on the same machine can reach it.
+              </div>
+            </div>
+          </div>
+
+          <div class="p-3.5 rounded-lg bg-rose-50 dark:bg-rose-950/30 border border-rose-200 dark:border-rose-800 text-sm">
+            <strong>Critical Exam Rule (Loopback vs Remote Listener):</strong> These are two separate examples. A database listening on <span class="hl-code">0.0.0.0:5432</span> or <span class="hl-code">10.20.4.15:5432</span> accepts remote connections; <span class="hl-red">one on 127.0.0.1:5432 never does, and no cloud firewall rule changes that.</span>
+          </div>
+        </article>
+
+        <!-- Slide 29/42 -->
+        <article class="study-card p-6">
+          <div class="flex items-center justify-between mb-3">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              Ping is Useful, and Often Misleading
+            </h3>
+            <span class="slide-badge">Slide 29/42</span>
+          </div>
+          <p class="text-sm sm:text-base mb-4">
+            Ping sends an <span class="hl-green">ICMP "echo request"</span> and waits for a reply.
+          </p>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <div class="p-4 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700">
+              <div class="font-display font-bold text-emerald-700 dark:text-emerald-400 mb-1">Ping works</div>
+              <ul class="space-y-1 text-sm list-disc list-inside">
+                <li>An ICMP path exists right now, both ways</li>
+                <li><span class="hl-red">Says nothing about port 443 or 5432</span></li>
+              </ul>
+            </div>
+
+            <div class="p-4 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700">
+              <div class="font-display font-bold text-rose-700 dark:text-rose-400 mb-1">Ping fails</div>
+              <ul class="space-y-1 text-sm list-disc list-inside">
+                <li>The machine may be down, <strong>OR</strong></li>
+                <li><span class="hl-yellow">ICMP is simply not allowed; many cloud firewalls block it by default</span></li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="p-3.5 rounded-lg bg-amber-50 dark:bg-amber-950/30 border border-amber-300 dark:border-amber-800 text-sm">
+            <strong>Rule:</strong> <span class="hl-yellow">Test the thing that actually matters: the real port</span>, with <span class="hl-code">nc</span>, <span class="hl-code">Test-NetConnection</span> or <span class="hl-code">curl</span>. <em>"Ping fails but the website works"</em> is normal in the cloud.
+          </div>
+        </article>
+
+        <!-- Slide 30/42 -->
+        <article class="study-card p-6">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              Reading a Traceroute
+            </h3>
+            <span class="slide-badge">Slide 30/42</span>
+          </div>
+
+          <div class="rounded-lg overflow-hidden border border-slate-700 bg-slate-900 text-slate-100 p-4 font-mono text-xs sm:text-sm mb-4 space-y-1">
+            <div class="text-emerald-400">$ traceroute 10.20.4.15</div>
+            <div>1 &nbsp; 10.0.8.1 &nbsp;&nbsp;&nbsp;&nbsp; 0.6 ms &nbsp;&nbsp; <span class="text-slate-400">office router</span></div>
+            <div>2 &nbsp; 10.0.255.1 &nbsp;&nbsp; 1.1 ms &nbsp;&nbsp; <span class="text-slate-400">office VPN device</span></div>
+            <div class="text-amber-400">3 &nbsp; * * *</div>
+            <div class="text-amber-400">4 &nbsp; * * *</div>
+          </div>
+
+          <ul class="space-y-2 text-sm sm:text-base list-disc list-inside">
+            <li>Traceroute sends probes with a growing hop limit; each router that answers appears as one line, with its round-trip time. (Labels in the right-hand column are added for the slide; real output shows only addresses and times.)</li>
+            <li><span class="hl-code">* * *</span> means no reply in time. <span class="hl-red">It is NOT proof that traffic stops there: tunnels and cloud routers often do not answer.</span></li>
+            <li>Here the last responding hop is the office VPN device. <strong>Next:</strong> tunnel status, cloud routes, flow logs, and a test on the real port.</li>
+          </ul>
+        </article>
+
+        <!-- Slide 31/42 -->
+        <article class="study-card p-6">
+          <div class="flex items-center justify-between mb-3">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              The Cloud's Own Tools
+            </h3>
+            <span class="slide-badge">Slide 31/42</span>
+          </div>
+          <p class="text-sm sm:text-base mb-4">
+            Inside the provider's network you cannot plug in a cable. The provider gives you other ways to see:
+          </p>
+
+          <ul class="space-y-3 text-sm sm:text-base list-disc list-inside mb-4">
+            <li>
+              <span class="hl-green">Flow logs</span>: Traffic summaries with source, destination, port, bytes, and <span class="hl-code">ACCEPT</span> or <span class="hl-code">REJECT</span>. <span class="hl-yellow">REJECT narrows the search to the filters; ACCEPT only says the network let it through.</span> <span class="hl-red">They record only from the moment they are switched on.</span>
+            </li>
+            <li>
+              <span class="hl-green">Path analysis tools</span>: Read your routes and rules and report which setting blocks a path. <span class="hl-yellow">A model of the configuration, not a live test.</span>
+            </li>
+            <li>
+              <span class="hl-green">Packet mirroring</span> (where offered): Copies traffic to a machine running a packet analyzer.
+            </li>
+            <li>
+              <span class="hl-green">VPN status and the provider status page</span>: Is a tunnel down, is the problem on the provider's side?
+            </li>
+          </ul>
+
+          <div class="flex flex-wrap items-center gap-2 text-xs sm:text-sm">
+            <span class="font-bold text-slate-600 dark:text-slate-300">Path Analysis Tool Names:</span>
+            <span class="hl-green">AWS Reachability Analyzer</span>
+            <span class="hl-green">Azure Network Watcher</span>
+            <span class="hl-green">Google Cloud Connectivity Tests</span>
+          </div>
+        </article>
+      </section>
+
+
+      <!-- ====================================================================
+           PART 7: A WORKED EXAMPLE (Slides 32/42 – 34/42)
+           ==================================================================== -->
+      <section id="part-7" class="space-y-6">
+        <div class="flex items-center gap-3 border-b-2 border-slate-700 dark:border-slate-700 pb-2">
+          <span class="px-3 py-1 rounded-md bg-slate-700 text-white font-display font-bold text-sm">PART 7</span>
+          <h2 class="font-display text-xl sm:text-2xl font-bold text-slate-900 dark:text-white">
+            A Worked Troubleshooting Example
+          </h2>
+          <span class="ml-auto text-xs font-mono text-slate-500">Slides 32/42 – 34/42</span>
+        </div>
+
+        <!-- Slide 32/42 -->
+        <article class="study-card p-6">
+          <div class="flex items-center justify-between mb-3">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              The Symptom and the First Tests
+            </h3>
+            <span class="slide-badge">Slide 32/42</span>
+          </div>
+
+          <div class="p-3.5 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-sm mb-4">
+            <strong>Symptom:</strong> Last night the database got a new firewall group and its name moved to a new private DNS zone. Since <span class="hl-code">09:00</span> the office application cannot reach <span class="hl-code">db.internal.example.com</span> on <span class="hl-code">TCP 5432</span>. Cloud machines still can.
+          </div>
+
+          <!-- Terminal Output from Slide 32/42 -->
+          <div class="rounded-lg overflow-hidden border border-slate-700 bg-slate-900 text-slate-100 p-4 font-mono text-xs sm:text-sm mb-4 space-y-3">
+            <div>
+              <div class="text-emerald-400">office-app$ nslookup db.internal.example.com</div>
+              <div class="text-rose-400">** server can't find db.internal.example.com: NXDOMAIN</div>
+            </div>
+            <div>
+              <div class="text-emerald-400">cloud-app$ nslookup db.internal.example.com</div>
+              <div class="text-slate-200">Address: 10.20.4.15</div>
+            </div>
+            <div>
+              <div class="text-emerald-400">office-app$ nc -vz -w 3 10.20.4.15 5432 &nbsp;&nbsp;<span class="text-slate-400">(by address, skipping DNS)</span></div>
+              <div class="text-rose-400">nc: connect to 10.20.4.15 port 5432 (tcp) timed out</div>
+            </div>
+          </div>
+
+          <ul class="space-y-2 text-sm sm:text-base list-disc list-inside">
+            <li>The record exists, but the office cannot see it: <span class="hl-red">a name problem on the office side (check 1)</span>.</li>
+            <li>Even by address the connection times out: <span class="hl-red">something on the path drops it (checks 2–4)</span>. Cloud applications use the database, so it is running.</li>
+            <li><span class="hl-yellow">Conclusion: So there are at least two separate problems.</span></li>
+          </ul>
+        </article>
+
+        <!-- Slide 33/42 -->
+        <article class="study-card p-6">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              The Cloud-Side Evidence
+            </h3>
+            <span class="slide-badge">Slide 33/42</span>
+          </div>
+
+          <div class="overflow-x-auto rounded-lg border border-slate-300 dark:border-slate-700 mb-4">
+            <table class="w-full text-left text-xs sm:text-sm">
+              <thead class="bg-slate-100 dark:bg-slate-800 font-display">
+                <tr>
+                  <th class="py-2.5 px-4">Check</th>
+                  <th class="py-2.5 px-4">Finding</th>
+                  <th class="py-2.5 px-4">Conclusion</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-200 dark:divide-slate-800">
+                <tr>
+                  <td class="py-2.5 px-4 font-semibold">Tunnels and routes</td>
+                  <td class="py-2.5 px-4">Both tunnels up; routes present on both sides</td>
+                  <td class="py-2.5 px-4"><span class="hl-green">Checks 2 and 3 pass</span></td>
+                </tr>
+                <tr>
+                  <td class="py-2.5 px-4 font-semibold">Flow logs at the database</td>
+                  <td class="py-2.5 px-4">Office attempts on 5432: <span class="hl-code">REJECT</span>. Cloud attempts: <span class="hl-code">ACCEPT</span></td>
+                  <td class="py-2.5 px-4">A filter drops the office traffic</td>
+                </tr>
+                <tr class="bg-rose-50/50 dark:bg-rose-950/20">
+                  <td class="py-2.5 px-4 font-semibold">Database firewall group</td>
+                  <td class="py-2.5 px-4">Allows 5432 only from the cloud application servers; <span class="hl-code">10.0.8.0/24</span> is missing</td>
+                  <td class="py-2.5 px-4"><span class="hl-red">Cause 1 (check 4)</span></td>
+                </tr>
+                <tr class="bg-rose-50/50 dark:bg-rose-950/20">
+                  <td class="py-2.5 px-4 font-semibold">Office DNS resolver</td>
+                  <td class="py-2.5 px-4">No forwarding for the new zone; queries go to public DNS, which answers <span class="hl-code">NXDOMAIN</span></td>
+                  <td class="py-2.5 px-4"><span class="hl-red">Cause 2 (check 1)</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="p-3.5 rounded-lg bg-amber-50 dark:bg-amber-950/30 border border-amber-300 dark:border-amber-800 text-sm">
+            ⚠️ <strong>Why Multi-Cause Testing Matters:</strong> <span class="hl-yellow">Fixing only the firewall would still leave the application failing on the name, and someone would wrongly decide the firewall change was useless.</span>
+          </div>
+        </article>
+
+        <!-- Slide 34/42 -->
+        <article class="study-card p-6">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              Repair and Check, One Change at a Time
+            </h3>
+            <span class="slide-badge">Slide 34/42</span>
+          </div>
+
+          <ol class="space-y-2.5 text-sm sm:text-base list-decimal list-inside mb-4">
+            <li>
+              <strong>Firewall:</strong> Allow <span class="hl-code">TCP 5432</span> from <span class="hl-code">10.0.8.0/24</span> only. <strong>Check:</strong> <span class="hl-code">nc -vz 10.20.4.15 5432</span> from the office host now succeeds.
+            </li>
+            <li>
+              <strong>DNS:</strong> Forward <span class="hl-code">internal.example.com</span> from the office resolver to the cloud's inbound endpoint. <strong>Check:</strong> <span class="hl-code">nslookup</span> from the office host returns <span class="hl-code">10.20.4.15</span>.
+            </li>
+            <li>
+              <strong>Application:</strong> Connect with the real client, by name, with the expected TLS settings and credentials, and run a read-only query.
+            </li>
+            <li>
+              <strong>Side effects:</strong> Cloud applications still connect; other office subnets are still blocked.
+            </li>
+            <li>
+              <strong>Document:</strong> Write down both causes and both changes; add <em>"test from the office"</em> to the change checklist.
+            </li>
+          </ol>
+
+          <div class="p-3.5 rounded-lg bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-300 dark:border-emerald-800 text-sm">
+            🔒 <strong>Why not allow the whole <span class="hl-code">10.0.0.0/16</span>?</strong> <span class="hl-yellow">Least privilege: only the application subnet (10.0.8.0/24) needs the database.</span>
+          </div>
+        </article>
+      </section>
+
+
+      <!-- ====================================================================
+           PART 8: SLOW, NOT BROKEN (Slides 35/42 – 37/42)
+           ==================================================================== -->
+      <section id="part-8" class="space-y-6">
+        <div class="flex items-center gap-3 border-b-2 border-slate-700 dark:border-slate-700 pb-2">
+          <span class="px-3 py-1 rounded-md bg-slate-700 text-white font-display font-bold text-sm">PART 8</span>
+          <h2 class="font-display text-xl sm:text-2xl font-bold text-slate-900 dark:text-white">
+            Slow, Not Broken
+          </h2>
+          <span class="ml-auto text-xs font-mono text-slate-500">Slides 35/42 – 37/42</span>
+        </div>
+
+        <!-- Slide 35/42 -->
+        <article class="study-card p-6">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              Four Reasons a Working Connection is Slow
+            </h3>
+            <span class="slide-badge">Slide 35/42</span>
+          </div>
+
+          <div class="overflow-x-auto rounded-lg border border-slate-300 dark:border-slate-700 mb-4">
+            <table class="w-full text-left text-xs sm:text-sm">
+              <thead class="bg-slate-100 dark:bg-slate-800 font-display">
+                <tr>
+                  <th class="py-2.5 px-4">Cause</th>
+                  <th class="py-2.5 px-4">What it is</th>
+                  <th class="py-2.5 px-4">How it shows</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-200 dark:divide-slate-800">
+                <tr>
+                  <td class="py-2.5 px-4 font-semibold"><span class="hl-green">Round-trip latency (RTT)</span></td>
+                  <td class="py-2.5 px-4">The time for one round trip; set mostly by <strong>distance</strong></td>
+                  <td class="py-2.5 px-4">Every small request is slow; pages making many requests in sequence are very slow</td>
+                </tr>
+                <tr>
+                  <td class="py-2.5 px-4 font-semibold"><span class="hl-green">Bandwidth</span></td>
+                  <td class="py-2.5 px-4">The line's nominal capacity (<span class="hl-yellow">throughput is what you actually get</span>)</td>
+                  <td class="py-2.5 px-4">Large downloads are slow; the link shows near 100% use</td>
+                </tr>
+                <tr>
+                  <td class="py-2.5 px-4 font-semibold"><span class="hl-green">Packet loss</span></td>
+                  <td class="py-2.5 px-4">Some packets never arrive and must be sent again</td>
+                  <td class="py-2.5 px-4">Slow and uneven transfers</td>
+                </tr>
+                <tr>
+                  <td class="py-2.5 px-4 font-semibold"><span class="hl-green">Packet size (MTU)</span></td>
+                  <td class="py-2.5 px-4">The largest packet the path accepts</td>
+                  <td class="py-2.5 px-4"><span class="hl-red">Small requests work, large transfers hang</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="p-3.5 rounded-lg bg-amber-50 dark:bg-amber-950/30 border border-amber-300 dark:border-amber-800 text-sm">
+            <strong>Example:</strong> <span class="hl-code">20 requests</span> in sequence at <span class="hl-code">80 ms</span> round trip wait <span class="hl-code">20 × 80 ms = 1.6 s</span>, whatever the bandwidth. <span class="hl-yellow">Measure before paying for a faster line: a latency problem is not fixed by more bandwidth.</span>
+          </div>
+        </article>
+
+        <!-- Slide 36/42 -->
+        <article class="study-card p-6">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              Why VPNs Have a Packet-Size (MTU) Problem
+            </h3>
+            <span class="slide-badge">Slide 36/42</span>
+          </div>
+
+          <!-- Visual MTU Bar Diagram from Slide 36/42 -->
+          <div class="p-4 sm:p-5 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 mb-4 space-y-3 font-mono text-xs">
+            <div class="relative">
+              <div class="w-full sm:w-4/5 p-3 rounded bg-blue-100 dark:bg-blue-950 border-2 border-blue-500 text-center font-bold text-blue-900 dark:text-blue-200">
+                Original IP packet: 1500 bytes
+              </div>
+            </div>
+            <div class="flex flex-col sm:flex-row items-stretch">
+              <div class="sm:w-1/5 p-3 rounded-l bg-amber-200 dark:bg-amber-900 border-2 border-amber-600 text-center font-bold text-amber-950 dark:text-amber-200">
+                VPN headers
+              </div>
+              <div class="sm:w-4/5 p-3 rounded-r bg-rose-100 dark:bg-rose-950 border-2 border-rose-500 text-center font-bold text-rose-900 dark:text-rose-200">
+                Original IP packet: 1500 bytes (Exceeds 1500-byte path limit!)
+              </div>
+            </div>
+            <div class="text-right sm:w-4/5 text-rose-600 dark:text-rose-400 font-bold border-r-2 border-dashed border-rose-500 pr-2">
+              ▲ path limit: 1500 bytes
+            </div>
+          </div>
+
+          <ul class="space-y-2 text-sm sm:text-base list-disc list-inside mb-4">
+            <li><span class="hl-code">1500 bytes</span> is the common Ethernet <span class="hl-green">MTU (maximum transmission unit)</span>. A VPN adds its own headers, so a full-size packet no longer fits inside the tunnel.</li>
+            <li><span class="hl-green">Path MTU discovery</span>: The sender is told to use smaller packets by an ICMP message (<span class="hl-code">"fragmentation needed"</span> in IPv4, <span class="hl-code">"packet too big"</span> in IPv6). <span class="hl-red">If a firewall blocks that message, large packets silently vanish.</span></li>
+          </ul>
+
+          <div class="p-4 rounded-lg bg-rose-50 dark:bg-rose-950/30 border border-rose-200 dark:border-rose-800 text-sm space-y-1.5">
+            <div><strong>The Typical Symptom:</strong> <span class="hl-yellow">Login works and small pages load, but uploads and large query results hang.</span></div>
+            <div><strong>3 Fixes (as the provider's VPN guide specifies):</strong> (1) Allow those ICMP messages, (2) Set the tunnel MTU correctly, or (3) Clamp the TCP <span class="hl-green">maximum segment size (MSS)</span>.</div>
+          </div>
+        </article>
+
+        <!-- Slide 37/42 -->
+        <article class="study-card p-6">
+          <div class="flex items-center justify-between mb-3">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              Distance Limits One Connection's Speed
+            </h3>
+            <span class="slide-badge">Slide 37/42</span>
+          </div>
+          <p class="text-sm sm:text-base mb-4">
+            A sender may only have a limited amount of data <span class="hl-green">"in flight"</span> before the receiver confirms it. To keep a line full:
+          </p>
+
+          <div class="p-4 rounded-lg bg-slate-900 text-slate-100 font-mono text-center text-sm sm:text-base mb-4">
+            data in flight = bandwidth × round-trip time
+          </div>
+
+          <div class="p-3.5 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-sm mb-4 space-y-1">
+            <div><strong>Worked Example (1 Gbps to Northern Virginia, 84 ms round trip):</strong></div>
+            <div class="font-mono text-xs sm:text-sm">10^9 × 0.084 ÷ 8 = <span class="hl-yellow">10.5 MB must be in flight at once</span>.</div>
+            <div>With only <span class="hl-code">1 MB</span> in flight, one connection reaches about <span class="hl-red">95 Mbps, under a tenth of the line</span>.</div>
+          </div>
+
+          <div class="p-3.5 rounded-lg bg-indigo-50 dark:bg-slate-800 border border-indigo-200 dark:border-slate-700 text-sm">
+            <strong>What to do:</strong> Measure first; modern systems tune TCP windows automatically. Then consider <span class="hl-yellow">several connections in parallel</span>, or <span class="hl-yellow">place the data in a region closer to where it is used</span>. This is why one file copy over a long distance often uses only a fraction of a 1 Gbps line.
+          </div>
+        </article>
+      </section>
+
+
+      <!-- ====================================================================
+           PART 9: WRAP-UP, EXERCISES, GLOSSARY & TASKS (Slides 38/42 – 42/42)
+           ==================================================================== -->
+      <section id="part-9" class="space-y-6">
+        <div class="flex items-center gap-3 border-b-2 border-slate-700 dark:border-slate-700 pb-2">
+          <span class="px-3 py-1 rounded-md bg-slate-700 text-white font-display font-bold text-sm">PART 9</span>
+          <h2 class="font-display text-xl sm:text-2xl font-bold text-slate-900 dark:text-white">
+            Wrap-Up, Diagnostic Exercises, Master Glossary & Practical Task
+          </h2>
+          <span class="ml-auto text-xs font-mono text-slate-500">Slides 38/42 – 42/42</span>
+        </div>
+
+        <!-- Slide 38/42 -->
+        <article class="study-card p-6 border-l-4 border-l-emerald-500">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              Exercise: Find the Cause (All 5 Cases + Suggested Answers)
+            </h3>
+            <span class="slide-badge">Slide 38/42</span>
+          </div>
+
+          <div class="space-y-3 text-sm">
+            <div class="p-3.5 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700">
+              <div class="font-bold text-slate-900 dark:text-white">1. Networks A–B and B–C are peered. A cannot reach C.</div>
+              <div class="mt-1 text-emerald-800 dark:text-emerald-300">
+                <strong>Suggested Answer:</strong> <span class="hl-yellow">Peering is not transitive</span>; add A–C peering or a hub.
+              </div>
+            </div>
+
+            <div class="p-3.5 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700">
+              <div class="font-bold text-slate-900 dark:text-white">2. The office reaches cloud machines, but cloud machines cannot open a connection to the office printer server.</div>
+              <div class="mt-1 text-emerald-800 dark:text-emerald-300">
+                <strong>Suggested Answer:</strong> <span class="hl-yellow">The office side does not accept connections started from 10.20.0.0/16</span>; check the office firewall log, the route to the printer's subnet, and the printer server's own filter.
+              </div>
+            </div>
+
+            <div class="p-3.5 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700">
+              <div class="font-bold text-slate-900 dark:text-white">3. <span class="hl-code">ping</span> to the web server fails, but the website opens in a browser.</div>
+              <div class="mt-1 text-emerald-800 dark:text-emerald-300">
+                <strong>Suggested Answer:</strong> <span class="hl-yellow">ICMP is blocked, which is common</span>; test the real port instead.
+              </div>
+            </div>
+
+            <div class="p-3.5 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700">
+              <div class="font-bold text-slate-900 dark:text-white">4. Over the VPN, login and small pages work; uploading a report hangs.</div>
+              <div class="mt-1 text-emerald-800 dark:text-emerald-300">
+                <strong>Suggested Answer:</strong> <span class="hl-yellow">Likely packet size (MTU) over the tunnel</span>; confirm with a large ping that may not be fragmented.
+              </div>
+            </div>
+
+            <div class="p-3.5 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700">
+              <div class="font-bold text-slate-900 dark:text-white">5. <span class="hl-code">curl</span> to port 8080 answers "connection refused" at once.</div>
+              <div class="mt-1 text-emerald-800 dark:text-emerald-300">
+                <strong>Suggested Answer:</strong> <span class="hl-yellow">Likely nothing listens on 8080, or a filter rejects</span>; check on the server with <span class="hl-code">ss -tlnp</span>.
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- Slide 39/42 -->
+        <article class="study-card p-6">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              Words from the Connectivity Topic (Master Exam Glossary)
+            </h3>
+            <span class="slide-badge">Slide 39/42</span>
+          </div>
+
+          <div class="overflow-x-auto rounded-lg border border-slate-300 dark:border-slate-700">
+            <table class="w-full text-left text-xs sm:text-sm">
+              <thead class="bg-slate-100 dark:bg-slate-800 font-display">
+                <tr>
+                  <th class="py-2.5 px-4 w-1/3">Term</th>
+                  <th class="py-2.5 px-4">Meaning in one line</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-200 dark:divide-slate-800">
+                <tr>
+                  <td class="py-2 px-4 font-semibold"><span class="hl-green">VPN / tunnel / IPsec</span></td>
+                  <td class="py-2 px-4">An encrypted path through the internet / the protocols most site-to-site VPNs use.</td>
+                </tr>
+                <tr>
+                  <td class="py-2 px-4 font-semibold"><span class="hl-green">Site-to-site / remote-access VPN</span></td>
+                  <td class="py-2 px-4">Joins two networks / joins one person's device.</td>
+                </tr>
+                <tr>
+                  <td class="py-2 px-4 font-semibold"><span class="hl-green">Dedicated connection</span></td>
+                  <td class="py-2 px-4">A private physical link to the provider; not encrypted by default.</td>
+                </tr>
+                <tr>
+                  <td class="py-2 px-4 font-semibold"><span class="hl-green">Peering</span></td>
+                  <td class="py-2 px-4">A private link between two cloud networks; not transitive.</td>
+                </tr>
+                <tr>
+                  <td class="py-2 px-4 font-semibold"><span class="hl-green">Hub (transit gateway)</span></td>
+                  <td class="py-2 px-4">A central router every network connects to once.</td>
+                </tr>
+                <tr>
+                  <td class="py-2 px-4 font-semibold"><span class="hl-green">Conditional forwarding</span></td>
+                  <td class="py-2 px-4">A DNS resolver sends queries for one domain to a chosen resolver.</td>
+                </tr>
+                <tr>
+                  <td class="py-2 px-4 font-semibold"><span class="hl-green">Interface / gateway endpoint</span></td>
+                  <td class="py-2 px-4">Private access to a provider service: an address in your subnet / a route-table entry (AWS).</td>
+                </tr>
+                <tr>
+                  <td class="py-2 px-4 font-semibold"><span class="hl-green">Static / dynamic route, BGP</span></td>
+                  <td class="py-2 px-4">Written by hand / learned from other routers; BGP exchanges the routes.</td>
+                </tr>
+                <tr>
+                  <td class="py-2 px-4 font-semibold"><span class="hl-green">Ephemeral port</span></td>
+                  <td class="py-2 px-4">The temporary client port that replies are sent to.</td>
+                </tr>
+                <tr>
+                  <td class="py-2 px-4 font-semibold"><span class="hl-green">Stateful / stateless filter</span></td>
+                  <td class="py-2 px-4">Replies allowed automatically / every packet checked on its own.</td>
+                </tr>
+                <tr>
+                  <td class="py-2 px-4 font-semibold"><span class="hl-green">Timeout / refused</span></td>
+                  <td class="py-2 px-4">No answer came back / some device answered with a reset.</td>
+                </tr>
+                <tr>
+                  <td class="py-2 px-4 font-semibold"><span class="hl-green">Flow logs</span></td>
+                  <td class="py-2 px-4">Summaries of accepted and rejected traffic; not every packet.</td>
+                </tr>
+                <tr>
+                  <td class="py-2 px-4 font-semibold"><span class="hl-green">RTT / bandwidth / throughput</span></td>
+                  <td class="py-2 px-4">Time for one round trip / nominal capacity / what you actually get.</td>
+                </tr>
+                <tr>
+                  <td class="py-2 px-4 font-semibold"><span class="hl-green">MTU</span></td>
+                  <td class="py-2 px-4">The largest packet a path accepts; smaller inside a VPN.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </article>
+
+        <!-- Slide 40/42 -->
+        <article class="study-card p-6 border-2 border-indigo-500">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              8-Point Lecture Summary
+            </h3>
+            <span class="slide-badge">Slide 40/42</span>
+          </div>
+
+          <ol class="space-y-2.5 text-sm sm:text-base list-decimal list-inside">
+            <li>A connection needs a <span class="hl-yellow">name, a route there, a route back, firewall rules and a listening program, all at once</span>.</li>
+            <li><strong>VPN:</strong> quick and cheap, over the internet, encrypted. <strong>Dedicated link:</strong> more predictable, high capacity, slow to set up, <span class="hl-red">not encrypted by default</span>.</li>
+            <li>Every connection needs <span class="hl-yellow">routes on both sides and non-overlapping ranges</span>.</li>
+            <li><span class="hl-red">Peering is not transitive</span>; many networks call for a hub. Private names need DNS forwarding; provider services can use endpoints.</li>
+            <li><span class="hl-yellow">Redundancy works only when the paths fail separately.</span></li>
+            <li>Troubleshoot <span class="hl-yellow">in order, from the affected machine, one change at a time</span>.</li>
+            <li><span class="hl-green">Timeout</span> and <span class="hl-green">refused</span> are different clues; <span class="hl-red">a failed ping proves little</span>.</li>
+            <li><strong>Slow is not broken:</strong> tell latency, bandwidth, loss and packet size apart before paying for more.</li>
+          </ol>
+        </article>
+
+        <!-- Slide 41/42 -->
+        <article class="study-card p-6">
+          <div class="flex items-center justify-between mb-3">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              What to Do Next (Reading & Practical Task with Formula Application)
+            </h3>
+            <span class="slide-badge">Slide 41/42</span>
+          </div>
+
+          <div class="mb-4 text-sm">
+            <strong>Reading:</strong> Module 5 in full, including the self-check questions. Look through the next topic, <em>Securing Cloud Resources</em>.
+          </div>
+
+          <div class="space-y-3 text-sm">
+            <div class="p-3.5 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700">
+              <strong>Task 1:</strong> Connect your shop's cloud network (<span class="hl-code">10.20.0.0/16</span>) to an office using <span class="hl-code">10.0.0.0/16</span>; draw the connection; write the new route lines on both sides (Office: <span class="hl-code">10.20.0.0/16 ➔ VPN tunnel</span>; Cloud: <span class="hl-code">10.0.0.0/16 ➔ VPN gateway</span>), the database rule (narrowest source: <span class="hl-code">TCP 5432</span> from <span class="hl-code">10.0.8.0/24</span>), and how the office will resolve the database's name (conditional forwarding for <span class="hl-code">internal.example.com</span> to <span class="hl-code">10.20.2.53</span> on UDP/TCP port 53).
+            </div>
+
+            <div class="p-3.5 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700">
+              <strong>Task 2:</strong> The office sends <span class="hl-code">500 GB</span> (<span class="hl-code">10^9 bytes per GB</span>) a night in a <span class="hl-code">6-hour</span> window (<span class="hl-code">21,600 s</span>); assume <span class="hl-code">70%</span> effective throughput. Choose a VPN or a dedicated link: show the calculation and one other factor.
+              <div class="mt-2 p-2.5 rounded bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 font-mono text-xs">
+                Applying Slide 13 formula: minimum line rate = (500 × 10^9 × 8) ÷ (0.7 × 21,600) ≈ <span class="hl-yellow">264.55 Mbps</span> (Plus check per-tunnel capacity limits, growth, retry time, or encryption).
+              </div>
+            </div>
+
+            <div class="p-3.5 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700">
+              <strong>Task 3:</strong> Write a five-step checklist for "the office cannot reach the database": the tool at each step and the result that would pass (1. Name: <span class="hl-code">dig/nslookup</span> returns <span class="hl-code">10.20.4.15</span>; 2. Route there: office route table has <span class="hl-code">10.20.0.0/16</span>; 3. Route back: cloud route table has <span class="hl-code">10.0.0.0/16</span>; 4. Firewalls: rules/flow logs show <span class="hl-code">ACCEPT</span>; 5. Program: <span class="hl-code">nc -vz</span> / <span class="hl-code">ss -tln</span> shows listening on <span class="hl-code">10.20.4.15:5432</span>).
+            </div>
+          </div>
+        </article>
+
+        <!-- Slide 42/42 -->
+        <article class="study-card p-6">
+          <div class="flex items-center justify-between mb-3">
+            <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">
+              References
+            </h3>
+            <span class="slide-badge">Slide 42/42</span>
+          </div>
+          <ul class="space-y-1.5 text-xs sm:text-sm text-slate-600 dark:text-slate-300 list-disc list-inside">
+            <li>West, J. (2024). <em>CompTIA Cloud+ Guide to Cloud Computing</em>, 2nd ed. Cengage. ISBN 9780357883457, Module 5.</li>
+            <li>Kent, S., Seo, K. (2005). <em>Security Architecture for the Internet Protocol</em>. RFC 4301.</li>
+            <li>Rekhter, Y., Li, T., Hares, S. (2006). <em>A Border Gateway Protocol 4 (BGP-4)</em>. RFC 4271.</li>
+            <li>Mogul, J., Deering, S. (1990). <em>Path MTU Discovery</em>. RFC 1191; McCann, J. et al. (2017). <em>Path MTU Discovery for IP version 6</em>. RFC 8201.</li>
+            <li>AWS. <em>Site-to-Site VPN User Guide; PrivateLink Guide; VPC User Guide: "VPC Flow Logs"</em>. docs.aws.amazon.com</li>
+            <li>Microsoft. <em>VPN Gateway, ExpressRoute, Network Watcher documentation</em>. learn.microsoft.com</li>
+            <li>Google Cloud. <em>Cloud VPN, Connectivity Tests</em>. cloud.google.com/docs</li>
+            <li>CompTIA. <em>Cloud+ (CV0-004) Exam Objectives</em>.</li>
+          </ul>
+        </article>
+
+        <!-- HIGHLIGHT KEY & EXAM TAXONOMY -->
+        <article class="study-card p-6 border-t-2 border-slate-300 dark:border-slate-700">
+          <div class="flex items-center justify-between mb-3">
+            <h3 class="font-display font-bold text-base text-slate-900 dark:text-white flex items-center gap-2">
+              <span>🎨</span>
+              <span>Highlight Key & Study Legend</span>
+            </h3>
+            <span class="font-mono text-[11px] text-slate-400">Exam Marker System</span>
+          </div>
+          <p class="text-xs text-slate-500 dark:text-slate-400 mb-3">
+            Color-coded highlighters used across this study guide:
+          </p>
+          <div class="flex flex-wrap items-center gap-2 text-xs">
+            <span class="hl-yellow">Core Rule</span>
+            <span class="hl-green">Key Term / Service</span>
+            <span class="hl-red">Exam Trap / Warning</span>
+            <span class="hl-code">CLI / IP / Port</span>
+          </div>
+        </article>
+
+      </section>
+
+    </main>
+  </div>
+
+</body>
+</html>
