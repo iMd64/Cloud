@@ -80,9 +80,23 @@
     }
   ];
 
+  // Midterm Master Revision Configuration
+  const MIDTERM_OBJ = {
+    num: 'MIDTERM',
+    badge: 'MIDTERM',
+    title: 'Master Midterm Exam Revision',
+    slides: '122+ Slides',
+    sub: 'Comprehensive Curated Exam Guide · M1–M7',
+    file: 'sen421_midterm_exam_master_revision.html'
+  };
+
   // Helper: detect current active module
   function getCurrentModuleIndex() {
     const path = window.location.pathname.toLowerCase();
+    // Midterm Master Revision Guide Detection
+    if (path.includes('midterm') || path.includes('sen421_midterm_exam_master_revision.html')) {
+      return 99;
+    }
     // Portal / Index Detection
     if (path.endsWith('/index.html') || path.endsWith('/') || path.includes('index') || path.endsWith('/ca')) {
       return -1;
@@ -104,10 +118,13 @@
   }
 
   const activeModuleIdx = getCurrentModuleIndex();
+  const isMidterm = activeModuleIdx === 99;
   const isPortal = activeModuleIdx === -1;
-  const currentModuleObj = isPortal
-    ? { badge: 'PORTAL', slides: '241 Slides', title: 'Master Study Portal', file: 'index.html', sub: 'Course Syllabus & Hub' }
-    : CA_MODULES[activeModuleIdx];
+  const currentModuleObj = isMidterm
+    ? MIDTERM_OBJ
+    : (isPortal
+        ? { badge: 'PORTAL', slides: '241 Slides', title: 'Master Study Portal', file: 'index.html', sub: 'Course Syllabus & Hub' }
+        : CA_MODULES[activeModuleIdx]);
 
   // State: is desktop sidebar collapsed
   const isDesktop = () => window.innerWidth >= 1024;
@@ -404,6 +421,22 @@
             <div class="text-[10px] text-slate-400 truncate">Course Syllabus &amp; Overview</div>
           </a>
 
+          <!-- Master Midterm Revision Hub Link -->
+          <a href="${MIDTERM_OBJ.file}" class="block p-2 rounded-lg border transition ${
+            isMidterm
+              ? 'bg-amber-100/90 dark:bg-amber-950/60 border-amber-400 dark:border-amber-600 text-slate-900 dark:text-white font-semibold shadow-sm'
+              : 'bg-amber-50/50 dark:bg-amber-950/20 border-amber-200/80 dark:border-amber-900/60 hover:bg-amber-100/70 dark:hover:bg-amber-900/40 text-slate-700 dark:text-slate-200'
+          }">
+            <div class="flex items-center justify-between gap-1 mb-0.5">
+              <span class="font-mono text-[11px] px-1.5 py-0.2 rounded ${
+                isMidterm ? 'bg-amber-600 text-white font-bold' : 'bg-amber-200/80 dark:bg-amber-900/70 text-amber-900 dark:text-amber-200 font-semibold'
+              }">REVISION</span>
+              <span class="font-mono text-[10px] text-amber-700 dark:text-amber-400 font-semibold">122+ Slides</span>
+            </div>
+            <div class="text-xs truncate font-display font-bold">🎯 Master Midterm Revision</div>
+            <div class="text-[10px] text-slate-500 dark:text-slate-400 truncate">Modules 1–7 Curated Exam Synthesis</div>
+          </a>
+
           ${CA_MODULES.map((m, idx) => {
             const isActive = idx === activeModuleIdx;
             return `
@@ -625,10 +658,16 @@
       let title = '';
       const h2 = sec.querySelector('h2');
       const h3 = sec.querySelector('h3');
-      const partBadge = sec.querySelector('span[class*="PART"]');
+      const partBadge = sec.querySelector('span[class*="PART"]') || Array.from(sec.querySelectorAll('span')).find(s => s.textContent.trim().toUpperCase().startsWith('PART '));
 
       if (id === 'overview' || id === 'part-0') {
-        title = '0. Course Title & Plan';
+        title = isMidterm ? '0. Exam Overview & Blueprint' : (isPortal ? '0. Master Study Portal' : '0. Course Title & Plan');
+      } else if (id === 'cheat-sheet') {
+        title = '7. High-Yield Cheat Sheet';
+      } else if (id === 'references') {
+        title = '8. References & Standards';
+      } else if (id === 'highlight-key') {
+        title = '9. Highlight Key & Legend';
       } else if (h2) {
         title = h2.textContent.trim().replace(/^SEN421[^:]*:\s*/i, '');
         if (partBadge && !title.toUpperCase().startsWith('PART')) {
