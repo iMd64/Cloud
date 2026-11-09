@@ -1,0 +1,1811 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SEN421 Midterm Exam Master Revision — 42 Scenario Questions &amp; Answer Key</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Navigation & Outline Engine -->
+  <script src="nav.js" defer></script>
+  
+  <!-- Google Fonts: Inter, JetBrains Mono, Space Grotesk -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+
+  <!-- KaTeX for crisp math rendering -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" crossorigin="anonymous">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" crossorigin="anonymous"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" crossorigin="anonymous" onload="renderMathInElement(document.body, {delimiters: [{left: '$$', right: '$$', display: true}, {left: '\\[', right: '\\]', display: true}, {left: '$', right: '$', display: false}, {left: '\\(', right: '\\)', display: false}]});"></script>
+
+  <!-- Theme Preference Script (Instant Anti-FOUC Execution) -->
+  <script>
+    (function() {
+      try {
+        const theme = localStorage.getItem('ca_theme');
+        if (theme === 'dark' || (!theme && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+          document.documentElement.classList.add('dark');
+        } else {
+          document.documentElement.classList.remove('dark');
+        }
+      } catch (_) {}
+    })();
+  </script>
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            display: ['Space Grotesk', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Warm Study Notebook Grid Background */
+    :root {
+      --bg-grid: rgba(148, 163, 184, 0.14);
+    }
+    .dark {
+      --bg-grid: rgba(51, 65, 85, 0.22);
+    }
+    body {
+      background-image: 
+        linear-gradient(to right, var(--bg-grid) 1px, transparent 1px),
+        linear-gradient(to bottom, var(--bg-grid) 1px, transparent 1px);
+      background-size: 28px 28px;
+    }
+
+    /* Realistic Marker Highlighter Styles */
+    .hl-yellow {
+      background: linear-gradient(104deg, rgba(253, 224, 71, 0) 0.9%, rgba(253, 224, 71, 0.85) 2.4%, rgba(253, 224, 71, 0.58) 5.8%, rgba(253, 224, 71, 0.78) 93%, rgba(253, 224, 71, 0.6) 96%, rgba(253, 224, 71, 0) 98%);
+      padding: 0.08rem 0.35rem;
+      border-radius: 0.25rem;
+      color: #0f172a;
+      font-weight: 600;
+      box-decoration-break: clone;
+      -webkit-box-decoration-break: clone;
+    }
+    .dark .hl-yellow {
+      background: rgba(234, 179, 8, 0.28);
+      border-bottom: 2px solid rgba(250, 204, 21, 0.8);
+      color: #fef08a;
+    }
+
+    .hl-green {
+      background: linear-gradient(104deg, rgba(110, 231, 183, 0) 0.9%, rgba(110, 231, 183, 0.8) 2.4%, rgba(110, 231, 183, 0.55) 93%, rgba(110, 231, 183, 0) 98%);
+      padding: 0.08rem 0.35rem;
+      border-radius: 0.25rem;
+      color: #064e3b;
+      font-weight: 600;
+      box-decoration-break: clone;
+      -webkit-box-decoration-break: clone;
+    }
+    .dark .hl-green {
+      background: rgba(16, 185, 129, 0.25);
+      border-bottom: 2px solid rgba(52, 211, 153, 0.75);
+      color: #a7f3d0;
+    }
+
+    .hl-red, .hl-pink {
+      background: linear-gradient(104deg, rgba(253, 164, 175, 0) 0.9%, rgba(253, 164, 175, 0.8) 2.4%, rgba(253, 164, 175, 0.56) 93%, rgba(253, 164, 175, 0) 98%);
+      padding: 0.08rem 0.35rem;
+      border-radius: 0.25rem;
+      color: #881337;
+      font-weight: 600;
+      box-decoration-break: clone;
+      -webkit-box-decoration-break: clone;
+    }
+    .dark .hl-red, .dark .hl-pink {
+      background: rgba(244, 63, 94, 0.26);
+      border-bottom: 2px solid rgba(251, 113, 133, 0.8);
+      color: #fecdd3;
+    }
+
+    .hl-blue {
+      background: linear-gradient(104deg, rgba(147, 197, 253, 0) 0.9%, rgba(147, 197, 253, 0.8) 2.4%, rgba(147, 197, 253, 0.56) 93%, rgba(147, 197, 253, 0) 98%);
+      padding: 0.08rem 0.35rem;
+      border-radius: 0.25rem;
+      color: #1e3a8a;
+      font-weight: 600;
+      box-decoration-break: clone;
+      -webkit-box-decoration-break: clone;
+    }
+    .dark .hl-blue {
+      background: rgba(59, 130, 246, 0.26);
+      border-bottom: 2px solid rgba(96, 165, 250, 0.8);
+      color: #bfdbfe;
+    }
+
+    .hl-purple {
+      background: linear-gradient(104deg, rgba(216, 180, 254, 0) 0.9%, rgba(216, 180, 254, 0.8) 2.4%, rgba(216, 180, 254, 0.56) 93%, rgba(216, 180, 254, 0) 98%);
+      padding: 0.08rem 0.35rem;
+      border-radius: 0.25rem;
+      color: #581c87;
+      font-weight: 600;
+      box-decoration-break: clone;
+      -webkit-box-decoration-break: clone;
+    }
+    .dark .hl-purple {
+      background: rgba(168, 85, 247, 0.26);
+      border-bottom: 2px solid rgba(192, 132, 252, 0.8);
+      color: #e9d5ff;
+    }
+
+    .hl-code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.86em;
+      background-color: #f1f5f9;
+      color: #0f172a;
+      border: 1px solid #cbd5e1;
+      padding: 0.1rem 0.4rem;
+      border-radius: 0.3rem;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+    .dark .hl-code {
+      background-color: rgba(30, 41, 59, 0.9);
+      color: #e2e8f0;
+      border-color: #475569;
+    }
+
+    /* Slide Reference Badge */
+    .slide-badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      padding: 0.25rem 0.65rem;
+      border-radius: 9999px;
+      background-color: #1e293b;
+      color: #f8fafc;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    }
+    .dark .slide-badge {
+      background-color: #38bdf8;
+      color: #0f172a;
+    }
+
+    /* Study Note Card */
+    .study-card {
+      background-color: #ffffff;
+      border: 1px solid #cbd5e1;
+      border-radius: 0.85rem;
+      box-shadow: 0 4px 12px -2px rgba(15, 23, 42, 0.06);
+    }
+    .dark .study-card {
+      background-color: rgba(15, 23, 42, 0.94);
+      border-color: #334155;
+      box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.4);
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #94a3b8;
+      border-radius: 4px;
+    }
+    .dark ::-webkit-scrollbar-thumb {
+      background: #475569;
+    }
+  </style>
+</head>
+<body class="bg-[#fcfbf7] text-slate-800 dark:bg-slate-950 dark:text-slate-100 antialiased selection:bg-amber-300 selection:text-slate-900">
+
+  <!-- TOP STICKY BAR: COURSE HEADER -->
+  <header class="sticky top-0 z-50 backdrop-blur-md bg-white/95 dark:bg-slate-900/95 border-b border-slate-200 dark:border-slate-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2.5 flex flex-wrap items-center justify-between gap-3">
+      <div class="flex items-center gap-3">
+        <span class="px-2.5 py-1 rounded-md bg-slate-700 text-white font-mono text-xs font-bold tracking-wider">SEN421</span>
+        <div>
+          <h1 class="font-display font-bold text-base sm:text-lg text-slate-900 dark:text-white leading-tight">
+            Midterm Exam Master Revision Study Guide
+          </h1>
+          <p class="text-xs text-slate-500 dark:text-slate-400 hidden sm:block">
+            42 In-Class Scenario Questions (7 per Module) &middot; 1&ndash;3 Word Answer Keys &middot; Modules 1&ndash;7
+          </p>
+        </div>
+      </div>
+
+      <!-- Theme Toggle -->
+      <div class="flex items-center gap-2 text-xs">
+        <button id="themeToggle" onclick="window.toggleCaTheme ? window.toggleCaTheme() : (document.documentElement.classList.toggle('dark'), localStorage.setItem('ca_theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light'))" class="ml-1 px-3 py-1.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 font-medium hover:bg-slate-200 dark:hover:bg-slate-700 transition" title="Switch Paper / Dark Study Mode">
+          🌙 Dark
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN PAGE LAYOUT: SIDEBAR TOC + CONTINUOUS STUDY NOTE STREAM -->
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col lg:flex-row gap-8 items-start">
+
+    <!-- STICKY LEFT INDEX (FALLBACK STATIC DESKTOP ASIDE, AUTO-MANAGED BY NAV.JS) -->
+    <aside class="hidden lg:block w-64 shrink-0 sticky top-28 study-card p-4 text-xs">
+      <div class="font-display font-bold text-base text-slate-900 dark:text-white mb-3 pb-2 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
+        <span>📋 Midterm Index</span>
+        <span class="font-mono text-[11px] text-amber-600 dark:text-amber-400 font-bold">42 Questions</span>
+      </div>
+      <ul class="space-y-1 font-medium text-slate-600 dark:text-slate-300">
+        <li><a href="#overview" class="flex justify-between py-1 px-2 rounded hover:bg-slate-100 dark:hover:bg-slate-800"><span>0. Exam Overview</span><span class="font-mono text-[10px] text-slate-400">Blueprint</span></a></li>
+        <li><a href="#part-1" class="flex justify-between py-1 px-2 rounded hover:bg-slate-100 dark:hover:bg-slate-800"><span>1. Modules 1 &amp; 2</span><span class="font-mono text-[10px] text-slate-400">Q1–Q7</span></a></li>
+        <li><a href="#part-2" class="flex justify-between py-1 px-2 rounded hover:bg-slate-100 dark:hover:bg-slate-800"><span>2. Module 3 (Migration)</span><span class="font-mono text-[10px] text-slate-400">Q8–Q14</span></a></li>
+        <li><a href="#part-3" class="flex justify-between py-1 px-2 rounded hover:bg-slate-100 dark:hover:bg-slate-800"><span>3. Module 4 (Networking)</span><span class="font-mono text-[10px] text-slate-400">Q15–Q21</span></a></li>
+        <li><a href="#part-4" class="flex justify-between py-1 px-2 rounded hover:bg-slate-100 dark:hover:bg-slate-800"><span>4. Module 5 (Connectivity)</span><span class="font-mono text-[10px] text-slate-400">Q22–Q28</span></a></li>
+        <li><a href="#part-5" class="flex justify-between py-1 px-2 rounded hover:bg-slate-100 dark:hover:bg-slate-800"><span>5. Module 6 (Security)</span><span class="font-mono text-[10px] text-slate-400">Q29–Q35</span></a></li>
+        <li><a href="#part-6" class="flex justify-between py-1 px-2 rounded hover:bg-slate-100 dark:hover:bg-slate-800"><span>6. Module 7 (IAM)</span><span class="font-mono text-[10px] text-slate-400">Q36–Q42</span></a></li>
+        <li><a href="#cheat-sheet" class="flex justify-between py-1 px-2 rounded hover:bg-slate-100 dark:hover:bg-slate-800"><span>7. Rapid-Recall Table</span><span class="font-mono text-[10px] text-slate-400">42 Answers</span></a></li>
+        <li><a href="#references" class="flex justify-between py-1 px-2 rounded hover:bg-slate-100 dark:hover:bg-slate-800"><span>8. References</span><span class="font-mono text-[10px] text-slate-400">Standards</span></a></li>
+        <li><a href="#highlight-key" class="flex justify-between py-1 px-2 rounded hover:bg-slate-100 dark:hover:bg-slate-800"><span>9. Highlight Key</span><span class="font-mono text-[10px] text-slate-400">5 Colors</span></a></li>
+      </ul>
+    </aside>
+
+    <!-- MAIN STUDY NOTE STREAM -->
+    <main class="flex-1 min-w-0 space-y-12">
+
+      <!-- SECTION 0: OVERVIEW & EXAM BLUEPRINT -->
+      <section id="overview" class="space-y-6">
+        <div class="study-card p-6 sm:p-8 border-l-4 border-amber-500">
+          <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+            <div class="flex items-center gap-2">
+              <span class="px-2.5 py-1 rounded bg-amber-500 text-slate-950 font-mono text-xs font-bold tracking-wider uppercase">Exam Scenario Bank</span>
+              <span class="px-2.5 py-1 rounded bg-slate-800 text-slate-200 font-mono text-xs font-bold">SEN421 Midterm</span>
+            </div>
+            <span class="font-mono text-xs text-slate-500 dark:text-slate-400">42 Curated Scenario Questions · 7 Per Module</span>
+          </div>
+
+          <h2 class="font-display text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white mb-3">
+            SEN421 Midterm Exam: The 42 Master Scenario Questions &amp; Answer Key
+          </h2>
+          <p class="text-sm sm:text-base text-slate-600 dark:text-slate-300 leading-relaxed mb-4">
+            This master study guide is dedicated exclusively to the <span class="hl-yellow">42 in-class scenario questions, architectural case studies, and diagnostic exercises</span> brought by Dr. Hazm Talab across Modules 1 through 7 (<span class="font-semibold">exactly 7 questions per module</span>).
+          </p>
+          <div class="p-3.5 rounded-lg bg-amber-50/80 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-900/60 text-xs sm:text-sm text-amber-950 dark:text-amber-200 mb-6">
+            <strong>Exam Answering Rule:</strong> The professor emphasizes that answers on the midterm should be <span class="hl-green font-bold">simple and concise — 1 to 3 words is the primary answer</span> (e.g. <em>"Private Cloud"</em>, <em>"Rehost"</em>, <em>"Public Subnet"</em>, <em>"Non-transitive"</em>, <em>"IMDSv2"</em>, <em>"Explicit Deny"</em>). Only a few questions require a short single sentence explanation.
+          </div>
+
+          <!-- Quick Module Jump Grid -->
+          <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 pt-4 border-t border-slate-200 dark:border-slate-800 text-xs text-center font-mono">
+            <a href="#part-1" class="p-2.5 rounded-lg bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-amber-500 transition">
+              <span class="font-bold block text-slate-900 dark:text-white">Part 1</span>
+              <span class="text-[10px] text-slate-500">M1 &amp; 2 (Q1–7)</span>
+            </a>
+            <a href="#part-2" class="p-2.5 rounded-lg bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-amber-500 transition">
+              <span class="font-bold block text-slate-900 dark:text-white">Part 2</span>
+              <span class="text-[10px] text-slate-500">M3 (Q8–14)</span>
+            </a>
+            <a href="#part-3" class="p-2.5 rounded-lg bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-amber-500 transition">
+              <span class="font-bold block text-slate-900 dark:text-white">Part 3</span>
+              <span class="text-[10px] text-slate-500">M4 (Q15–21)</span>
+            </a>
+            <a href="#part-4" class="p-2.5 rounded-lg bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-amber-500 transition">
+              <span class="font-bold block text-slate-900 dark:text-white">Part 4</span>
+              <span class="text-[10px] text-slate-500">M5 (Q22–28)</span>
+            </a>
+            <a href="#part-5" class="p-2.5 rounded-lg bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-amber-500 transition">
+              <span class="font-bold block text-slate-900 dark:text-white">Part 5</span>
+              <span class="text-[10px] text-slate-500">M6 (Q29–35)</span>
+            </a>
+            <a href="#part-6" class="p-2.5 rounded-lg bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-amber-500 transition">
+              <span class="font-bold block text-slate-900 dark:text-white">Part 6</span>
+              <span class="text-[10px] text-slate-500">M7 (Q36–42)</span>
+            </a>
+          </div>
+        </div>
+      </section>
+
+
+      <!-- ======================================================== -->
+      <!-- SECTION 1: MODULE 1 & 2 — CLOUD FOUNDATIONS (QUESTIONS 1–7) -->
+      <!-- ======================================================== -->
+      <section id="part-1" class="space-y-6">
+        <div class="border-b border-slate-200 dark:border-slate-800 pb-3 flex items-center justify-between">
+          <div>
+            <div class="flex items-center gap-2 mb-1">
+              <span class="px-2.5 py-0.5 rounded bg-slate-700 text-white font-mono text-xs font-bold uppercase tracking-wider">Part 1</span>
+              <span class="font-mono text-xs text-sky-600 dark:text-sky-400 font-semibold">Module 1 &amp; 2 · Cloud Computing &amp; Virtual Hardware</span>
+            </div>
+            <h2 class="font-display text-xl sm:text-2xl font-bold text-slate-900 dark:text-white">
+              Module 1 &amp; 2 Scenario Questions (Q1–Q7)
+            </h2>
+          </div>
+          <span class="font-mono text-xs text-slate-400 font-bold">7 Questions</span>
+        </div>
+
+        <!-- QUESTION 1 -->
+        <article class="study-card p-5 sm:p-6 space-y-3">
+          <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 dark:border-slate-800 pb-2.5">
+            <h3 class="font-display font-bold text-base text-slate-900 dark:text-white flex items-center gap-2">
+              <span class="w-6 h-6 rounded-full bg-slate-800 text-white flex items-center justify-center font-mono text-xs">Q1</span>
+              <span>Scenario: Hospital Patient Records under KVKK</span>
+            </h3>
+            <span class="slide-badge">M1 Slide 30 · Case 1</span>
+          </div>
+          <p class="text-xs sm:text-sm text-slate-700 dark:text-slate-300">
+            <strong>Scenario:</strong> A network of hospitals stores sensitive patient medical and health history records under strict personal data protection laws (<span class="hl-purple font-semibold">KVKK / GDPR</span>). Their computing load is highly steady, predictable, and continuous throughout the entire year. Which cloud deployment model should they choose, and why?
+          </p>
+          <div class="p-3.5 rounded-lg bg-emerald-50/80 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-900/60 text-xs sm:text-sm space-y-1">
+            <div class="flex items-center gap-2">
+              <span class="font-mono text-[11px] font-bold text-emerald-800 dark:text-emerald-300 uppercase">Answer Key (1–3 Words):</span>
+              <span class="hl-green font-bold text-emerald-950 dark:text-emerald-100 text-sm sm:text-base">Private Cloud</span>
+            </div>
+            <p class="text-slate-600 dark:text-slate-400 text-xs">
+              <strong>Short Rationale:</strong> Legal data protection compliance mandates exclusive infrastructure isolation, and steady usage makes dedicated hardware cost-effective.
+            </p>
+          </div>
+        </article>
+
+        <!-- QUESTION 2 -->
+        <article class="study-card p-5 sm:p-6 space-y-3">
+          <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 dark:border-slate-800 pb-2.5">
+            <h3 class="font-display font-bold text-base text-slate-900 dark:text-white flex items-center gap-2">
+              <span class="w-6 h-6 rounded-full bg-slate-800 text-white flex items-center justify-center font-mono text-xs">Q2</span>
+              <span>Scenario: Gaming Startup with Unpredictable Surges</span>
+            </h3>
+            <span class="slide-badge">M1 Slide 30 · Case 2</span>
+          </div>
+          <p class="text-xs sm:text-sm text-slate-700 dark:text-slate-300">
+            <strong>Scenario:</strong> A small indie game development startup is launching a new multiplayer game next month. The game might attract only 10 active players, or it could go viral and reach 500,000 active concurrent players. Which cloud deployment model fits their needs?
+          </p>
+          <div class="p-3.5 rounded-lg bg-emerald-50/80 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-900/60 text-xs sm:text-sm space-y-1">
+            <div class="flex items-center gap-2">
+              <span class="font-mono text-[11px] font-bold text-emerald-800 dark:text-emerald-300 uppercase">Answer Key (1–3 Words):</span>
+              <span class="hl-green font-bold text-emerald-950 dark:text-emerald-100 text-sm sm:text-base">Public Cloud</span>
+            </div>
+            <p class="text-slate-600 dark:text-slate-400 text-xs">
+              <strong>Short Rationale:</strong> Wildly fluctuating, unpredictable demand requires rapid elasticity with zero upfront capital hardware purchase.
+            </p>
+          </div>
+        </article>
+
+        <!-- QUESTION 3 -->
+        <article class="study-card p-5 sm:p-6 space-y-3">
+          <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 dark:border-slate-800 pb-2.5">
+            <h3 class="font-display font-bold text-base text-slate-900 dark:text-white flex items-center gap-2">
+              <span class="w-6 h-6 rounded-full bg-slate-800 text-white flex items-center justify-center font-mono text-xs">Q3</span>
+              <span>Scenario: Bank Core Ledger vs. Web Portal</span>
+            </h3>
+            <span class="slide-badge">M1 Slide 30 · Case 3</span>
+          </div>
+          <p class="text-xs sm:text-sm text-slate-700 dark:text-slate-300">
+            <strong>Scenario:</strong> A commercial bank keeps its core customer financial account balances and transaction ledgers strictly in-house in its private data center, but hosts its public-facing marketing website and mobile banking front-end on AWS. Which deployment model is this?
+          </p>
+          <div class="p-3.5 rounded-lg bg-emerald-50/80 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-900/60 text-xs sm:text-sm space-y-1">
+            <div class="flex items-center gap-2">
+              <span class="font-mono text-[11px] font-bold text-emerald-800 dark:text-emerald-300 uppercase">Answer Key (1–3 Words):</span>
+              <span class="hl-green font-bold text-emerald-950 dark:text-emerald-100 text-sm sm:text-base">Hybrid Cloud</span>
+            </div>
+            <p class="text-slate-600 dark:text-slate-400 text-xs">
+              <strong>Short Rationale:</strong> Binds private on-premises infrastructure for regulated records with public cloud for agile external web services.
+            </p>
+          </div>
+        </article>
+
+        <!-- QUESTION 4 -->
+        <article class="study-card p-5 sm:p-6 space-y-3">
+          <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 dark:border-slate-800 pb-2.5">
+            <h3 class="font-display font-bold text-base text-slate-900 dark:text-white flex items-center gap-2">
+              <span class="w-6 h-6 rounded-full bg-slate-800 text-white flex items-center justify-center font-mono text-xs">Q4</span>
+              <span>Scenario: Shared University Research System</span>
+            </h3>
+            <span class="slide-badge">M1 Slide 30 · Case 4</span>
+          </div>
+          <p class="text-xs sm:text-sm text-slate-700 dark:text-slate-300">
+            <strong>Scenario:</strong> Five research universities jointly fund and operate a shared supercomputing and AI research system under identical governance, data security, and academic access rules. Which deployment model describes this environment?
+          </p>
+          <div class="p-3.5 rounded-lg bg-emerald-50/80 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-900/60 text-xs sm:text-sm space-y-1">
+            <div class="flex items-center gap-2">
+              <span class="font-mono text-[11px] font-bold text-emerald-800 dark:text-emerald-300 uppercase">Answer Key (1–3 Words):</span>
+              <span class="hl-green font-bold text-emerald-950 dark:text-emerald-100 text-sm sm:text-base">Community Cloud</span>
+            </div>
+            <p class="text-slate-600 dark:text-slate-400 text-xs">
+              <strong>Short Rationale:</strong> Shared infrastructure operated exclusively for a group of organizations having a common mission and security policies.
+            </p>
+          </div>
+        </article>
+
+        <!-- QUESTION 5 -->
+        <article class="study-card p-5 sm:p-6 space-y-3">
+          <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 dark:border-slate-800 pb-2.5">
+            <h3 class="font-display font-bold text-base text-slate-900 dark:text-white flex items-center gap-2">
+              <span class="w-6 h-6 rounded-full bg-slate-800 text-white flex items-center justify-center font-mono text-xs">Q5</span>
+              <span>Scenario: Provider for Video and Another for Analytics</span>
+            </h3>
+            <span class="slide-badge">M1 Slide 30 · Case 5</span>
+          </div>
+          <p class="text-xs sm:text-sm text-slate-700 dark:text-slate-300">
+            <strong>Scenario:</strong> An enterprise chooses AWS EC2 compute instances for video transcoding pipelines, but sends its data warehouse analytics queries to Google Cloud BigQuery. Which deployment model is this?
+          </p>
+          <div class="p-3.5 rounded-lg bg-emerald-50/80 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-900/60 text-xs sm:text-sm space-y-1">
+            <div class="flex items-center gap-2">
+              <span class="font-mono text-[11px] font-bold text-emerald-800 dark:text-emerald-300 uppercase">Answer Key (1–3 Words):</span>
+              <span class="hl-green font-bold text-emerald-950 dark:text-emerald-100 text-sm sm:text-base">Multi-Cloud</span>
+            </div>
+            <p class="text-slate-600 dark:text-slate-400 text-xs">
+              <strong>Short Rationale:</strong> Intentionally utilizing services from multiple independent public cloud hyperscalers to prevent single-vendor lock-in.
+            </p>
+          </div>
+        </article>
+
+        <!-- QUESTION 6 -->
+        <article class="study-card p-5 sm:p-6 space-y-3">
+          <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 dark:border-slate-800 pb-2.5">
+            <h3 class="font-display font-bold text-base text-slate-900 dark:text-white flex items-center gap-2">
+              <span class="w-6 h-6 rounded-full bg-slate-800 text-white flex items-center justify-center font-mono text-xs">Q6</span>
+              <span>Scenario: Legacy Windows Software with Specific Hardware Driver</span>
+            </h3>
+            <span class="slide-badge">M1 Slide 37 · Self-Check</span>
+          </div>
+          <p class="text-xs sm:text-sm text-slate-700 dark:text-slate-300">
+            <strong>Scenario:</strong> An engineering team must run an older Windows application that requires one specific physical device driver and an exact historical Windows Server build. Which cloud service model fits this requirement?
+          </p>
+          <div class="p-3.5 rounded-lg bg-emerald-50/80 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-900/60 text-xs sm:text-sm space-y-1">
+            <div class="flex items-center gap-2">
+              <span class="font-mono text-[11px] font-bold text-emerald-800 dark:text-emerald-300 uppercase">Answer Key (1–3 Words):</span>
+              <span class="hl-green font-bold text-emerald-950 dark:text-emerald-100 text-sm sm:text-base">IaaS</span>
+            </div>
+            <p class="text-slate-600 dark:text-slate-400 text-xs">
+              <strong>Short Rationale:</strong> Only Infrastructure as a Service grants complete operating system and driver control; PaaS and SaaS permit neither custom drivers nor OS builds.
+            </p>
+          </div>
+        </article>
+
+        <!-- QUESTION 7 -->
+        <article class="study-card p-5 sm:p-6 space-y-3">
+          <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 dark:border-slate-800 pb-2.5">
+            <h3 class="font-display font-bold text-base text-slate-900 dark:text-white flex items-center gap-2">
+              <span class="w-6 h-6 rounded-full bg-slate-800 text-white flex items-center justify-center font-mono text-xs">Q7</span>
+              <span>Scenario: Student Registration System 40x Traffic Surge</span>
+            </h3>
+            <span class="slide-badge">M1 Slide 18 &amp; 19 · Discussion</span>
+          </div>
+          <p class="text-xs sm:text-sm text-slate-700 dark:text-slate-300">
+            <strong>Scenario:</strong> A university student registration portal experiences 40 times normal user traffic during registration week, while sitting mostly idle for the remaining 51 weeks. Rather than buying 40 physical servers that sit idle, which cloud characteristic / operational model solves this?
+          </p>
+          <div class="p-3.5 rounded-lg bg-emerald-50/80 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-900/60 text-xs sm:text-sm space-y-1">
+            <div class="flex items-center gap-2">
+              <span class="font-mono text-[11px] font-bold text-emerald-800 dark:text-emerald-300 uppercase">Answer Key (1–3 Words):</span>
+              <span class="hl-green font-bold text-emerald-950 dark:text-emerald-100 text-sm sm:text-base">Rapid Elasticity</span>
+            </div>
+            <p class="text-slate-600 dark:text-slate-400 text-xs">
+              <strong>Short Rationale:</strong> Pay only for compute resources actively running during surge week; automatically autoscale instances out when traffic spikes and scale in when done.
+            </p>
+          </div>
+        </article>
+      </section>
+
+
+      <!-- ======================================================== -->
+      <!-- SECTION 2: MODULE 3 — MIGRATION TO THE CLOUD (QUESTIONS 8–14) -->
+      <!-- ======================================================== -->
+      <section id="part-2" class="space-y-6">
+        <div class="border-b border-slate-200 dark:border-slate-800 pb-3 flex items-center justify-between">
+          <div>
+            <div class="flex items-center gap-2 mb-1">
+              <span class="px-2.5 py-0.5 rounded bg-slate-700 text-white font-mono text-xs font-bold uppercase tracking-wider">Part 2</span>
+              <span class="font-mono text-xs text-amber-600 dark:text-amber-400 font-semibold">Module 3 · Migration to the Cloud</span>
+            </div>
+            <h2 class="font-display text-xl sm:text-2xl font-bold text-slate-900 dark:text-white">
+              Module 3 Scenario Questions (Q8–Q14)
+            </h2>
+          </div>
+          <span class="font-mono text-xs text-slate-400 font-bold">7 Questions</span>
+        </div>
+
+        <!-- QUESTION 8 -->
+        <article class="study-card p-5 sm:p-6 space-y-3">
+          <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 dark:border-slate-800 pb-2.5">
+            <h3 class="font-display font-bold text-base text-slate-900 dark:text-white flex items-center gap-2">
+              <span class="w-6 h-6 rounded-full bg-slate-800 text-white flex items-center justify-center font-mono text-xs">Q8</span>
+              <span>Scenario: Timesheet App with Data Center Closing in 3 Months</span>
+            </h3>
+            <span class="slide-badge">M3 Slide 15 · Case 1</span>
+          </div>
+          <p class="text-xs sm:text-sm text-slate-700 dark:text-slate-300">
+            <strong>Scenario:</strong> An internal employee timesheet application runs on its own dedicated server and performs well. The physical on-premises data center lease expires in three months and will be shut down. Which of the 7 R's migration strategies fits?
+          </p>
+          <div class="p-3.5 rounded-lg bg-emerald-50/80 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-900/60 text-xs sm:text-sm space-y-1">
+            <div class="flex items-center gap-2">
+              <span class="font-mono text-[11px] font-bold text-emerald-800 dark:text-emerald-300 uppercase">Answer Key (1–3 Words):</span>
+              <span class="hl-green font-bold text-emerald-950 dark:text-emerald-100 text-sm sm:text-base">Rehost</span>
+            </div>
+            <p class="text-slate-600 dark:text-slate-400 text-xs">
+              <strong>Short Rationale:</strong> "Lift and Shift" moves the virtual machine as-is with zero code changes, meeting the urgent 3-month deadline.
+            </p>
+          </div>
+        </article>
+
+        <!-- QUESTION 9 -->
+        <article class="study-card p-5 sm:p-6 space-y-3">
+          <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 dark:border-slate-800 pb-2.5">
+            <h3 class="font-display font-bold text-base text-slate-900 dark:text-white flex items-center gap-2">
+              <span class="w-6 h-6 rounded-full bg-slate-800 text-white flex items-center justify-center font-mono text-xs">Q9</span>
+              <span>Scenario: Self-Hosted Email Burning Staff Time</span>
+            </h3>
+            <span class="slide-badge">M3 Slide 15 · Case 2</span>
+          </div>
+          <p class="text-xs sm:text-sm text-slate-700 dark:text-slate-300">
+            <strong>Scenario:</strong> A company runs its own on-premises email server, and two full-time systems administrators spend half their weekly working hours patching, troubleshooting, and maintaining it. Which 7 R's strategy should management adopt?
+          </p>
+          <div class="p-3.5 rounded-lg bg-emerald-50/80 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-900/60 text-xs sm:text-sm space-y-1">
+            <div class="flex items-center gap-2">
+              <span class="font-mono text-[11px] font-bold text-emerald-800 dark:text-emerald-300 uppercase">Answer Key (1–3 Words):</span>
+              <span class="hl-green font-bold text-emerald-950 dark:text-emerald-100 text-sm sm:text-base">Repurchase</span>
+            </div>
+            <p class="text-slate-600 dark:text-slate-400 text-xs">
+              <strong>Short Rationale:</strong> "Drop and Shop" abandons the self-managed email server and replaces it with a turnkey SaaS solution (Microsoft 365 / Google Workspace).
+            </p>
+          </div>
+        </article>
+
+        <!-- QUESTION 10 -->
+        <article class="study-card p-5 sm:p-6 space-y-3">
+          <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 dark:border-slate-800 pb-2.5">
+            <h3 class="font-display font-bold text-base text-slate-900 dark:text-white flex items-center gap-2">
+              <span class="w-6 h-6 rounded-full bg-slate-800 text-white flex items-center justify-center font-mono text-xs">Q10</span>
+              <span>Scenario: Reporting Tool with Last Login 18 Months Ago</span>
+            </h3>
+            <span class="slide-badge">M3 Slide 15 · Case 3</span>
+          </div>
+          <p class="text-xs sm:text-sm text-slate-700 dark:text-slate-300">
+            <strong>Scenario:</strong> An enterprise discovery tool scans application usage and reveals an old departmental reporting software instance whose last successful user login was eighteen months ago. Which 7 R's strategy fits?
+          </p>
+          <div class="p-3.5 rounded-lg bg-emerald-50/80 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-900/60 text-xs sm:text-sm space-y-1">
+            <div class="flex items-center gap-2">
+              <span class="font-mono text-[11px] font-bold text-emerald-800 dark:text-emerald-300 uppercase">Answer Key (1–3 Words):</span>
+              <span class="hl-green font-bold text-emerald-950 dark:text-emerald-100 text-sm sm:text-base">Retire</span>
+            </div>
+            <p class="text-slate-600 dark:text-slate-400 text-xs">
+              <strong>Short Rationale:</strong> Safely decommission and turn off dead, unused software to immediately eliminate hosting, power, and licensing costs.
+            </p>
+          </div>
+        </article>
+
+        <!-- QUESTION 11 -->
+        <article class="study-card p-5 sm:p-6 space-y-3">
+          <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 dark:border-slate-800 pb-2.5">
+            <h3 class="font-display font-bold text-base text-slate-900 dark:text-white flex items-center gap-2">
+              <span class="w-6 h-6 rounded-full bg-slate-800 text-white flex items-center justify-center font-mono text-xs">Q11</span>
+              <span>Scenario: Holiday Peak E-Commerce Elasticity</span>
+            </h3>
+            <span class="slide-badge">M3 Slide 15 · Case 4</span>
+          </div>
+          <p class="text-xs sm:text-sm text-slate-700 dark:text-slate-300">
+            <strong>Scenario:</strong> An e-commerce shop slows down and crashes during every holiday shopping season. The business requires the platform to scale out automatically during traffic spikes and scale back in when traffic drops. Which strategy fits?
+          </p>
+          <div class="p-3.5 rounded-lg bg-emerald-50/80 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-900/60 text-xs sm:text-sm space-y-1">
+            <div class="flex items-center gap-2">
+              <span class="font-mono text-[11px] font-bold text-emerald-800 dark:text-emerald-300 uppercase">Answer Key (1–3 Words):</span>
+              <span class="hl-green font-bold text-emerald-950 dark:text-emerald-100 text-sm sm:text-base">Refactor</span>
+            </div>
+            <p class="text-slate-600 dark:text-slate-400 text-xs">
+              <strong>Short Rationale:</strong> Re-architecting into cloud-native microservices, serverless components, and autoscaling tiers unlocks true horizontal elasticity.
+            </p>
+          </div>
+        </article>
+
+        <!-- QUESTION 12 -->
+        <article class="study-card p-5 sm:p-6 space-y-3">
+          <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 dark:border-slate-800 pb-2.5">
+            <h3 class="font-display font-bold text-base text-slate-900 dark:text-white flex items-center gap-2">
+              <span class="w-6 h-6 rounded-full bg-slate-800 text-white flex items-center justify-center font-mono text-xs">Q12</span>
+              <span>Scenario: Lab Machine Connected to Physical Hardware</span>
+            </h3>
+            <span class="slide-badge">M3 Slide 15 · Case 5</span>
+          </div>
+          <p class="text-xs sm:text-sm text-slate-700 dark:text-slate-300">
+            <strong>Scenario:</strong> A specialized medical laboratory workstation is connected via a direct physical cable to an on-site analog spectrometry device. Which 7 R's strategy applies?
+          </p>
+          <div class="p-3.5 rounded-lg bg-emerald-50/80 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-900/60 text-xs sm:text-sm space-y-1">
+            <div class="flex items-center gap-2">
+              <span class="font-mono text-[11px] font-bold text-emerald-800 dark:text-emerald-300 uppercase">Answer Key (1–3 Words):</span>
+              <span class="hl-green font-bold text-emerald-950 dark:text-emerald-100 text-sm sm:text-base">Retain</span>
+            </div>
+            <p class="text-slate-600 dark:text-slate-400 text-xs">
+              <strong>Short Rationale:</strong> Specialized physical hardware attachments and sensor cables cannot be virtualized or migrated across wide-area networks.
+            </p>
+          </div>
+        </article>
+
+        <!-- QUESTION 13 -->
+        <article class="study-card p-5 sm:p-6 space-y-3">
+          <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 dark:border-slate-800 pb-2.5">
+            <h3 class="font-display font-bold text-base text-slate-900 dark:text-white flex items-center gap-2">
+              <span class="w-6 h-6 rounded-full bg-slate-800 text-white flex items-center justify-center font-mono text-xs">Q13</span>
+              <span>Scenario: Disaster Recovery for High-Revenue E-Commerce Store</span>
+            </h3>
+            <span class="slide-badge">M3 Slide 40 · Self-Check A</span>
+          </div>
+          <p class="text-xs sm:text-sm text-slate-700 dark:text-slate-300">
+            <strong>Scenario:</strong> An online shopping portal loses tens of thousands of dollars for every hour it is down, and cannot afford to lose any customer purchase orders. What recovery site type, RPO, and RTO are appropriate?
+          </p>
+          <div class="p-3.5 rounded-lg bg-emerald-50/80 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-900/60 text-xs sm:text-sm space-y-1">
+            <div class="flex items-center gap-2">
+              <span class="font-mono text-[11px] font-bold text-emerald-800 dark:text-emerald-300 uppercase">Answer Key (1–3 Words):</span>
+              <span class="hl-green font-bold text-emerald-950 dark:text-emerald-100 text-sm sm:text-base">Hot Site</span>
+            </div>
+            <p class="text-slate-600 dark:text-slate-400 text-xs">
+              <strong>Short Rationale:</strong> Requires an RPO close to zero and an RTO of minutes; real-time active data replication to a hot site is cost-justified.
+            </p>
+          </div>
+        </article>
+
+        <!-- QUESTION 14 -->
+        <article class="study-card p-5 sm:p-6 space-y-3">
+          <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 dark:border-slate-800 pb-2.5">
+            <h3 class="font-display font-bold text-base text-slate-900 dark:text-white flex items-center gap-2">
+              <span class="w-6 h-6 rounded-full bg-slate-800 text-white flex items-center justify-center font-mono text-xs">Q14</span>
+              <span>Scenario: Disaster Recovery for School Library Catalog</span>
+            </h3>
+            <span class="slide-badge">M3 Slide 40 · Self-Check B</span>
+          </div>
+          <p class="text-xs sm:text-sm text-slate-700 dark:text-slate-300">
+            <strong>Scenario:</strong> A school's library book catalog can tolerate being down for an entire day during an outage, and losing the last 24 hours of book search updates is acceptable. What recovery site type, RPO, and RTO fit?
+          </p>
+          <div class="p-3.5 rounded-lg bg-emerald-50/80 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-900/60 text-xs sm:text-sm space-y-1">
+            <div class="flex items-center gap-2">
+              <span class="font-mono text-[11px] font-bold text-emerald-800 dark:text-emerald-300 uppercase">Answer Key (1–3 Words):</span>
+              <span class="hl-green font-bold text-emerald-950 dark:text-emerald-100 text-sm sm:text-base">Cold Site</span>
+            </div>
+            <p class="text-slate-600 dark:text-slate-400 text-xs">
+              <strong>Short Rationale:</strong> Tolerates an RPO of one day and an RTO of one day; daily automated cloud backups restored to a cold site is almost free.
+            </p>
+          </div>
+        </article>
+      </section>
+
+
+      <!-- ======================================================== -->
+      <!-- SECTION 3: MODULE 4 — CLOUD NETWORKING (QUESTIONS 15–21) -->
+      <!-- ======================================================== -->
+      <section id="part-3" class="space-y-6">
+        <div class="border-b border-slate-200 dark:border-slate-800 pb-3 flex items-center justify-between">
+          <div>
+            <div class="flex items-center gap-2 mb-1">
+              <span class="px-2.5 py-0.5 rounded bg-slate-700 text-white font-mono text-xs font-bold uppercase tracking-wider">Part 3</span>
+              <span class="font-mono text-xs text-sky-600 dark:text-sky-400 font-semibold">Module 4 · Cloud Networking &amp; Subnets</span>
+            </div>
+            <h2 class="font-display text-xl sm:text-2xl font-bold text-slate-900 dark:text-white">
+              Module 4 Scenario Questions (Q15–Q21)
+            </h2>
+          </div>
+          <span class="font-mono text-xs text-slate-400 font-bold">7 Questions</span>
+        </div>
+
+        <!-- QUESTION 15 -->
+        <article class="study-card p-5 sm:p-6 space-y-3">
+          <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 dark:border-slate-800 pb-2.5">
+            <h3 class="font-display font-bold text-base text-slate-900 dark:text-white flex items-center gap-2">
+              <span class="w-6 h-6 rounded-full bg-slate-800 text-white flex items-center justify-center font-mono text-xs">Q15</span>
+              <span>Scenario: Placement of Internet-Facing Load Balancer</span>
+            </h3>
+            <span class="slide-badge">M4 Slide 27 · Case 1</span>
+          </div>
+          <p class="text-xs sm:text-sm text-slate-700 dark:text-slate-300">
+            <strong>Scenario:</strong> You are designing a VPC for the university course registration website. Should the internet-facing load balancer (ALB) be placed in a Public or Private subnet, and does it require a public IP address?
+          </p>
+          <div class="p-3.5 rounded-lg bg-emerald-50/80 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-900/60 text-xs sm:text-sm space-y-1">
+            <div class="flex items-center gap-2">
+              <span class="font-mono text-[11px] font-bold text-emerald-800 dark:text-emerald-300 uppercase">Answer Key (1–3 Words):</span>
+              <span class="hl-green font-bold text-emerald-950 dark:text-emerald-100 text-sm sm:text-base">Public Subnet</span>
+            </div>
+            <p class="text-slate-600 dark:text-slate-400 text-xs">
+              <strong>Short Rationale:</strong> Yes, it needs a public IP and an Internet Gateway route because external users on the internet must initiate connections to it.
+            </p>
+          </div>
+        </article>
+
+        <!-- QUESTION 16 -->
+        <article class="study-card p-5 sm:p-6 space-y-3">
+          <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 dark:border-slate-800 pb-2.5">
+            <h3 class="font-display font-bold text-base text-slate-900 dark:text-white flex items-center gap-2">
+              <span class="w-6 h-6 rounded-full bg-slate-800 text-white flex items-center justify-center font-mono text-xs">Q16</span>
+              <span>Scenario: Placement of PostgreSQL Database</span>
+            </h3>
+            <span class="slide-badge">M4 Slide 27 · Case 2</span>
+          </div>
+          <p class="text-xs sm:text-sm text-slate-700 dark:text-slate-300">
+            <strong>Scenario:</strong> Where should the PostgreSQL database cluster supporting the registration application be placed, and should it be assigned a public IP address?
+          </p>
+          <div class="p-3.5 rounded-lg bg-emerald-50/80 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-900/60 text-xs sm:text-sm space-y-1">
+            <div class="flex items-center gap-2">
+              <span class="font-mono text-[11px] font-bold text-emerald-800 dark:text-emerald-300 uppercase">Answer Key (1–3 Words):</span>
+              <span class="hl-green font-bold text-emerald-950 dark:text-emerald-100 text-sm sm:text-base">Private Subnet</span>
+            </div>
+            <p class="text-slate-600 dark:text-slate-400 text-xs">
+              <strong>Short Rationale:</strong> No public IP; databases must be strictly isolated from the internet and reached only by internal application servers.
+            </p>
+          </div>
+        </article>
+
+        <!-- QUESTION 17 -->
+        <article class="study-card p-5 sm:p-6 space-y-3">
+          <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 dark:border-slate-800 pb-2.5">
+            <h3 class="font-display font-bold text-base text-slate-900 dark:text-white flex items-center gap-2">
+              <span class="w-6 h-6 rounded-full bg-slate-800 text-white flex items-center justify-center font-mono text-xs">Q17</span>
+              <span>Scenario: Application Server Downloading OS Updates Nightly</span>
+            </h3>
+            <span class="slide-badge">M4 Slide 27 · Case 3</span>
+          </div>
+          <p class="text-xs sm:text-sm text-slate-700 dark:text-slate-300">
+            <strong>Scenario:</strong> An internal application server must download Linux security patches from external internet repositories every night. Should it reside in a public or private subnet?
+          </p>
+          <div class="p-3.5 rounded-lg bg-emerald-50/80 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-900/60 text-xs sm:text-sm space-y-1">
+            <div class="flex items-center gap-2">
+              <span class="font-mono text-[11px] font-bold text-emerald-800 dark:text-emerald-300 uppercase">Answer Key (1–3 Words):</span>
+              <span class="hl-green font-bold text-emerald-950 dark:text-emerald-100 text-sm sm:text-base">Private Subnet</span>
+            </div>
+            <p class="text-slate-600 dark:text-slate-400 text-xs">
+              <strong>Short Rationale:</strong> Place in a private subnet with NO public IP; route outbound internet traffic through a NAT Gateway in a public subnet.
+            </p>
+          </div>
+        </article>
+
+        <!-- QUESTION 18 -->
+        <article class="study-card p-5 sm:p-6 space-y-3">
+          <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 dark:border-slate-800 pb-2.5">
+            <h3 class="font-display font-bold text-base text-slate-900 dark:text-white flex items-center gap-2">
+              <span class="w-6 h-6 rounded-full bg-slate-800 text-white flex items-center justify-center font-mono text-xs">Q18</span>
+              <span>Scenario: Reporting Machine Reading Files from S3 Cloud Storage</span>
+            </h3>
+            <span class="slide-badge">M4 Slide 27 · Case 4</span>
+          </div>
+          <p class="text-xs sm:text-sm text-slate-700 dark:text-slate-300">
+            <strong>Scenario:</strong> A reporting machine reads files from cloud object storage (Amazon S3) every hour and writes reports. Should it have a public address?
+          </p>
+          <div class="p-3.5 rounded-lg bg-emerald-50/80 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-900/60 text-xs sm:text-sm space-y-1">
+            <div class="flex items-center gap-2">
+              <span class="font-mono text-[11px] font-bold text-emerald-800 dark:text-emerald-300 uppercase">Answer Key (1–3 Words):</span>
+              <span class="hl-green font-bold text-emerald-950 dark:text-emerald-100 text-sm sm:text-base">No Public Address</span>
+            </div>
+            <p class="text-slate-600 dark:text-slate-400 text-xs">
+              <strong>Short Rationale:</strong> Place in a private subnet reaching S3 internally through a VPC Gateway Endpoint with zero public internet exposure.
+            </p>
+          </div>
+        </article>
+
+        <!-- QUESTION 19 -->
+        <article class="study-card p-5 sm:p-6 space-y-3">
+          <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 dark:border-slate-800 pb-2.5">
+            <h3 class="font-display font-bold text-base text-slate-900 dark:text-white flex items-center gap-2">
+              <span class="w-6 h-6 rounded-full bg-slate-800 text-white flex items-center justify-center font-mono text-xs">Q19</span>
+              <span>Scenario: Locating IP Address 10.20.3.77 in Multi-Tier VPC</span>
+            </h3>
+            <span class="slide-badge">M4 Slide 16 · Question 2</span>
+          </div>
+          <p class="text-xs sm:text-sm text-slate-700 dark:text-slate-300">
+            <strong>Scenario:</strong> A company receives <code class="hl-code">10.20.0.0/16</code> and carves six /24 subnets for Web, App, and DB across Zones A &amp; B. In which subnet does the IP address <code class="hl-code">10.20.3.77</code> reside?
+          </p>
+          <div class="p-3.5 rounded-lg bg-emerald-50/80 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-900/60 text-xs sm:text-sm space-y-1">
+            <div class="flex items-center gap-2">
+              <span class="font-mono text-[11px] font-bold text-emerald-800 dark:text-emerald-300 uppercase">Answer Key (1–3 Words):</span>
+              <span class="hl-green font-bold text-emerald-950 dark:text-emerald-100 text-sm sm:text-base">Zone-B Application Subnet</span>
+            </div>
+            <p class="text-slate-600 dark:text-slate-400 text-xs">
+              <strong>Short Rationale:</strong> Allocated as: Web-A (.0), Web-B (.1), App-A (.2), App-B (<code class="hl-code">10.20.3.0/24</code>), DB-A (.4), DB-B (.5).
+            </p>
+          </div>
+        </article>
+
+        <!-- QUESTION 20 -->
+        <article class="study-card p-5 sm:p-6 space-y-3">
+          <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 dark:border-slate-800 pb-2.5">
+            <h3 class="font-display font-bold text-base text-slate-900 dark:text-white flex items-center gap-2">
+              <span class="w-6 h-6 rounded-full bg-slate-800 text-white flex items-center justify-center font-mono text-xs">Q20</span>
+              <span>Scenario: Usable Hosts in a /24 Subnet on AWS</span>
+            </h3>
+            <span class="slide-badge">M4 Slide 16 · Question 3</span>
+          </div>
+          <p class="text-xs sm:text-sm text-slate-700 dark:text-slate-300">
+            <strong>Scenario:</strong> How many usable host IP addresses are available to virtual machines in a standard <code class="hl-code">/24</code> subnet in an AWS VPC?
+          </p>
+          <div class="p-3.5 rounded-lg bg-emerald-50/80 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-900/60 text-xs sm:text-sm space-y-1">
+            <div class="flex items-center gap-2">
+              <span class="font-mono text-[11px] font-bold text-emerald-800 dark:text-emerald-300 uppercase">Answer Key (1–3 Words):</span>
+              <span class="hl-green font-bold text-emerald-950 dark:text-emerald-100 text-sm sm:text-base">251 Usable Hosts</span>
+            </div>
+            <p class="text-slate-600 dark:text-slate-400 text-xs">
+              <strong>Short Rationale:</strong> Total IPs are $2^{(32-24)} = 256$; cloud providers reserve exactly 5 addresses (.0, .1, .2, .3, and .255), leaving $256 - 5 = 251$.
+            </p>
+          </div>
+        </article>
+
+        <!-- QUESTION 21 -->
+        <article class="study-card p-5 sm:p-6 space-y-3">
+          <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 dark:border-slate-800 pb-2.5">
+            <h3 class="font-display font-bold text-base text-slate-900 dark:text-white flex items-center gap-2">
+              <span class="w-6 h-6 rounded-full bg-slate-800 text-white flex items-center justify-center font-mono text-xs">Q21</span>
+              <span>Scenario: Checking if IP 10.0.2.5 Belongs to 10.0.0.0/23</span>
+            </h3>
+            <span class="slide-badge">M4 Slide 14 · Worked Example</span>
+          </div>
+          <p class="text-xs sm:text-sm text-slate-700 dark:text-slate-300">
+            <strong>Scenario:</strong> A routing rule applies to CIDR block <code class="hl-code">10.0.0.0/23</code>. Does the destination address <code class="hl-code">10.0.2.5</code> fall inside this block?
+          </p>
+          <div class="p-3.5 rounded-lg bg-emerald-50/80 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-900/60 text-xs sm:text-sm space-y-1">
+            <div class="flex items-center gap-2">
+              <span class="font-mono text-[11px] font-bold text-emerald-800 dark:text-emerald-300 uppercase">Answer Key (1–3 Words):</span>
+              <span class="hl-green font-bold text-emerald-950 dark:text-emerald-100 text-sm sm:text-base">No (Out of Range)</span>
+            </div>
+            <p class="text-slate-600 dark:text-slate-400 text-xs">
+              <strong>Short Rationale:</strong> A /23 contains 512 addresses spanning <code class="hl-code">10.0.0.0</code> through <code class="hl-code">10.0.1.255</code>; <code class="hl-code">10.0.2.5</code> belongs to the next block (<code class="hl-code">10.0.2.0/23</code>).
+            </p>
+          </div>
+        </article>
+      </section>
+
+
+      <!-- ======================================================== -->
+      <!-- SECTION 4: MODULE 5 — CLOUD CONNECTIVITY (QUESTIONS 22–28) -->
+      <!-- ======================================================== -->
+      <section id="part-4" class="space-y-6">
+        <div class="border-b border-slate-200 dark:border-slate-800 pb-3 flex items-center justify-between">
+          <div>
+            <div class="flex items-center gap-2 mb-1">
+              <span class="px-2.5 py-0.5 rounded bg-slate-700 text-white font-mono text-xs font-bold uppercase tracking-wider">Part 4</span>
+              <span class="font-mono text-xs text-sky-600 dark:text-sky-400 font-semibold">Module 5 · Connectivity &amp; Troubleshooting</span>
+            </div>
+            <h2 class="font-display text-xl sm:text-2xl font-bold text-slate-900 dark:text-white">
+              Module 5 Scenario Questions (Q22–Q28)
+            </h2>
+          </div>
+          <span class="font-mono text-xs text-slate-400 font-bold">7 Questions</span>
+        </div>
+
+        <!-- QUESTION 22 -->
+        <article class="study-card p-5 sm:p-6 space-y-3">
+          <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 dark:border-slate-800 pb-2.5">
+            <h3 class="font-display font-bold text-base text-slate-900 dark:text-white flex items-center gap-2">
+              <span class="w-6 h-6 rounded-full bg-slate-800 text-white flex items-center justify-center font-mono text-xs">Q22</span>
+              <span>Scenario: Peered Networks A–B and B–C Cannot Reach A–C</span>
+            </h3>
+            <span class="slide-badge">M5 Slide 48 · Case 1</span>
+          </div>
+          <p class="text-xs sm:text-sm text-slate-700 dark:text-slate-300">
+            <strong>Scenario:</strong> Network A is peered with Network B, and Network B is peered with Network C. Why is Network A completely unable to reach Network C?
+          </p>
+          <div class="p-3.5 rounded-lg bg-emerald-50/80 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-900/60 text-xs sm:text-sm space-y-1">
+            <div class="flex items-center gap-2">
+              <span class="font-mono text-[11px] font-bold text-emerald-800 dark:text-emerald-300 uppercase">Answer Key (1–3 Words):</span>
+              <span class="hl-green font-bold text-emerald-950 dark:text-emerald-100 text-sm sm:text-base">Non-Transitive Peering</span>
+            </div>
+            <p class="text-slate-600 dark:text-slate-400 text-xs">
+              <strong>Short Rationale:</strong> VPC peering does not support edge routing; you must create a direct A–C peering connection or deploy a Transit Gateway.
+            </p>
+          </div>
+        </article>
+
+        <!-- QUESTION 23 -->
+        <article class="study-card p-5 sm:p-6 space-y-3">
+          <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 dark:border-slate-800 pb-2.5">
+            <h3 class="font-display font-bold text-base text-slate-900 dark:text-white flex items-center gap-2">
+              <span class="w-6 h-6 rounded-full bg-slate-800 text-white flex items-center justify-center font-mono text-xs">Q23</span>
+              <span>Scenario: Cloud VMs Cannot Reach Office Printer Server</span>
+            </h3>
+            <span class="slide-badge">M5 Slide 48 · Case 2</span>
+          </div>
+          <p class="text-xs sm:text-sm text-slate-700 dark:text-slate-300">
+            <strong>Scenario:</strong> Corporate office workstations easily reach cloud virtual machines over the VPN tunnel, but cloud virtual machines cannot initiate a connection to the on-prem office printer server. What is the cause?
+          </p>
+          <div class="p-3.5 rounded-lg bg-emerald-50/80 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-900/60 text-xs sm:text-sm space-y-1">
+            <div class="flex items-center gap-2">
+              <span class="font-mono text-[11px] font-bold text-emerald-800 dark:text-emerald-300 uppercase">Answer Key (1–3 Words):</span>
+              <span class="hl-green font-bold text-emerald-950 dark:text-emerald-100 text-sm sm:text-base">Office Firewall Inbound</span>
+            </div>
+            <p class="text-slate-600 dark:text-slate-400 text-xs">
+              <strong>Short Rationale:</strong> The office edge firewall statefully tracks outbound office connections but blocks new unsolicited inbound connections initiated from the cloud CIDR.
+            </p>
+          </div>
+        </article>
+
+        <!-- QUESTION 24 -->
+        <article class="study-card p-5 sm:p-6 space-y-3">
+          <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 dark:border-slate-800 pb-2.5">
+            <h3 class="font-display font-bold text-base text-slate-900 dark:text-white flex items-center gap-2">
+              <span class="w-6 h-6 rounded-full bg-slate-800 text-white flex items-center justify-center font-mono text-xs">Q24</span>
+              <span>Scenario: Ping Fails but Website Opens in Browser</span>
+            </h3>
+            <span class="slide-badge">M5 Slide 48 · Case 3</span>
+          </div>
+          <p class="text-xs sm:text-sm text-slate-700 dark:text-slate-300">
+            <strong>Scenario:</strong> An administrator runs <code class="hl-code">ping</code> against a cloud web server and receives 100% packet loss, yet the website loads quickly in Chrome on HTTPS. What is the most likely cause?
+          </p>
+          <div class="p-3.5 rounded-lg bg-emerald-50/80 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-900/60 text-xs sm:text-sm space-y-1">
+            <div class="flex items-center gap-2">
+              <span class="font-mono text-[11px] font-bold text-emerald-800 dark:text-emerald-300 uppercase">Answer Key (1–3 Words):</span>
+              <span class="hl-green font-bold text-emerald-950 dark:text-emerald-100 text-sm sm:text-base">ICMP Blocked</span>
+            </div>
+            <p class="text-slate-600 dark:text-slate-400 text-xs">
+              <strong>Short Rationale:</strong> Security Groups drop ICMP echo requests by default, while TCP port 443 (HTTPS) is explicitly allowed. Test the actual service port instead of ping.
+            </p>
+          </div>
+        </article>
+
+        <!-- QUESTION 25 -->
+        <article class="study-card p-5 sm:p-6 space-y-3">
+          <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 dark:border-slate-800 pb-2.5">
+            <h3 class="font-display font-bold text-base text-slate-900 dark:text-white flex items-center gap-2">
+              <span class="w-6 h-6 rounded-full bg-slate-800 text-white flex items-center justify-center font-mono text-xs">Q25</span>
+              <span>Scenario: Over VPN, Small Pages Work but Large Uploads Hang</span>
+            </h3>
+            <span class="slide-badge">M5 Slide 48 · Case 4</span>
+          </div>
+          <p class="text-xs sm:text-sm text-slate-700 dark:text-slate-300">
+            <strong>Scenario:</strong> Over an IPsec VPN tunnel, web login and text pages load normally, but uploading a large PDF report freezes and hangs indefinitely. What is the cause?
+          </p>
+          <div class="p-3.5 rounded-lg bg-emerald-50/80 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-900/60 text-xs sm:text-sm space-y-1">
+            <div class="flex items-center gap-2">
+              <span class="font-mono text-[11px] font-bold text-emerald-800 dark:text-emerald-300 uppercase">Answer Key (1–3 Words):</span>
+              <span class="hl-green font-bold text-emerald-950 dark:text-emerald-100 text-sm sm:text-base">MTU Size Mismatch</span>
+            </div>
+            <p class="text-slate-600 dark:text-slate-400 text-xs">
+              <strong>Short Rationale:</strong> IPsec encryption overhead makes 1500-byte packets exceed MTU; with DF set, packets drop without notice (fix via MSS Clamping ~1388 bytes).
+            </p>
+          </div>
+        </article>
+
+        <!-- QUESTION 26 -->
+        <article class="study-card p-5 sm:p-6 space-y-3">
+          <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 dark:border-slate-800 pb-2.5">
+            <h3 class="font-display font-bold text-base text-slate-900 dark:text-white flex items-center gap-2">
+              <span class="w-6 h-6 rounded-full bg-slate-800 text-white flex items-center justify-center font-mono text-xs">Q26</span>
+              <span>Scenario: curl to Port 8080 Returns Connection Refused</span>
+            </h3>
+            <span class="slide-badge">M5 Slide 48 · Case 5</span>
+          </div>
+          <p class="text-xs sm:text-sm text-slate-700 dark:text-slate-300">
+            <strong>Scenario:</strong> A cloud engineer runs <code class="hl-code">curl http://10.20.4.15:8080</code> and immediately receives <span class="hl-pink font-semibold">"Connection refused"</span>. What does this immediate response signify?
+          </p>
+          <div class="p-3.5 rounded-lg bg-emerald-50/80 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-900/60 text-xs sm:text-sm space-y-1">
+            <div class="flex items-center gap-2">
+              <span class="font-mono text-[11px] font-bold text-emerald-800 dark:text-emerald-300 uppercase">Answer Key (1–3 Words):</span>
+              <span class="hl-green font-bold text-emerald-950 dark:text-emerald-100 text-sm sm:text-base">No Program Listening</span>
+            </div>
+            <p class="text-slate-600 dark:text-slate-400 text-xs">
+              <strong>Short Rationale:</strong> The host kernel responded with a TCP RST; routing works, but the application daemon on port 8080 is crashed or stopped.
+            </p>
+          </div>
+        </article>
+
+        <!-- QUESTION 27 -->
+        <article class="study-card p-5 sm:p-6 space-y-3">
+          <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 dark:border-slate-800 pb-2.5">
+            <h3 class="font-display font-bold text-base text-slate-900 dark:text-white flex items-center gap-2">
+              <span class="w-6 h-6 rounded-full bg-slate-800 text-white flex items-center justify-center font-mono text-xs">Q27</span>
+              <span>Scenario: Sizing Nightly 2 TB Hospital Backup Transfer</span>
+            </h3>
+            <span class="slide-badge">M5 Slide 15 &amp; 16 · Will It Fit?</span>
+          </div>
+          <p class="text-xs sm:text-sm text-slate-700 dark:text-slate-300">
+            <strong>Scenario:</strong> A hospital copies 2 TB of data to the cloud nightly in an 8-hour window between 23:00 and 07:00 at 70% effective throughput. Which link is enough: 100 Mbps, 1 Gbps, or 10 Gbps?
+          </p>
+          <div class="p-3.5 rounded-lg bg-emerald-50/80 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-900/60 text-xs sm:text-sm space-y-1">
+            <div class="flex items-center gap-2">
+              <span class="font-mono text-[11px] font-bold text-emerald-800 dark:text-emerald-300 uppercase">Answer Key (1–3 Words):</span>
+              <span class="hl-green font-bold text-emerald-950 dark:text-emerald-100 text-sm sm:text-base">1 Gbps Link</span>
+            </div>
+            <p class="text-slate-600 dark:text-slate-400 text-xs">
+              <strong>Short Rationale:</strong> 100 Mbps takes ~63.5 hours (fails); 1 Gbps takes ~6.35 hours (fits inside 8h); minimum required bandwidth is 794 Mbps.
+            </p>
+          </div>
+        </article>
+
+        <!-- QUESTION 28 -->
+        <article class="study-card p-5 sm:p-6 space-y-3">
+          <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 dark:border-slate-800 pb-2.5">
+            <h3 class="font-display font-bold text-base text-slate-900 dark:text-white flex items-center gap-2">
+              <span class="w-6 h-6 rounded-full bg-slate-800 text-white flex items-center justify-center font-mono text-xs">Q28</span>
+              <span>Scenario: Multi-Failure Database Unreachable After Move</span>
+            </h3>
+            <span class="slide-badge">M5 Slide 40 &amp; 41 · Worked Example</span>
+          </div>
+          <p class="text-xs sm:text-sm text-slate-700 dark:text-slate-300">
+            <strong>Scenario:</strong> After overnight updates, office apps fail to reach <code class="hl-code">db.internal.example.com</code> on port 5432. DNS lookup gives NXDOMAIN, and connecting directly by IP times out. What are the two root causes?
+          </p>
+          <div class="p-3.5 rounded-lg bg-emerald-50/80 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-900/60 text-xs sm:text-sm space-y-1">
+            <div class="flex items-center gap-2">
+              <span class="font-mono text-[11px] font-bold text-emerald-800 dark:text-emerald-300 uppercase">Answer Key (1–3 Words):</span>
+              <span class="hl-green font-bold text-emerald-950 dark:text-emerald-100 text-sm sm:text-base">Missing Forwarder &amp; SG</span>
+            </div>
+            <p class="text-slate-600 dark:text-slate-400 text-xs">
+              <strong>Short Rationale:</strong> Office DNS lacks conditional forwarding for the new zone (NXDOMAIN), AND database Security Group omitted the office CIDR rule (Timeout).
+            </p>
+          </div>
+        </article>
+      </section>
+
+
+      <!-- ======================================================== -->
+      <!-- SECTION 5: MODULE 6 — SECURING CLOUD RESOURCES (Q29–Q35) -->
+      <!-- ======================================================== -->
+      <section id="part-5" class="space-y-6">
+        <div class="border-b border-slate-200 dark:border-slate-800 pb-3 flex items-center justify-between">
+          <div>
+            <div class="flex items-center gap-2 mb-1">
+              <span class="px-2.5 py-0.5 rounded bg-slate-700 text-white font-mono text-xs font-bold uppercase tracking-wider">Part 5</span>
+              <span class="font-mono text-xs text-sky-600 dark:text-sky-400 font-semibold">Module 6 · Securing Cloud Resources</span>
+            </div>
+            <h2 class="font-display text-xl sm:text-2xl font-bold text-slate-900 dark:text-white">
+              Module 6 Scenario Questions (Q29–Q35)
+            </h2>
+          </div>
+          <span class="font-mono text-xs text-slate-400 font-bold">7 Questions</span>
+        </div>
+
+        <!-- QUESTION 29 -->
+        <article class="study-card p-5 sm:p-6 space-y-3">
+          <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 dark:border-slate-800 pb-2.5">
+            <h3 class="font-display font-bold text-base text-slate-900 dark:text-white flex items-center gap-2">
+              <span class="w-6 h-6 rounded-full bg-slate-800 text-white flex items-center justify-center font-mono text-xs">Q29</span>
+              <span>Scenario: Cloud Access Key Committed to Public GitHub</span>
+            </h3>
+            <span class="slide-badge">M6 Slide 40 · Case 1</span>
+          </div>
+          <p class="text-xs sm:text-sm text-slate-700 dark:text-slate-300">
+            <strong>Scenario:</strong> A student developer accidentally pushes a class coding project to a public GitHub repository. The commit contains a long-lived cloud account access key. What is the fundamental security principle and the immediate first action?
+          </p>
+          <div class="p-3.5 rounded-lg bg-emerald-50/80 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-900/60 text-xs sm:text-sm space-y-1">
+            <div class="flex items-center gap-2">
+              <span class="font-mono text-[11px] font-bold text-emerald-800 dark:text-emerald-300 uppercase">Answer Key (1–3 Words):</span>
+              <span class="hl-green font-bold text-emerald-950 dark:text-emerald-100 text-sm sm:text-base">Revoke Key Immediately</span>
+            </div>
+            <p class="text-slate-600 dark:text-slate-400 text-xs">
+              <strong>Short Rationale:</strong> Deactivate the key in the console at once, then query CloudTrail audit logs to see if unauthorized compute was launched.
+            </p>
+          </div>
+        </article>
+
+        <!-- QUESTION 30 -->
+        <article class="study-card p-5 sm:p-6 space-y-3">
+          <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 dark:border-slate-800 pb-2.5">
+            <h3 class="font-display font-bold text-base text-slate-900 dark:text-white flex items-center gap-2">
+              <span class="w-6 h-6 rounded-full bg-slate-800 text-white flex items-center justify-center font-mono text-xs">Q30</span>
+              <span>Scenario: Audit Logging Disabled at 02:14 Last Night</span>
+            </h3>
+            <span class="slide-badge">M6 Slide 40 · Case 2</span>
+          </div>
+          <p class="text-xs sm:text-sm text-slate-700 dark:text-slate-300">
+            <strong>Scenario:</strong> A morning security review discovers that management audit logging (AWS CloudTrail) was mysteriously disabled at 02:14 last night. What is the principle at stake and the first action?
+          </p>
+          <div class="p-3.5 rounded-lg bg-emerald-50/80 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-900/60 text-xs sm:text-sm space-y-1">
+            <div class="flex items-center gap-2">
+              <span class="font-mono text-[11px] font-bold text-emerald-800 dark:text-emerald-300 uppercase">Answer Key (1–3 Words):</span>
+              <span class="hl-green font-bold text-emerald-950 dark:text-emerald-100 text-sm sm:text-base">Treat as Incident</span>
+            </div>
+            <p class="text-slate-600 dark:text-slate-400 text-xs">
+              <strong>Short Rationale:</strong> Intruders disable logging to hide traces; immediately treat as a security incident, re-enable logging, and identify the rogue principal.
+            </p>
+          </div>
+        </article>
+
+        <!-- QUESTION 31 -->
+        <article class="study-card p-5 sm:p-6 space-y-3">
+          <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 dark:border-slate-800 pb-2.5">
+            <h3 class="font-display font-bold text-base text-slate-900 dark:text-white flex items-center gap-2">
+              <span class="w-6 h-6 rounded-full bg-slate-800 text-white flex items-center justify-center font-mono text-xs">Q31</span>
+              <span>Scenario: Test Database Holding Real Customer Production Data</span>
+            </h3>
+            <span class="slide-badge">M6 Slide 40 · Case 3</span>
+          </div>
+          <p class="text-xs sm:text-sm text-slate-700 dark:text-slate-300">
+            <strong>Scenario:</strong> A software development team clones the entire production database with real customer credit card numbers and addresses into a testing environment. What principle is violated, and what must be done?
+          </p>
+          <div class="p-3.5 rounded-lg bg-emerald-50/80 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-900/60 text-xs sm:text-sm space-y-1">
+            <div class="flex items-center gap-2">
+              <span class="font-mono text-[11px] font-bold text-emerald-800 dark:text-emerald-300 uppercase">Answer Key (1–3 Words):</span>
+              <span class="hl-green font-bold text-emerald-950 dark:text-emerald-100 text-sm sm:text-base">Data Masking</span>
+            </div>
+            <p class="text-slate-600 dark:text-slate-400 text-xs">
+              <strong>Short Rationale:</strong> Production PII must never reside in test environments; delete the copy and replace with synthetic or masked data (Data Minimization).
+            </p>
+          </div>
+        </article>
+
+        <!-- QUESTION 32 -->
+        <article class="study-card p-5 sm:p-6 space-y-3">
+          <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 dark:border-slate-800 pb-2.5">
+            <h3 class="font-display font-bold text-base text-slate-900 dark:text-white flex items-center gap-2">
+              <span class="w-6 h-6 rounded-full bg-slate-800 text-white flex items-center justify-center font-mono text-xs">Q32</span>
+              <span>Scenario: Critical Zero-Day CVE on Public Web Servers</span>
+            </h3>
+            <span class="slide-badge">M6 Slide 40 · Case 4</span>
+          </div>
+          <p class="text-xs sm:text-sm text-slate-700 dark:text-slate-300">
+            <strong>Scenario:</strong> A critical remote code execution CVE is published for the web server software running across an organization's public instances. What is the immediate first action?
+          </p>
+          <div class="p-3.5 rounded-lg bg-emerald-50/80 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-900/60 text-xs sm:text-sm space-y-1">
+            <div class="flex items-center gap-2">
+              <span class="font-mono text-[11px] font-bold text-emerald-800 dark:text-emerald-300 uppercase">Answer Key (1–3 Words):</span>
+              <span class="hl-green font-bold text-emerald-950 dark:text-emerald-100 text-sm sm:text-base">Patch Public Machines</span>
+            </div>
+            <p class="text-slate-600 dark:text-slate-400 text-xs">
+              <strong>Short Rationale:</strong> Practice patching by business risk: patch internet-exposed machines first within days, apply a WAF rule, then patch internal tiers.
+            </p>
+          </div>
+        </article>
+
+        <!-- QUESTION 33 -->
+        <article class="study-card p-5 sm:p-6 space-y-3">
+          <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 dark:border-slate-800 pb-2.5">
+            <h3 class="font-display font-bold text-base text-slate-900 dark:text-white flex items-center gap-2">
+              <span class="w-6 h-6 rounded-full bg-slate-800 text-white flex items-center justify-center font-mono text-xs">Q33</span>
+              <span>Scenario: Storing Turkish Customer Data Abroad</span>
+            </h3>
+            <span class="slide-badge">M6 Slide 40 · Case 5</span>
+          </div>
+          <p class="text-xs sm:text-sm text-slate-700 dark:text-slate-300">
+            <strong>Scenario:</strong> A company operating in Istanbul plans to store Turkish customer personal data in an AWS Frankfurt or Azure Ireland cloud region. What compliance requirement applies?
+          </p>
+          <div class="p-3.5 rounded-lg bg-emerald-50/80 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-900/60 text-xs sm:text-sm space-y-1">
+            <div class="flex items-center gap-2">
+              <span class="font-mono text-[11px] font-bold text-emerald-800 dark:text-emerald-300 uppercase">Answer Key (1–3 Words):</span>
+              <span class="hl-green font-bold text-emerald-950 dark:text-emerald-100 text-sm sm:text-base">KVKK Transfer Abroad</span>
+            </div>
+            <p class="text-slate-600 dark:text-slate-400 text-xs">
+              <strong>Short Rationale:</strong> Enforces data sovereignty: map all cross-border data flows, execute standard contractual clauses, and notify the KVKK board.
+            </p>
+          </div>
+        </article>
+
+        <!-- QUESTION 34 -->
+        <article class="study-card p-5 sm:p-6 space-y-3">
+          <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 dark:border-slate-800 pb-2.5">
+            <h3 class="font-display font-bold text-base text-slate-900 dark:text-white flex items-center gap-2">
+              <span class="w-6 h-6 rounded-full bg-slate-800 text-white flex items-center justify-center font-mono text-xs">Q34</span>
+              <span>Scenario: Capital One Breach via Cloud Metadata Service</span>
+            </h3>
+            <span class="slide-badge">M6 Slide 39 · Case Study</span>
+          </div>
+          <p class="text-xs sm:text-sm text-slate-700 dark:text-slate-300">
+            <strong>Scenario:</strong> In the 2019 Capital One breach, an attacker exploited an SSRF vulnerability in a WAF to query the internal metadata IP (<code class="hl-code">169.254.169.254</code>) and steal role credentials. What cloud defense stops this attack?
+          </p>
+          <div class="p-3.5 rounded-lg bg-emerald-50/80 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-900/60 text-xs sm:text-sm space-y-1">
+            <div class="flex items-center gap-2">
+              <span class="font-mono text-[11px] font-bold text-emerald-800 dark:text-emerald-300 uppercase">Answer Key (1–3 Words):</span>
+              <span class="hl-green font-bold text-emerald-950 dark:text-emerald-100 text-sm sm:text-base">IMDSv2</span>
+            </div>
+            <p class="text-slate-600 dark:text-slate-400 text-xs">
+              <strong>Short Rationale:</strong> IMDSv2 enforces an HTTP PUT session token that SSRF proxies cannot forge, neutralizing metadata credential exfiltration.
+            </p>
+          </div>
+        </article>
+
+        <!-- QUESTION 35 -->
+        <article class="study-card p-5 sm:p-6 space-y-3">
+          <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 dark:border-slate-800 pb-2.5">
+            <h3 class="font-display font-bold text-base text-slate-900 dark:text-white flex items-center gap-2">
+              <span class="w-6 h-6 rounded-full bg-slate-800 text-white flex items-center justify-center font-mono text-xs">Q35</span>
+              <span>Scenario: Calculating Annualized Loss Expectancy (ALE)</span>
+            </h3>
+            <span class="slide-badge">M6 Slide 14 · Worked Example</span>
+          </div>
+          <p class="text-xs sm:text-sm text-slate-700 dark:text-slate-300">
+            <strong>Scenario:</strong> A customer database is valued at $4,000,000. An outage causes half the value to be lost (SLE = $2,000,000). Historical rate of occurrence is estimated at once every 10 years (ARO = 0.1). What is the Annualized Loss Expectancy?
+          </p>
+          <div class="p-3.5 rounded-lg bg-emerald-50/80 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-900/60 text-xs sm:text-sm space-y-1">
+            <div class="flex items-center gap-2">
+              <span class="font-mono text-[11px] font-bold text-emerald-800 dark:text-emerald-300 uppercase">Answer Key (1–3 Words):</span>
+              <span class="hl-green font-bold text-emerald-950 dark:text-emerald-100 text-sm sm:text-base">$200,000 / Year</span>
+            </div>
+            <p class="text-slate-600 dark:text-slate-400 text-xs">
+              <strong>Short Rationale:</strong> $	ext{ALE} = 	ext{SLE} 	imes 	ext{ARO} = $2,000,000 	imes 0.1 = $200,000$. A security control costing $50k/yr is easily cost-justified.
+            </p>
+          </div>
+        </article>
+      </section>
+
+
+      <!-- ======================================================== -->
+      <!-- SECTION 6: MODULE 7 — IDENTITY & ACCESS MANAGEMENT (Q36–Q42) -->
+      <!-- ======================================================== -->
+      <section id="part-6" class="space-y-6">
+        <div class="border-b border-slate-200 dark:border-slate-800 pb-3 flex items-center justify-between">
+          <div>
+            <div class="flex items-center gap-2 mb-1">
+              <span class="px-2.5 py-0.5 rounded bg-slate-700 text-white font-mono text-xs font-bold uppercase tracking-wider">Part 6</span>
+              <span class="font-mono text-xs text-sky-600 dark:text-sky-400 font-semibold">Module 7 · Identity and Access Management (IAM)</span>
+            </div>
+            <h2 class="font-display text-xl sm:text-2xl font-bold text-slate-900 dark:text-white">
+              Module 7 Scenario Questions (Q36–Q42)
+            </h2>
+          </div>
+          <span class="font-mono text-xs text-slate-400 font-bold">7 Questions</span>
+        </div>
+
+        <!-- QUESTION 36 -->
+        <article class="study-card p-5 sm:p-6 space-y-3">
+          <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 dark:border-slate-800 pb-2.5">
+            <h3 class="font-display font-bold text-base text-slate-900 dark:text-white flex items-center gap-2">
+              <span class="w-6 h-6 rounded-full bg-slate-800 text-white flex items-center justify-center font-mono text-xs">Q36</span>
+              <span>Scenario: Five Developers Sharing One Administrator Login</span>
+            </h3>
+            <span class="slide-badge">M7 Slide 40 · Case 1</span>
+          </div>
+          <p class="text-xs sm:text-sm text-slate-700 dark:text-slate-300">
+            <strong>Scenario:</strong> Five software developers share a single cloud root/administrator login "to save time and share credentials". What fundamental IAM principle is violated, and what is the fix?
+          </p>
+          <div class="p-3.5 rounded-lg bg-emerald-50/80 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-900/60 text-xs sm:text-sm space-y-1">
+            <div class="flex items-center gap-2">
+              <span class="font-mono text-[11px] font-bold text-emerald-800 dark:text-emerald-300 uppercase">Answer Key (1–3 Words):</span>
+              <span class="hl-green font-bold text-emerald-950 dark:text-emerald-100 text-sm sm:text-base">Individual IAM Identities</span>
+            </div>
+            <p class="text-slate-600 dark:text-slate-400 text-xs">
+              <strong>Short Rationale:</strong> Shared accounts eliminate individual accountability and auditability; assign each developer a unique identity in a role-based group with mandatory MFA.
+            </p>
+          </div>
+        </article>
+
+        <!-- QUESTION 37 -->
+        <article class="study-card p-5 sm:p-6 space-y-3">
+          <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 dark:border-slate-800 pb-2.5">
+            <h3 class="font-display font-bold text-base text-slate-900 dark:text-white flex items-center gap-2">
+              <span class="w-6 h-6 rounded-full bg-slate-800 text-white flex items-center justify-center font-mono text-xs">Q37</span>
+              <span>Scenario: Staff Member Signs In Six Months After Leaving</span>
+            </h3>
+            <span class="slide-badge">M7 Slide 40 · Case 2</span>
+          </div>
+          <p class="text-xs sm:text-sm text-slate-700 dark:text-slate-300">
+            <strong>Scenario:</strong> An IT audit discovers that a former employee who left the company six months ago is still actively signing in to the corporate cloud management console. What lifecycle process failed, and what is the permanent architectural solution?
+          </p>
+          <div class="p-3.5 rounded-lg bg-emerald-50/80 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-900/60 text-xs sm:text-sm space-y-1">
+            <div class="flex items-center gap-2">
+              <span class="font-mono text-[11px] font-bold text-emerald-800 dark:text-emerald-300 uppercase">Answer Key (1–3 Words):</span>
+              <span class="hl-green font-bold text-emerald-950 dark:text-emerald-100 text-sm sm:text-base">Automated Offboarding (SCIM)</span>
+            </div>
+            <p class="text-slate-600 dark:text-slate-400 text-xs">
+              <strong>Short Rationale:</strong> A missing leaver workflow left orphaned credentials; integrate cloud IAM with central HR IdP using SCIM protocol to automate immediate deprovisioning.
+            </p>
+          </div>
+        </article>
+
+        <!-- QUESTION 38 -->
+        <article class="study-card p-5 sm:p-6 space-y-3">
+          <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 dark:border-slate-800 pb-2.5">
+            <h3 class="font-display font-bold text-base text-slate-900 dark:text-white flex items-center gap-2">
+              <span class="w-6 h-6 rounded-full bg-slate-800 text-white flex items-center justify-center font-mono text-xs">Q38</span>
+              <span>Scenario: Backup Script with Hardcoded Access Key in Plain File</span>
+            </h3>
+            <span class="slide-badge">M7 Slide 40 · Case 3</span>
+          </div>
+          <p class="text-xs sm:text-sm text-slate-700 dark:text-slate-300">
+            <strong>Scenario:</strong> A nightly database backup script running on a cloud virtual machine authenticates to object storage using an AWS access key and secret key saved in a plain text configuration file. What is the security flaw and the modern cloud fix?
+          </p>
+          <div class="p-3.5 rounded-lg bg-emerald-50/80 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-900/60 text-xs sm:text-sm space-y-1">
+            <div class="flex items-center gap-2">
+              <span class="font-mono text-[11px] font-bold text-emerald-800 dark:text-emerald-300 uppercase">Answer Key (1–3 Words):</span>
+              <span class="hl-green font-bold text-emerald-950 dark:text-emerald-100 text-sm sm:text-base">IAM Instance Role</span>
+            </div>
+            <p class="text-slate-600 dark:text-slate-400 text-xs">
+              <strong>Short Rationale:</strong> Long-lived static keys leak easily; attach an IAM instance role / managed identity to the VM so the cloud issues short-lived, auto-rotating temporary credentials.
+            </p>
+          </div>
+        </article>
+
+        <!-- QUESTION 39 -->
+        <article class="study-card p-5 sm:p-6 space-y-3">
+          <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 dark:border-slate-800 pb-2.5">
+            <h3 class="font-display font-bold text-base text-slate-900 dark:text-white flex items-center gap-2">
+              <span class="w-6 h-6 rounded-full bg-slate-800 text-white flex items-center justify-center font-mono text-xs">Q39</span>
+              <span>Scenario: Cloud Root Account Used Daily Without MFA</span>
+            </h3>
+            <span class="slide-badge">M7 Slide 40 · Case 4</span>
+          </div>
+          <p class="text-xs sm:text-sm text-slate-700 dark:text-slate-300">
+            <strong>Scenario:</strong> Cloud administrators routinely log in with the root account every day to perform routine maintenance tasks without any multi-factor authentication (MFA). What is the mandatory architectural fix?
+          </p>
+          <div class="p-3.5 rounded-lg bg-emerald-50/80 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-900/60 text-xs sm:text-sm space-y-1">
+            <div class="flex items-center gap-2">
+              <span class="font-mono text-[11px] font-bold text-emerald-800 dark:text-emerald-300 uppercase">Answer Key (1–3 Words):</span>
+              <span class="hl-green font-bold text-emerald-950 dark:text-emerald-100 text-sm sm:text-base">Lock Root Away</span>
+            </div>
+            <p class="text-slate-600 dark:text-slate-400 text-xs">
+              <strong>Short Rationale:</strong> The root account possesses unrestricted blast radius; secure it with hardware MFA, lock credentials away, and conduct daily admin tasks via delegated IAM roles.
+            </p>
+          </div>
+        </article>
+
+        <!-- QUESTION 40 -->
+        <article class="study-card p-5 sm:p-6 space-y-3">
+          <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 dark:border-slate-800 pb-2.5">
+            <h3 class="font-display font-bold text-base text-slate-900 dark:text-white flex items-center gap-2">
+              <span class="w-6 h-6 rounded-full bg-slate-800 text-white flex items-center justify-center font-mono text-xs">Q40</span>
+              <span>Scenario: QA Tester Retains DB Delete Rights Across Three Team Moves</span>
+            </h3>
+            <span class="slide-badge">M7 Slide 40 · Case 5</span>
+          </div>
+          <p class="text-xs sm:text-sm text-slate-700 dark:text-slate-300">
+            <strong>Scenario:</strong> Over three years, an employee transitioned through three departments (Support &rarr; QA Tester &rarr; Frontend Dev) and still retains permissions to drop production databases granted during their very first assignment. What is this security defect and how is it eliminated?
+          </p>
+          <div class="p-3.5 rounded-lg bg-emerald-50/80 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-900/60 text-xs sm:text-sm space-y-1">
+            <div class="flex items-center gap-2">
+              <span class="font-mono text-[11px] font-bold text-emerald-800 dark:text-emerald-300 uppercase">Answer Key (1–3 Words):</span>
+              <span class="hl-green font-bold text-emerald-950 dark:text-emerald-100 text-sm sm:text-base">Privilege Creep (Reviews)</span>
+            </div>
+            <p class="text-slate-600 dark:text-slate-400 text-xs">
+              <strong>Short Rationale:</strong> Privilege creep occurs when employees accumulate privileges over time; enforce formal Joiners-Movers-Leavers (JML) workflows and periodic access recertification reviews.
+            </p>
+          </div>
+        </article>
+
+        <!-- QUESTION 41 -->
+        <article class="study-card p-5 sm:p-6 space-y-3">
+          <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 dark:border-slate-800 pb-2.5">
+            <h3 class="font-display font-bold text-base text-slate-900 dark:text-white flex items-center gap-2">
+              <span class="w-6 h-6 rounded-full bg-slate-800 text-white flex items-center justify-center font-mono text-xs">Q41</span>
+              <span>Scenario: IAM Policy Evaluation Conflict for Mehmet</span>
+            </h3>
+            <span class="slide-badge">M7 Slide 24–25 · Policy Evaluation</span>
+          </div>
+          <p class="text-xs sm:text-sm text-slate-700 dark:text-slate-300">
+            <strong>Scenario:</strong> User Mehmet is attached to Policy 1 (<code class="hl-code">Allow Read in shop-reports</code>), Policy 2 (<code class="hl-code">Allow Read &amp; Delete in all buckets</code>), and an organizational SCP Policy 3 (<code class="hl-code">Deny Delete in audit-logs</code>). Mehmet issues an API call to delete an object inside the <code class="hl-code">audit-logs</code> bucket. Is the action permitted or denied, and why?
+          </p>
+          <div class="p-3.5 rounded-lg bg-emerald-50/80 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-900/60 text-xs sm:text-sm space-y-1">
+            <div class="flex items-center gap-2">
+              <span class="font-mono text-[11px] font-bold text-emerald-800 dark:text-emerald-300 uppercase">Answer Key (1–3 Words):</span>
+              <span class="hl-green font-bold text-emerald-950 dark:text-emerald-100 text-sm sm:text-base">No (Explicit Deny)</span>
+            </div>
+            <p class="text-slate-600 dark:text-slate-400 text-xs">
+              <strong>Short Rationale:</strong> In cloud IAM evaluation logic, an explicit deny always beats any allow statement regardless of where it is declared.
+            </p>
+          </div>
+        </article>
+
+        <!-- QUESTION 42 -->
+        <article class="study-card p-5 sm:p-6 space-y-3">
+          <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 dark:border-slate-800 pb-2.5">
+            <h3 class="font-display font-bold text-base text-slate-900 dark:text-white flex items-center gap-2">
+              <span class="w-6 h-6 rounded-full bg-slate-800 text-white flex items-center justify-center font-mono text-xs">Q42</span>
+              <span>Scenario: Password Combined with Mother's Maiden Name</span>
+            </h3>
+            <span class="slide-badge">M7 Slide 12 · Exam Trap</span>
+          </div>
+          <p class="text-xs sm:text-sm text-slate-700 dark:text-slate-300">
+            <strong>Scenario:</strong> A cloud application login screen prompts users for their password, followed by a security challenge question ("What was your mother's maiden name?"). Does this configuration satisfy Multi-Factor Authentication (MFA)?
+          </p>
+          <div class="p-3.5 rounded-lg bg-emerald-50/80 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-900/60 text-xs sm:text-sm space-y-1">
+            <div class="flex items-center gap-2">
+              <span class="font-mono text-[11px] font-bold text-emerald-800 dark:text-emerald-300 uppercase">Answer Key (1–3 Words):</span>
+              <span class="hl-green font-bold text-emerald-950 dark:text-emerald-100 text-sm sm:text-base">No, Single-Factor</span>
+            </div>
+            <p class="text-slate-600 dark:text-slate-400 text-xs">
+              <strong>Short Rationale:</strong> Both questions represent the same factor category ("something you know"); true MFA strictly requires two or more distinct factor types.
+            </p>
+          </div>
+        </article>
+      </section>
+
+
+      <!-- ======================================================== -->
+      <!-- SECTION 7: 42-QUESTION RAPID-RECALL MASTER TABLE -->
+      <!-- ======================================================== -->
+      <section id="cheat-sheet" class="space-y-6">
+        <div class="border-b border-slate-200 dark:border-slate-800 pb-3 flex items-center justify-between">
+          <div>
+            <div class="flex items-center gap-2 mb-1">
+              <span class="px-2.5 py-0.5 rounded bg-amber-500 text-slate-950 font-mono text-xs font-bold uppercase tracking-wider">Fast Cram</span>
+              <span class="font-mono text-xs text-amber-600 dark:text-amber-400 font-semibold">Pre-Exam Rapid Recall</span>
+            </div>
+            <h2 class="font-display text-xl sm:text-2xl font-bold text-slate-900 dark:text-white">
+              The 42 Scenario Questions Master Rapid-Recall Table
+            </h2>
+          </div>
+          <span class="font-mono text-xs text-slate-400 font-bold">42 Answers</span>
+        </div>
+
+        <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+          The table below organizes all <span class="hl-yellow font-semibold">42 in-class scenario questions</span> with their exact <span class="hl-green font-bold">1 to 3 word answer keys</span> and primary architectural rules. Review this table immediately before the exam for instant recall.
+        </p>
+
+        <!-- MASTER 42 TABLE -->
+        <div class="study-card overflow-hidden">
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs border-collapse">
+              <thead>
+                <tr class="bg-slate-100 dark:bg-slate-900/90 text-slate-700 dark:text-slate-300 border-b border-slate-200 dark:border-slate-800 font-mono">
+                  <th class="p-3 w-12 text-center">#</th>
+                  <th class="p-3 w-28">Module &amp; Slide</th>
+                  <th class="p-3 min-w-[200px]">Scenario Core Context</th>
+                  <th class="p-3 w-48 text-emerald-700 dark:text-emerald-400 font-bold">1–3 Word Answer Key</th>
+                  <th class="p-3 min-w-[220px]">Core Architectural Rule</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-100 dark:divide-slate-800 font-sans">
+                <!-- PART 1: M1 & M2 (Q1-Q7) -->
+                <tr class="bg-slate-50/70 dark:bg-slate-900/40">
+                  <td class="p-3 font-mono font-bold text-center text-slate-800 dark:text-slate-200">Q1</td>
+                  <td class="p-3 font-mono text-[11px] text-slate-500">M1 · S30 Case 1</td>
+                  <td class="p-3 text-slate-800 dark:text-slate-200">Hospital patient health records under strict KVKK with steady load</td>
+                  <td class="p-3 font-mono font-bold text-emerald-600 dark:text-emerald-400"><span class="hl-green">Private Cloud</span></td>
+                  <td class="p-3 text-slate-600 dark:text-slate-400 text-[11px]">Strict compliance requires dedicated infrastructure isolation.</td>
+                </tr>
+                <tr>
+                  <td class="p-3 font-mono font-bold text-center text-slate-800 dark:text-slate-200">Q2</td>
+                  <td class="p-3 font-mono text-[11px] text-slate-500">M1 · S30 Case 2</td>
+                  <td class="p-3 text-slate-800 dark:text-slate-200">Indie game startup launching next month with 10 to 500,000 players</td>
+                  <td class="p-3 font-mono font-bold text-emerald-600 dark:text-emerald-400"><span class="hl-green">Public Cloud</span></td>
+                  <td class="p-3 text-slate-600 dark:text-slate-400 text-[11px]">Fluctuating demand requires elastic capacity with zero upfront CapEx.</td>
+                </tr>
+                <tr class="bg-slate-50/70 dark:bg-slate-900/40">
+                  <td class="p-3 font-mono font-bold text-center text-slate-800 dark:text-slate-200">Q3</td>
+                  <td class="p-3 font-mono text-[11px] text-slate-500">M1 · S30 Case 3</td>
+                  <td class="p-3 text-slate-800 dark:text-slate-200">Bank main financial ledger on-premises, mobile banking web frontend in cloud</td>
+                  <td class="p-3 font-mono font-bold text-emerald-600 dark:text-emerald-400"><span class="hl-green">Hybrid Cloud</span></td>
+                  <td class="p-3 text-slate-600 dark:text-slate-400 text-[11px]">Combines internal audited core with elastic public customer edge.</td>
+                </tr>
+                <tr>
+                  <td class="p-3 font-mono font-bold text-center text-slate-800 dark:text-slate-200">Q4</td>
+                  <td class="p-3 font-mono text-[11px] text-slate-500">M1 · S30 Case 4</td>
+                  <td class="p-3 text-slate-800 dark:text-slate-200">Five universities jointly fund and share a supercomputer for genomics</td>
+                  <td class="p-3 font-mono font-bold text-emerald-600 dark:text-emerald-400"><span class="hl-green">Community Cloud</span></td>
+                  <td class="p-3 text-slate-600 dark:text-slate-400 text-[11px]">Shared infrastructure among organizations with shared mission.</td>
+                </tr>
+                <tr class="bg-slate-50/70 dark:bg-slate-900/40">
+                  <td class="p-3 font-mono font-bold text-center text-slate-800 dark:text-slate-200">Q5</td>
+                  <td class="p-3 font-mono text-[11px] text-slate-500">M1 · S30 Case 5</td>
+                  <td class="p-3 text-slate-800 dark:text-slate-200">Enterprise uses Cloud A for cheap video streaming and Cloud B for AI analytics</td>
+                  <td class="p-3 font-mono font-bold text-emerald-600 dark:text-emerald-400"><span class="hl-green">Multi-Cloud</span></td>
+                  <td class="p-3 text-slate-600 dark:text-slate-400 text-[11px]">Avoids single-vendor lock-in and leverages specialized services.</td>
+                </tr>
+                <tr>
+                  <td class="p-3 font-mono font-bold text-center text-slate-800 dark:text-slate-200">Q6</td>
+                  <td class="p-3 font-mono text-[11px] text-slate-500">M1 · S26 Service</td>
+                  <td class="p-3 text-slate-800 dark:text-slate-200">Legacy Windows accounting app requiring specific kernel driver</td>
+                  <td class="p-3 font-mono font-bold text-emerald-600 dark:text-emerald-400"><span class="hl-green">IaaS</span></td>
+                  <td class="p-3 text-slate-600 dark:text-slate-400 text-[11px]">OS and kernel level control is only provided in IaaS virtual machines.</td>
+                </tr>
+                <tr class="bg-slate-50/70 dark:bg-slate-900/40">
+                  <td class="p-3 font-mono font-bold text-center text-slate-800 dark:text-slate-200">Q7</td>
+                  <td class="p-3 font-mono text-[11px] text-slate-500">M1 · S17 Essential</td>
+                  <td class="p-3 text-slate-800 dark:text-slate-200">University course registration experiences a 40x traffic surge for one week</td>
+                  <td class="p-3 font-mono font-bold text-emerald-600 dark:text-emerald-400"><span class="hl-green">Rapid Elasticity</span></td>
+                  <td class="p-3 text-slate-600 dark:text-slate-400 text-[11px]">Autonomic provisioning outward and de-provisioning when load subsides.</td>
+                </tr>
+
+                <!-- PART 2: M3 (Q8-Q14) -->
+                <tr>
+                  <td class="p-3 font-mono font-bold text-center text-slate-800 dark:text-slate-200">Q8</td>
+                  <td class="p-3 font-mono text-[11px] text-slate-500">M3 · S13 Strategy 1</td>
+                  <td class="p-3 text-slate-800 dark:text-slate-200">Internal timesheet app, datacenter lease ends in 3 months</td>
+                  <td class="p-3 font-mono font-bold text-emerald-600 dark:text-emerald-400"><span class="hl-green">Rehost (Lift &amp; Shift)</span></td>
+                  <td class="p-3 text-slate-600 dark:text-slate-400 text-[11px]">Fastest migration path without modifying application code.</td>
+                </tr>
+                <tr class="bg-slate-50/70 dark:bg-slate-900/40">
+                  <td class="p-3 font-mono font-bold text-center text-slate-800 dark:text-slate-200">Q9</td>
+                  <td class="p-3 font-mono text-[11px] text-slate-500">M3 · S13 Strategy 2</td>
+                  <td class="p-3 text-slate-800 dark:text-slate-200">On-premise email server requires constant maintenance, patching, and spam filtering</td>
+                  <td class="p-3 font-mono font-bold text-emerald-600 dark:text-emerald-400"><span class="hl-green">Repurchase (Drop &amp; Shop)</span></td>
+                  <td class="p-3 text-slate-600 dark:text-slate-400 text-[11px]">Replace commodity workloads with turnkey SaaS (M365 / Google Workspace).</td>
+                </tr>
+                <tr>
+                  <td class="p-3 font-mono font-bold text-center text-slate-800 dark:text-slate-200">Q10</td>
+                  <td class="p-3 font-mono text-[11px] text-slate-500">M3 · S13 Strategy 3</td>
+                  <td class="p-3 text-slate-800 dark:text-slate-200">Old reporting dashboard has zero logins and no data updates in 18 months</td>
+                  <td class="p-3 font-mono font-bold text-emerald-600 dark:text-emerald-400"><span class="hl-green">Retire</span></td>
+                  <td class="p-3 text-slate-600 dark:text-slate-400 text-[11px]">Archive data and shut down useless zombie systems to stop costs.</td>
+                </tr>
+                <tr class="bg-slate-50/70 dark:bg-slate-900/40">
+                  <td class="p-3 font-mono font-bold text-center text-slate-800 dark:text-slate-200">Q11</td>
+                  <td class="p-3 font-mono text-[11px] text-slate-500">M3 · S13 Strategy 4</td>
+                  <td class="p-3 text-slate-800 dark:text-slate-200">Core e-commerce website must scale microservices dynamically for Black Friday</td>
+                  <td class="p-3 font-mono font-bold text-emerald-600 dark:text-emerald-400"><span class="hl-green">Refactor (Re-architect)</span></td>
+                  <td class="p-3 text-slate-600 dark:text-slate-400 text-[11px]">Rewrite into cloud-native microservices and managed databases.</td>
+                </tr>
+                <tr>
+                  <td class="p-3 font-mono font-bold text-center text-slate-800 dark:text-slate-200">Q12</td>
+                  <td class="p-3 font-mono text-[11px] text-slate-500">M3 · S13 Strategy 5</td>
+                  <td class="p-3 text-slate-800 dark:text-slate-200">Specialized lab PC physically connected to legacy RS-232 medical equipment</td>
+                  <td class="p-3 font-mono font-bold text-emerald-600 dark:text-emerald-400"><span class="hl-green">Retain (Keep On-Prem)</span></td>
+                  <td class="p-3 text-slate-600 dark:text-slate-400 text-[11px]">Physical hardware dependencies make cloud migration technically impossible.</td>
+                </tr>
+                <tr class="bg-slate-50/70 dark:bg-slate-900/40">
+                  <td class="p-3 font-mono font-bold text-center text-slate-800 dark:text-slate-200">Q13</td>
+                  <td class="p-3 font-mono text-[11px] text-slate-500">M3 · S40 Disaster 1</td>
+                  <td class="p-3 text-slate-800 dark:text-slate-200">Online shopping site loses huge revenue per minute, zero data loss acceptable</td>
+                  <td class="p-3 font-mono font-bold text-emerald-600 dark:text-emerald-400"><span class="hl-green">Hot Site</span></td>
+                  <td class="p-3 text-slate-600 dark:text-slate-400 text-[11px]">Near-zero RPO and minutes RTO with real-time active synchronous replication.</td>
+                </tr>
+                <tr>
+                  <td class="p-3 font-mono font-bold text-center text-slate-800 dark:text-slate-200">Q14</td>
+                  <td class="p-3 font-mono text-[11px] text-slate-500">M3 · S40 Disaster 2</td>
+                  <td class="p-3 text-slate-800 dark:text-slate-200">University library catalogue can tolerate 24h downtime and 1 day of lost records</td>
+                  <td class="p-3 font-mono font-bold text-emerald-600 dark:text-emerald-400"><span class="hl-green">Cold Site</span></td>
+                  <td class="p-3 text-slate-600 dark:text-slate-400 text-[11px]">RPO 24 hours, RTO 24 to 48 hours; lowest cost recovery model.</td>
+                </tr>
+
+                <!-- PART 3: M4 (Q15-Q21) -->
+                <tr class="bg-slate-50/70 dark:bg-slate-900/40">
+                  <td class="p-3 font-mono font-bold text-center text-slate-800 dark:text-slate-200">Q15</td>
+                  <td class="p-3 font-mono text-[11px] text-slate-500">M4 · S20 Subnets 1</td>
+                  <td class="p-3 text-slate-800 dark:text-slate-200">Internet-facing student registration load balancer (ALB)</td>
+                  <td class="p-3 font-mono font-bold text-emerald-600 dark:text-emerald-400"><span class="hl-green">Public Subnet</span></td>
+                  <td class="p-3 text-slate-600 dark:text-slate-400 text-[11px]">Has direct Internet Gateway (<code class="hl-code">0.0.0.0/0 &rarr; igw</code>) route for public clients.</td>
+                </tr>
+                <tr>
+                  <td class="p-3 font-mono font-bold text-center text-slate-800 dark:text-slate-200">Q16</td>
+                  <td class="p-3 font-mono text-[11px] text-slate-500">M4 · S20 Subnets 2</td>
+                  <td class="p-3 text-slate-800 dark:text-slate-200">Core relational PostgreSQL database holding sensitive customer credit cards</td>
+                  <td class="p-3 font-mono font-bold text-emerald-600 dark:text-emerald-400"><span class="hl-green">Private Subnet</span></td>
+                  <td class="p-3 text-slate-600 dark:text-slate-400 text-[11px]">Strictly isolated with no internet gateway or public IP address.</td>
+                </tr>
+                <tr class="bg-slate-50/70 dark:bg-slate-900/40">
+                  <td class="p-3 font-mono font-bold text-center text-slate-800 dark:text-slate-200">Q17</td>
+                  <td class="p-3 font-mono text-[11px] text-slate-500">M4 · S20 Subnets 3</td>
+                  <td class="p-3 text-slate-800 dark:text-slate-200">Internal app backend needs to download OS security patches from ubuntu.com</td>
+                  <td class="p-3 font-mono font-bold text-emerald-600 dark:text-emerald-400"><span class="hl-green">Private Subnet (NAT)</span></td>
+                  <td class="p-3 text-slate-600 dark:text-slate-400 text-[11px]">Routes outbound through a NAT Gateway located in a public subnet.</td>
+                </tr>
+                <tr>
+                  <td class="p-3 font-mono font-bold text-center text-slate-800 dark:text-slate-200">Q18</td>
+                  <td class="p-3 font-mono text-[11px] text-slate-500">M4 · S20 Subnets 4</td>
+                  <td class="p-3 text-slate-800 dark:text-slate-200">Nightly reporting virtual machine reading files from cloud object storage (S3)</td>
+                  <td class="p-3 font-mono font-bold text-emerald-600 dark:text-emerald-400"><span class="hl-green">Private (VPC Endpoint)</span></td>
+                  <td class="p-3 text-slate-600 dark:text-slate-400 text-[11px]">Uses private Gateway/Interface VPC Endpoint with zero public internet exposure.</td>
+                </tr>
+                <tr class="bg-slate-50/70 dark:bg-slate-900/40">
+                  <td class="p-3 font-mono font-bold text-center text-slate-800 dark:text-slate-200">Q19</td>
+                  <td class="p-3 font-mono text-[11px] text-slate-500">M4 · S21 Subnetting</td>
+                  <td class="p-3 text-slate-800 dark:text-slate-200">VPC 10.20.0.0/16 divided into /24 subnets. Which subnet holds IP 10.20.3.77?</td>
+                  <td class="p-3 font-mono font-bold text-emerald-600 dark:text-emerald-400"><span class="hl-green">App-B Subnet</span></td>
+                  <td class="p-3 text-slate-600 dark:text-slate-400 text-[11px]">Third octet 3 identifies <code class="hl-code">10.20.3.0/24</code> (Zone-B Private Application Subnet).</td>
+                </tr>
+                <tr>
+                  <td class="p-3 font-mono font-bold text-center text-slate-800 dark:text-slate-200">Q20</td>
+                  <td class="p-3 font-mono text-[11px] text-slate-500">M4 · S12 Reserved</td>
+                  <td class="p-3 text-slate-800 dark:text-slate-200">How many usable virtual machine IP addresses in a /24 subnet in AWS/Azure?</td>
+                  <td class="p-3 font-mono font-bold text-emerald-600 dark:text-emerald-400"><span class="hl-green">251 Usable Hosts</span></td>
+                  <td class="p-3 text-slate-600 dark:text-slate-400 text-[11px]">$2^{(32-24)} - 5 = 256 - 5 = 251$ (reserves .0, .1 router, .2 DNS, .3 future, .255).</td>
+                </tr>
+                <tr class="bg-slate-50/70 dark:bg-slate-900/40">
+                  <td class="p-3 font-mono font-bold text-center text-slate-800 dark:text-slate-200">Q21</td>
+                  <td class="p-3 font-mono text-[11px] text-slate-500">M4 · S10 CIDR Range</td>
+                  <td class="p-3 text-slate-800 dark:text-slate-200">Does IP address 10.0.2.5 belong to CIDR block 10.0.0.0/23?</td>
+                  <td class="p-3 font-mono font-bold text-emerald-600 dark:text-emerald-400"><span class="hl-green">No (Out of Range)</span></td>
+                  <td class="p-3 text-slate-600 dark:text-slate-400 text-[11px]">A /23 covers 512 IPs: 10.0.0.0 to 10.0.1.255. 10.0.2.5 is outside.</td>
+                </tr>
+
+                <!-- PART 4: M5 (Q22-Q28) -->
+                <tr>
+                  <td class="p-3 font-mono font-bold text-center text-slate-800 dark:text-slate-200">Q22</td>
+                  <td class="p-3 font-mono text-[11px] text-slate-500">M5 · S15 Peering</td>
+                  <td class="p-3 text-slate-800 dark:text-slate-200">VPC-A peers with VPC-B, and VPC-B peers with VPC-C. Can A talk to C?</td>
+                  <td class="p-3 font-mono font-bold text-emerald-600 dark:text-emerald-400"><span class="hl-green">Non-Transitive Peering</span></td>
+                  <td class="p-3 text-slate-600 dark:text-slate-400 text-[11px]">VPC peering does not forward transit packets. Direct peer A&ndash;C or Transit Gateway needed.</td>
+                </tr>
+                <tr class="bg-slate-50/70 dark:bg-slate-900/40">
+                  <td class="p-3 font-mono font-bold text-center text-slate-800 dark:text-slate-200">Q23</td>
+                  <td class="p-3 font-mono text-[11px] text-slate-500">M5 · S10 VPN Firewall</td>
+                  <td class="p-3 text-slate-800 dark:text-slate-200">Office workstations reach cloud VM, but cloud VM cannot reach office printer over VPN</td>
+                  <td class="p-3 font-mono font-bold text-emerald-600 dark:text-emerald-400"><span class="hl-green">Office Inbound Firewall</span></td>
+                  <td class="p-3 text-slate-600 dark:text-slate-400 text-[11px]">Stateful firewall allows office-outbound response, but drops cloud-initiated inbound packets.</td>
+                </tr>
+                <tr>
+                  <td class="p-3 font-mono font-bold text-center text-slate-800 dark:text-slate-200">Q24</td>
+                  <td class="p-3 font-mono text-[11px] text-slate-500">M5 · S29 Diagnostics</td>
+                  <td class="p-3 text-slate-800 dark:text-slate-200">ping 10.20.1.5 times out with 100% loss, but https://10.20.1.5 opens instantly</td>
+                  <td class="p-3 font-mono font-bold text-emerald-600 dark:text-emerald-400"><span class="hl-green">ICMP Blocked</span></td>
+                  <td class="p-3 text-slate-600 dark:text-slate-400 text-[11px]">Firewalls drop ICMP echo requests while allowing TCP port 443 web traffic.</td>
+                </tr>
+                <tr class="bg-slate-50/70 dark:bg-slate-900/40">
+                  <td class="p-3 font-mono font-bold text-center text-slate-800 dark:text-slate-200">Q25</td>
+                  <td class="p-3 font-mono text-[11px] text-slate-500">M5 · S36 MTU &amp; VPN</td>
+                  <td class="p-3 text-slate-800 dark:text-slate-200">SSH &amp; small HTTP requests work over VPN, but large PDF file uploads hang indefinitely</td>
+                  <td class="p-3 font-mono font-bold text-emerald-600 dark:text-emerald-400"><span class="hl-green">MTU Mismatch (MSS)</span></td>
+                  <td class="p-3 text-slate-600 dark:text-slate-400 text-[11px]">VPN header overhead reduces MTU below 1500; requires TCP MSS clamping to 1360.</td>
+                </tr>
+                <tr>
+                  <td class="p-3 font-mono font-bold text-center text-slate-800 dark:text-slate-200">Q26</td>
+                  <td class="p-3 font-mono text-[11px] text-slate-500">M5 · S26 Handshake</td>
+                  <td class="p-3 text-slate-800 dark:text-slate-200">curl to port 8080 immediately returns Connection refused (TCP RST packet)</td>
+                  <td class="p-3 font-mono font-bold text-emerald-600 dark:text-emerald-400"><span class="hl-green">No Program Listening</span></td>
+                  <td class="p-3 text-slate-600 dark:text-slate-400 text-[11px]">OS received packet, but no daemon is bound to port 8080 (crashed or wrong port).</td>
+                </tr>
+                <tr class="bg-slate-50/70 dark:bg-slate-900/40">
+                  <td class="p-3 font-mono font-bold text-center text-slate-800 dark:text-slate-200">Q27</td>
+                  <td class="p-3 font-mono text-[11px] text-slate-500">M5 · S34 Bandwidth</td>
+                  <td class="p-3 text-slate-800 dark:text-slate-200">Transfer 2 TB of medical data nightly within an 8-hour window at 70% throughput</td>
+                  <td class="p-3 font-mono font-bold text-emerald-600 dark:text-emerald-400"><span class="hl-green">1 Gbps Link</span></td>
+                  <td class="p-3 text-slate-600 dark:text-slate-400 text-[11px]">Raw rate requires 555 Mbps; 1 Gbps dedicated link is the lowest standard speed that fits.</td>
+                </tr>
+                <tr>
+                  <td class="p-3 font-mono font-bold text-center text-slate-800 dark:text-slate-200">Q28</td>
+                  <td class="p-3 font-mono text-[11px] text-slate-500">M5 · S40 Worked Ex</td>
+                  <td class="p-3 text-slate-800 dark:text-slate-200">Office app fails to reach db.internal on 5432: NXDOMAIN and TCP timeout</td>
+                  <td class="p-3 font-mono font-bold text-emerald-600 dark:text-emerald-400"><span class="hl-green">Missing Forwarder &amp; SG</span></td>
+                  <td class="p-3 text-slate-600 dark:text-slate-400 text-[11px]">Two faults: office lacks inbound DNS endpoint; DB security group lacks office IP range.</td>
+                </tr>
+
+                <!-- PART 5: M6 (Q29-Q35) -->
+                <tr class="bg-slate-50/70 dark:bg-slate-900/40">
+                  <td class="p-3 font-mono font-bold text-center text-slate-800 dark:text-slate-200">Q29</td>
+                  <td class="p-3 font-mono text-[11px] text-slate-500">M6 · S40 Case 1</td>
+                  <td class="p-3 text-slate-800 dark:text-slate-200">Developer pushes cloud access key to public GitHub repository</td>
+                  <td class="p-3 font-mono font-bold text-emerald-600 dark:text-emerald-400"><span class="hl-green">Revoke Key Immediately</span></td>
+                  <td class="p-3 text-slate-600 dark:text-slate-400 text-[11px]">Invalidate key instantly in console, then inspect CloudTrail logs for unauthorized VMs.</td>
+                </tr>
+                <tr>
+                  <td class="p-3 font-mono font-bold text-center text-slate-800 dark:text-slate-200">Q30</td>
+                  <td class="p-3 font-mono text-[11px] text-slate-500">M6 · S40 Case 2</td>
+                  <td class="p-3 text-slate-800 dark:text-slate-200">CloudTrail audit logging was silently disabled at 02:14 last night</td>
+                  <td class="p-3 font-mono font-bold text-emerald-600 dark:text-emerald-400"><span class="hl-green">Treat as Incident</span></td>
+                  <td class="p-3 text-slate-600 dark:text-slate-400 text-[11px]">Intruders disable logging to hide footprints; re-enable immediately and isolate actor.</td>
+                </tr>
+                <tr class="bg-slate-50/70 dark:bg-slate-900/40">
+                  <td class="p-3 font-mono font-bold text-center text-slate-800 dark:text-slate-200">Q31</td>
+                  <td class="p-3 font-mono text-[11px] text-slate-500">M6 · S40 Case 3</td>
+                  <td class="p-3 text-slate-800 dark:text-slate-200">Development and test database holds full production copy of real customer PII</td>
+                  <td class="p-3 font-mono font-bold text-emerald-600 dark:text-emerald-400"><span class="hl-green">Data Masking</span></td>
+                  <td class="p-3 text-slate-600 dark:text-slate-400 text-[11px]">Apply synthetic data generation or anonymization masking before staging copy.</td>
+                </tr>
+                <tr>
+                  <td class="p-3 font-mono font-bold text-center text-slate-800 dark:text-slate-200">Q32</td>
+                  <td class="p-3 font-mono text-[11px] text-slate-500">M6 · S40 Case 4</td>
+                  <td class="p-3 text-slate-800 dark:text-slate-200">Critical zero-day CVE announced for web server software running on public machines</td>
+                  <td class="p-3 font-mono font-bold text-emerald-600 dark:text-emerald-400"><span class="hl-green">Patch Public Machines</span></td>
+                  <td class="p-3 text-slate-600 dark:text-slate-400 text-[11px]">Triage patch priorities by attack surface: internet-facing VMs patched before internal.</td>
+                </tr>
+                <tr class="bg-slate-50/70 dark:bg-slate-900/40">
+                  <td class="p-3 font-mono font-bold text-center text-slate-800 dark:text-slate-200">Q33</td>
+                  <td class="p-3 font-mono text-[11px] text-slate-500">M6 · S40 Case 5</td>
+                  <td class="p-3 text-slate-800 dark:text-slate-200">Company plans to transfer and store Turkish citizens' personal data outside Türkiye</td>
+                  <td class="p-3 font-mono font-bold text-emerald-600 dark:text-emerald-400"><span class="hl-green">KVKK Transfer Abroad</span></td>
+                  <td class="p-3 text-slate-600 dark:text-slate-400 text-[11px]">Requires data sovereignty compliance: standard contractual clauses &amp; board approval.</td>
+                </tr>
+                <tr>
+                  <td class="p-3 font-mono font-bold text-center text-slate-800 dark:text-slate-200">Q34</td>
+                  <td class="p-3 font-mono text-[11px] text-slate-500">M6 · S39 Breach</td>
+                  <td class="p-3 text-slate-800 dark:text-slate-200">Capital One attacker leveraged SSRF to query 169.254.169.254 and steal role credentials</td>
+                  <td class="p-3 font-mono font-bold text-emerald-600 dark:text-emerald-400"><span class="hl-green">IMDSv2</span></td>
+                  <td class="p-3 text-slate-600 dark:text-slate-400 text-[11px]">Enforces session token via HTTP PUT, preventing SSRF reverse proxies from stealing tokens.</td>
+                </tr>
+                <tr class="bg-slate-50/70 dark:bg-slate-900/40">
+                  <td class="p-3 font-mono font-bold text-center text-slate-800 dark:text-slate-200">Q35</td>
+                  <td class="p-3 font-mono text-[11px] text-slate-500">M6 · S14 Risk Math</td>
+                  <td class="p-3 text-slate-800 dark:text-slate-200">Asset value $4M, 50% loss on event ($2M), event happens once every 10 years (ARO 0.1)</td>
+                  <td class="p-3 font-mono font-bold text-emerald-600 dark:text-emerald-400"><span class="hl-green">$200,000 / Year</span></td>
+                  <td class="p-3 text-slate-600 dark:text-slate-400 text-[11px]">$\text{ALE} = \text{SLE} \times \text{ARO} = \$2,000,000 \times 0.1 = \$200,000$. Justifies controls under $200k.</td>
+                </tr>
+
+                <!-- PART 6: M7 (Q36-Q42) -->
+                <tr>
+                  <td class="p-3 font-mono font-bold text-center text-slate-800 dark:text-slate-200">Q36</td>
+                  <td class="p-3 font-mono text-[11px] text-slate-500">M7 · S40 IAM Case 1</td>
+                  <td class="p-3 text-slate-800 dark:text-slate-200">Five developers share one administrator login "to save time"</td>
+                  <td class="p-3 font-mono font-bold text-emerald-600 dark:text-emerald-400"><span class="hl-green">Individual IAM Identities</span></td>
+                  <td class="p-3 text-slate-600 dark:text-slate-400 text-[11px]">Shared accounts destroy accountability; every engineer needs distinct ID and MFA.</td>
+                </tr>
+                <tr class="bg-slate-50/70 dark:bg-slate-900/40">
+                  <td class="p-3 font-mono font-bold text-center text-slate-800 dark:text-slate-200">Q37</td>
+                  <td class="p-3 font-mono text-[11px] text-slate-500">M7 · S40 IAM Case 2</td>
+                  <td class="p-3 text-slate-800 dark:text-slate-200">Employee who resigned six months ago is still actively logging into cloud console</td>
+                  <td class="p-3 font-mono font-bold text-emerald-600 dark:text-emerald-400"><span class="hl-green">Automated Offboarding (SCIM)</span></td>
+                  <td class="p-3 text-slate-600 dark:text-slate-400 text-[11px]">Missing leaver process; automate offboarding with central IdP via SCIM and SSO.</td>
+                </tr>
+                <tr>
+                  <td class="p-3 font-mono font-bold text-center text-slate-800 dark:text-slate-200">Q38</td>
+                  <td class="p-3 font-mono text-[11px] text-slate-500">M7 · S40 IAM Case 3</td>
+                  <td class="p-3 text-slate-800 dark:text-slate-200">Backup script uses AWS access key stored in a plain text configuration file</td>
+                  <td class="p-3 font-mono font-bold text-emerald-600 dark:text-emerald-400"><span class="hl-green">IAM Instance Role</span></td>
+                  <td class="p-3 text-slate-600 dark:text-slate-400 text-[11px]">Avoid static keys; attach instance roles / managed identities with temporary tokens.</td>
+                </tr>
+                <tr class="bg-slate-50/70 dark:bg-slate-900/40">
+                  <td class="p-3 font-mono font-bold text-center text-slate-800 dark:text-slate-200">Q39</td>
+                  <td class="p-3 font-mono text-[11px] text-slate-500">M7 · S40 IAM Case 4</td>
+                  <td class="p-3 text-slate-800 dark:text-slate-200">Root account is used every day for standard maintenance, without MFA enabled</td>
+                  <td class="p-3 font-mono font-bold text-emerald-600 dark:text-emerald-400"><span class="hl-green">Lock Root Away</span></td>
+                  <td class="p-3 text-slate-600 dark:text-slate-400 text-[11px]">Enforce hardware MFA on root, lock away credentials, and use named admin roles.</td>
+                </tr>
+                <tr>
+                  <td class="p-3 font-mono font-bold text-center text-slate-800 dark:text-slate-200">Q40</td>
+                  <td class="p-3 font-mono text-[11px] text-slate-500">M7 · S40 IAM Case 5</td>
+                  <td class="p-3 text-slate-800 dark:text-slate-200">After 3 team moves, a QA tester still retains permissions to drop production databases</td>
+                  <td class="p-3 font-mono font-bold text-emerald-600 dark:text-emerald-400"><span class="hl-green">Privilege Creep (Reviews)</span></td>
+                  <td class="p-3 text-slate-600 dark:text-slate-400 text-[11px]">Conduct periodic access certification reviews and enforce movers revocation workflows.</td>
+                </tr>
+                <tr class="bg-slate-50/70 dark:bg-slate-900/40">
+                  <td class="p-3 font-mono font-bold text-center text-slate-800 dark:text-slate-200">Q41</td>
+                  <td class="p-3 font-mono text-[11px] text-slate-500">M7 · S24 Policy Logic</td>
+                  <td class="p-3 text-slate-800 dark:text-slate-200">Mehmet has P1 Allow Read, P2 Allow Delete all buckets, P3 Deny Delete audit-logs. Can he delete audit-logs?</td>
+                  <td class="p-3 font-mono font-bold text-emerald-600 dark:text-emerald-400"><span class="hl-green">No (Explicit Deny)</span></td>
+                  <td class="p-3 text-slate-600 dark:text-slate-400 text-[11px]">Explicit Deny always supersedes any Allow in cloud IAM policy evaluation.</td>
+                </tr>
+                <tr>
+                  <td class="p-3 font-mono font-bold text-center text-slate-800 dark:text-slate-200">Q42</td>
+                  <td class="p-3 font-mono text-[11px] text-slate-500">M7 · S12 MFA Trap</td>
+                  <td class="p-3 text-slate-800 dark:text-slate-200">Login asks for password and mother's maiden name security question. Is this MFA?</td>
+                  <td class="p-3 font-mono font-bold text-emerald-600 dark:text-emerald-400"><span class="hl-green">No, Single-Factor</span></td>
+                  <td class="p-3 text-slate-600 dark:text-slate-400 text-[11px]">Both are "something you know". Valid MFA requires two or more distinct factor types.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ======================================================== -->
+      <!-- SECTION 8: REFERENCES & ACADEMIC STANDARDS -->
+      <!-- ======================================================== -->
+      <section id="references" class="space-y-4">
+        <div class="border-b border-slate-200 dark:border-slate-800 pb-2">
+          <h2 class="font-display text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
+            <span>📚</span>
+            <span>References &amp; Standards</span>
+          </h2>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+          <div class="study-card p-4 space-y-2">
+            <span class="font-display font-bold text-slate-900 dark:text-white block text-sm">Primary Course Materials</span>
+            <ul class="space-y-1.5 text-slate-600 dark:text-slate-400 list-disc list-inside">
+              <li><strong>Dr. Hazm Talab</strong> &mdash; <em>SEN421 Cloud Architecture and Services</em> Course Lecture Slides (Modules 1 through 7), Department of Software Engineering, IAU.</li>
+              <li>West, C. (2022). <em>Cloud Computing: An Architecture-Driven Approach</em> (2nd ed.). Springer.</li>
+              <li>CompTIA Cloud+ Certification Exam Objectives (Exam Code CV0-004), CompTIA Press.</li>
+            </ul>
+          </div>
+          <div class="study-card p-4 space-y-2">
+            <span class="font-display font-bold text-slate-900 dark:text-white block text-sm">Standards, Frameworks &amp; Legal Statutes</span>
+            <ul class="space-y-1.5 text-slate-600 dark:text-slate-400 list-disc list-inside">
+              <li><strong>NIST SP 800-145:</strong> <em>The NIST Definition of Cloud Computing</em> (P. Mell &amp; T. Grance).</li>
+              <li><strong>NIST SP 800-63B-4:</strong> <em>Digital Identity Guidelines: Authentication and Lifecycle Management</em> (Finalized July 2025).</li>
+              <li><strong>KVKK (Law No. 6698):</strong> <em>Personal Data Protection Law of the Republic of Türkiye</em> (Cross-Border Transfer Amendments 2024).</li>
+              <li><strong>AWS &amp; Azure Well-Architected Frameworks:</strong> Reliability, Security, Cost Optimization, Operational Excellence, Performance Efficiency.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- ======================================================== -->
+      <!-- SECTION 9: HIGHLIGHT KEY & COLOR LEGEND (AFTER REFERENCES) -->
+      <!-- ======================================================== -->
+      <section id="highlight-key" class="space-y-4 pt-4 border-t border-slate-200 dark:border-slate-800">
+        <div class="border-b border-slate-200 dark:border-slate-800 pb-2">
+          <h2 class="font-display text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
+            <span>🎨</span>
+            <span>Highlight Key &amp; Study Legend</span>
+          </h2>
+        </div>
+        <div class="study-card p-4">
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 text-xs">
+            <div class="p-3 rounded-lg border border-amber-200 dark:border-amber-900/60 bg-amber-50/60 dark:bg-amber-950/20">
+              <span class="hl-yellow font-bold block mb-1">Yellow Marker</span>
+              <span class="text-slate-600 dark:text-slate-400">Core definitions, essential NIST characteristics, and fundamental foundational terms.</span>
+            </div>
+            <div class="p-3 rounded-lg border border-sky-200 dark:border-sky-900/60 bg-sky-50/60 dark:bg-sky-950/20">
+              <span class="hl-blue font-bold block mb-1">Blue Marker</span>
+              <span class="text-slate-600 dark:text-slate-400">Networking, VPC CIDR subnets, routing protocols, and architecture topologies.</span>
+            </div>
+            <div class="p-3 rounded-lg border border-emerald-200 dark:border-emerald-900/60 bg-emerald-50/60 dark:bg-emerald-950/20">
+              <span class="hl-green font-bold block mb-1">Green Marker</span>
+              <span class="text-slate-600 dark:text-slate-400">1–3 word exam answers, positive configurations, CLI commands, and proven solutions.</span>
+            </div>
+            <div class="p-3 rounded-lg border border-rose-200 dark:border-rose-900/60 bg-rose-50/60 dark:bg-rose-950/20">
+              <span class="hl-pink font-bold block mb-1">Pink Marker</span>
+              <span class="text-slate-600 dark:text-slate-400">Security traps, explicit denies, CVE vulnerabilities, anti-patterns, and cost leaks.</span>
+            </div>
+            <div class="p-3 rounded-lg border border-purple-200 dark:border-purple-900/60 bg-purple-50/60 dark:bg-purple-950/20">
+              <span class="hl-purple font-bold block mb-1">Purple Marker</span>
+              <span class="text-slate-600 dark:text-slate-400">KVKK &amp; GDPR regulations, quantitative risk formulas (ALE), and service models.</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+</body>
+</html>

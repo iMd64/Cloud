@@ -85,8 +85,8 @@
     num: 'MIDTERM',
     badge: 'MIDTERM',
     title: 'Master Midterm Exam Revision',
-    slides: '122+ Slides',
-    sub: 'Comprehensive Curated Exam Guide · M1–M7',
+    slides: '42 Questions',
+    sub: '42 Scenario Questions & 1–3 Word Answer Keys · M1–M7',
     file: 'sen421_midterm_exam_master_revision.html'
   };
 
@@ -663,7 +663,7 @@
       if (id === 'overview' || id === 'part-0') {
         title = isMidterm ? '0. Exam Overview & Blueprint' : (isPortal ? '0. Master Study Portal' : '0. Course Title & Plan');
       } else if (id === 'cheat-sheet') {
-        title = '7. High-Yield Cheat Sheet';
+        title = isMidterm ? '7. Rapid-Recall Table (42 Qs)' : '7. High-Yield Cheat Sheet';
       } else if (id === 'references') {
         title = '8. References & Standards';
       } else if (id === 'highlight-key') {
